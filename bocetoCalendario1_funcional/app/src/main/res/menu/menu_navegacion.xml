@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/nav_inicio"
+        android:icon="@android:drawable/ic_menu_today"
+        android:title="@string/inicio"/>
+
+    <item
+        android:id="@+id/nav_grupos"
+        android:icon="@android:drawable/ic_menu_myplaces"
+        android:title="@string/grupos"/>
+
+    <item
+        android:id="@+id/nav_notificaciones"
+        android:icon="@android:drawable/ic_popup_reminder"
+        android:title="@string/notificaciones"/>
+
+    <item
+        android:id="@+id/nav_perfil"
+        android:icon="@android:drawable/ic_menu_my_calendar"
+        android:title="@string/perfil"/>
+
+</menu>

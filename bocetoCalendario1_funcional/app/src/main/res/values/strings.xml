@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">CalendarioApp</string>
+
+    <!-- Login/Registro -->
+    <string name="email">Email</string>
+    <string name="contrasena">Contraseña</string>
+    <string name="nombre">Nombre</string>
+    <string name="iniciar_sesion">Iniciar Sesión</string>
+    <string name="registrarse">Registrarse</string>
+    <string name="no_tienes_cuenta">¿No tienes cuenta? Regístrate</string>
+    <string name="ya_tienes_cuenta">¿Ya tienes cuenta? Inicia sesión</string>
+
+    <!-- Navegación -->
+    <string name="inicio">Inicio</string>
+    <string name="grupos">Grupos</string>
+    <string name="notificaciones">Notificaciones</string>
+    <string name="perfil">Perfil</string>
+
+    <!-- Eventos -->
+    <string name="eventos">Eventos</string>
+    <string name="nuevo_evento">Nuevo Evento</string>
+    <string name="titulo">Título</string>
+    <string name="descripcion">Descripción</string>
+    <string name="fecha_inicio">Fecha inicio</string>
+    <string name="fecha_fin">Fecha fin</string>
+    <string name="ubicacion">Ubicación</string>
+    <string name="guardar">Guardar</string>
+    <string name="cancelar">Cancelar</string>
+    <string name="estado">Estado</string>
+    <string name="pendiente">Pendiente</string>
+    <string name="confirmado">Confirmado</string>
+    <string name="seleccionar_calendario">Seleccionar calendario</string>
+
+    <!-- Grupos -->
+    <string name="nuevo_grupo">Nuevo Grupo</string>
+    <string name="miembros">Miembros</string>
+    <string name="administrador">Administrador</string>
+
+    <!-- Perfil -->
+    <string name="cerrar_sesion">Cerrar Sesión</string>
+    <string name="notificaciones_activadas">Notificaciones activadas</string>
+</resources>
