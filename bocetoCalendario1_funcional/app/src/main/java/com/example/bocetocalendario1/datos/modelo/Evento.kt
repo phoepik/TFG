@@ -22,6 +22,6 @@ data class Evento(
     val fecha_inicio: String, // Formato "YYYY-MM-DD HH:MM:SS"
     val fecha_fin: String,
     val ubicacion: String?,
-    val estado: String = "CONFIRMADO",
+    val estado: String,     // 'PENDIENTE', 'CONFIRMADO'
     val id_calendario: Int
 )
