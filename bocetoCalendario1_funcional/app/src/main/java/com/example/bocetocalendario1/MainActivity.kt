@@ -33,18 +33,6 @@ class MainActivity : AppCompatActivity() {
             insets
         }
 
-        // inicializar base de datos
-        val db = AppDatabase.getDatabase(this)
-
-        // Prueba: insertar y leer
-        lifecycleScope.launch(Dispatchers.IO) {
-            val user = Usuario(nombre = "Test", email = "test@tfg.com", contrasena = "1234")
-            db.appDao().insertarUsuario(user)
-
-            val lista = db.appDao().obtenerUsuarios()
-            Log.d("DB_PRUEBA", "Base de datos inicializada. Total usuarios: ${lista.size}")
-        }
-
         bottomNavigation = findViewById(R.id.bottomNavigation)
 
         // cargar parte inicial

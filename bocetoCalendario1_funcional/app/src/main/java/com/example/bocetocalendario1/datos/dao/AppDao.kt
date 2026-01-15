@@ -17,4 +17,7 @@ interface AppDao {
 
     @Query("SELECT * FROM eventos WHERE id_calendario = :idCal")
     suspend fun obtenerEventosDeCalendario(idCal: Int): List<Evento>
+
+    @Query("SELECT * FROM usuarios WHERE email = :emailRecibido AND contrasena = :contrasenaRecibida LIMIT 1")
+    suspend fun verificarUsuario(emailRecibido: String, contrasenaRecibida: String): Usuario?
 }
