@@ -2,14 +2,22 @@ package com.example.bocetocalendario1.activities
 
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
+import android.os.Build
 import android.os.Bundle
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Spinner
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import com.example.bocetocalendario1.R
+import com.example.bocetocalendario1.datos.basedatos.AppDatabase
+import com.example.bocetocalendario1.datos.modelo.Evento
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import java.time.LocalDate
 import java.util.Calendar
 
 class CrearEventoActivity : AppCompatActivity() {
@@ -24,7 +32,9 @@ class CrearEventoActivity : AppCompatActivity() {
     private lateinit var btnGuardar: Button
     private lateinit var btnCancelar: Button
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
+        val db = AppDatabase.getDatabase(this)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_crear_evento)
 
@@ -54,13 +64,25 @@ class CrearEventoActivity : AppCompatActivity() {
         // boton guardar
         btnGuardar.setOnClickListener {
             val titulo = etTitulo.text.toString()
+            val descripcion = etDescripcion.text.toString()
+            val fechaInicio = etFechaInicio.text.toString()
+            val fechaFin = etFechaFin.text.toString()
+            val ubicacion = etUbicacion.text.toString()
+            val tipoEstado = spinnerEstado.selectedItem.toString()
+            val tipoCalendario = spinnerCalendario.selectedItemPosition
 
             if (titulo.isEmpty()) {
                 Toast.makeText(this, "El título es obligatorio", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
-            // RICARDO->>>>Aqui va el guardado en la BD
+            val unEvento = Evento(titulo=titulo,descripcion=descripcion,
+                fecha_inicio=fechaInicio,fecha_fin=fechaFin,
+                ubicacion= ubicacion,estado= tipoEstado,id_calendario= tipoCalendario)
+            //guardado en la BD
+            lifecycleScope.launch(Dispatchers.IO) {
+                db.appDao().insertarEvento(unEvento)
+            }
             Toast.makeText(this, "Evento guardado!", Toast.LENGTH_SHORT).show()
             finish()
         }

@@ -9,6 +9,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
+import at.favre.lib.crypto.bcrypt.BCrypt
 import com.example.bocetocalendario1.MainActivity
 import com.example.bocetocalendario1.R
 import com.example.bocetocalendario1.datos.basedatos.AppDatabase
@@ -24,6 +25,7 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var btnLogin: Button
     private lateinit var tvIrRegistro: TextView
 
+    private var idCuenta: Int? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
@@ -46,10 +48,13 @@ class LoginActivity : AppCompatActivity() {
 
             lifecycleScope.launch(Dispatchers.IO) {
                 try {
-                    val usuarioEncontrado = db.appDao().verificarUsuario(email, contrasena)
-
+                    val usuarioEncontrado = db.appDao().verificarUsuario(email)
+                    idCuenta = usuarioEncontrado?.id_usuario ?: 0
+                    val res= BCrypt.verifyer().verify(contrasena.toCharArray(),
+                        usuarioEncontrado?.contrasena
+                    )
                     withContext(Dispatchers.Main) {
-                        if (usuarioEncontrado != null) {
+                        if (usuarioEncontrado != null && res.verified) {
                             Toast.makeText(this@LoginActivity, "¡Bienvenido ${usuarioEncontrado.nombre}!", Toast.LENGTH_SHORT).show()
 
                             val intent = Intent(this@LoginActivity, MainActivity::class.java)

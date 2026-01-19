@@ -50,6 +50,7 @@ class DetalleGrupoActivity : AppCompatActivity() {
 
         //  RICARDO->>>>>>>>> añadir miembro
         btnAnadirMiembro.setOnClickListener {
+            val idABuscar =
             Toast.makeText(this, "Añadir miembro (conectar con BD)", Toast.LENGTH_SHORT).show()
         }
     }
