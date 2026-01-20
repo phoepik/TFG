@@ -36,9 +36,10 @@ class PerfilFragment : Fragment() {
         switchNotificaciones = view.findViewById(R.id.switchNotificaciones)
         btnCerrarSesion = view.findViewById(R.id.btnCerrarSesion)
 
+        //Coger usuario de la base de datos y rellenar campos
         // datos de ejemplo
-        tvNombre.text = "Usuario de prueba"
-        tvEmail.text = "usuario@ejemplo.com"
+        tvNombre.text = "CAMBIAR Nombre"
+        tvEmail.text = "CAMBIAR Email"
         switchNotificaciones.isChecked = true
 
         // cambiar las notoficaciones
