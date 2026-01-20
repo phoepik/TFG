@@ -12,7 +12,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.bocetocalendario1.R
 import java.util.Calendar
 
-class CrearEventoActivity : AppCompatActivity() {
+class   CrearEventoActivity : AppCompatActivity() {
 
     private lateinit var etTitulo: EditText
     private lateinit var etDescripcion: EditText
