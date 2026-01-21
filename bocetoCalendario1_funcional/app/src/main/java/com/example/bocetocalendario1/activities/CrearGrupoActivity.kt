@@ -9,6 +9,7 @@ import androidx.lifecycle.lifecycleScope
 import com.example.bocetocalendario1.R
 import com.example.bocetocalendario1.datos.basedatos.AppDatabase
 import com.example.bocetocalendario1.datos.modelo.Grupo
+import com.example.bocetocalendario1.utilidades.GestorSesion
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -22,6 +23,7 @@ class CrearGrupoActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val db = AppDatabase.getDatabase(this)
+        val GestorSesion = GestorSesion(this)
 
         setContentView(R.layout.activity_crear_grupo)
 
@@ -43,7 +45,7 @@ class CrearGrupoActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            val unGrupo = Grupo(nombre = nombre, descripcion = descripcion, id_admin = 1)
+            val unGrupo = Grupo(nombre = nombre, descripcion = descripcion, id_admin = GestorSesion.obtenerIdUsuario())
 
             //GUARDADO EN LA BASE DE DATOS
             lifecycleScope.launch(Dispatchers.IO) {

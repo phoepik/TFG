@@ -34,7 +34,7 @@ class GestorSesion(context: Context) {
         editor.apply()
     }
 
-    fun obtenerIdUsuario(): Int {
+    fun obtenerIdUsuario(): Int? {
         return prefs.getInt(CLAVE_ID_USUARIO, -1)
     }
 

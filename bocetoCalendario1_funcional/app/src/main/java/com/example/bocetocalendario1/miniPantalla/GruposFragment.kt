@@ -7,18 +7,26 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.bocetocalendario1.R
 import com.example.bocetocalendario1.activities.CrearGrupoActivity
 import com.example.bocetocalendario1.activities.DetalleGrupoActivity
 import com.example.bocetocalendario1.adaptadores.GrupoAdapter
-import com.example.bocetocalendario1.models.Grupo
+import com.example.bocetocalendario1.datos.basedatos.AppDatabase
+import com.example.bocetocalendario1.datos.modelo.Grupo
+import com.example.bocetocalendario1.utilidades.GestorSesion
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class GruposFragment : Fragment() {
 
     private lateinit var rvGrupos: RecyclerView
     private lateinit var btnNuevoGrupo: Button
+    private lateinit var gestorSesion: GestorSesion
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -31,26 +39,30 @@ class GruposFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        gestorSesion= GestorSesion(requireContext())
         rvGrupos = view.findViewById(R.id.rvGrupos)
         btnNuevoGrupo = view.findViewById(R.id.btnNuevoGrupo)
-
-        // datos de ejemplo
-        val gruposEjemplo = listOf(
-            Grupo(1, "Trabajo DAM", "Grupo de clase de desarrollo", 1, 5),
-            Grupo(2, "Familia", "Eventos familiares", 1, 8),
-            Grupo(3, "Amigos", "Quedadas y planes", 2, 12)
-        )
-
         // confirmacion RecyclerView
         rvGrupos.layoutManager = LinearLayoutManager(context)
-        rvGrupos.adapter = GrupoAdapter(gruposEjemplo) { grupo ->
-            // detalles del grupo
-            val intent = Intent(context, DetalleGrupoActivity::class.java)
-            intent.putExtra("GRUPO_ID", grupo.id)
-            intent.putExtra("GRUPO_NOMBRE", grupo.nombre)
-            intent.putExtra("GRUPO_DESCRIPCION", grupo.descripcion)
-            startActivity(intent)
+
+        viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO){
+            val idUsuario = gestorSesion.obtenerIdUsuario() ?: 0
+            val db = AppDatabase.getDatabase(requireContext())
+            val gruposBD : List<Grupo> = db.appDao().obtenerGruposDeUsuario(idUsuario)
+
+
+            withContext(Dispatchers.Main){
+                rvGrupos.adapter = GrupoAdapter(gruposBD) { grupo ->
+                    // detalles del grupo
+                    val intent = Intent(context, DetalleGrupoActivity::class.java)
+                    intent.putExtra("GRUPO_ID", grupo.id_grupo)
+                    intent.putExtra("GRUPO_NOMBRE", grupo.nombre)
+                    intent.putExtra("GRUPO_DESCRIPCION", grupo.descripcion)
+                    startActivity(intent)
+                }
+            }
         }
+
 
         // boton de nuevo grupo
         btnNuevoGrupo.setOnClickListener {

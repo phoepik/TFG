@@ -29,9 +29,8 @@ interface AppDao {
     suspend fun obtenerEventosDeCalendario(idCal: Int): List<Evento>
 
     //ObtenerUsuariosGrupo(devolver lista id/Usuario)
-
-
-
+    @Query("SELECT * FROM grupos WHERE id_admin = :idUsuario")
+    suspend fun obtenerGruposDeUsuario(idUsuario: Int): List<Grupo>
 
     //Verificar
 
