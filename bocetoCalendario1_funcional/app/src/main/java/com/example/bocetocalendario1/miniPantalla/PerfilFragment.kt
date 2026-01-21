@@ -12,6 +12,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.example.bocetocalendario1.R
 import com.example.bocetocalendario1.activities.LoginActivity
+import com.example.bocetocalendario1.utilidades.GestorSesion
 
 class PerfilFragment : Fragment() {
 
@@ -19,6 +20,9 @@ class PerfilFragment : Fragment() {
     private lateinit var tvEmail: TextView
     private lateinit var switchNotificaciones: Switch
     private lateinit var btnCerrarSesion: Button
+
+    private lateinit var tvIdUsuario: TextView
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -31,16 +35,20 @@ class PerfilFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val gestorSesion = GestorSesion(this.requireContext())
         tvNombre = view.findViewById(R.id.tvNombre)
         tvEmail = view.findViewById(R.id.tvEmail)
+        tvIdUsuario = view.findViewById(R.id.tvIdUsuario)
         switchNotificaciones = view.findViewById(R.id.switchNotificaciones)
         btnCerrarSesion = view.findViewById(R.id.btnCerrarSesion)
 
         //Coger usuario de la base de datos y rellenar campos
         // datos de ejemplo
-        tvNombre.text = "CAMBIAR Nombre"
-        tvEmail.text = "CAMBIAR Email"
-        switchNotificaciones.isChecked = true
+        tvNombre.text = gestorSesion.obtenerNombreUsuario()
+        tvEmail.text = gestorSesion.obtenerEmail()
+        tvIdUsuario.text = gestorSesion.obtenerIdUsuario().toString()
+        switchNotificaciones.isChecked = gestorSesion.estanNotificacionesActivas()
+
 
         // cambiar las notoficaciones
         switchNotificaciones.setOnCheckedChangeListener { _, isChecked ->
@@ -50,10 +58,14 @@ class PerfilFragment : Fragment() {
 
         // cerrar sesion
         btnCerrarSesion.setOnClickListener {
-            // acciond e bolver al login
+            gestorSesion.cerrarSesion()
+
+            // accion de volver al login
             val intent = Intent(context, LoginActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             startActivity(intent)
+            Toast.makeText(context, "Sesión cerrada", Toast.LENGTH_SHORT).show()
+
         }
     }
 }

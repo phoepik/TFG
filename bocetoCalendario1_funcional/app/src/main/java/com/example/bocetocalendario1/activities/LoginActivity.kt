@@ -13,7 +13,7 @@ import at.favre.lib.crypto.bcrypt.BCrypt
 import com.example.bocetocalendario1.MainActivity
 import com.example.bocetocalendario1.R
 import com.example.bocetocalendario1.datos.basedatos.AppDatabase
-import com.example.bocetocalendario1.datos.modelo.Usuario
+import com.example.bocetocalendario1.utilidades.GestorSesion
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -31,6 +31,14 @@ class LoginActivity : AppCompatActivity() {
         setContentView(R.layout.activity_login)
 
         val db = AppDatabase.getDatabase(this)
+        val gestorSesion = GestorSesion(this)
+
+        if(gestorSesion.estaLogueado()){
+            val intent = Intent(this, MainActivity::class.java)
+            startActivity(intent)
+            finish()    // para que no puedas volver a esta pestaña echando hacia atrás
+            return  // sale de la actividad
+        }
 
         etEmail = findViewById(R.id.etEmail)
         etContrasena = findViewById(R.id.etContrasena)
@@ -56,7 +64,7 @@ class LoginActivity : AppCompatActivity() {
                     withContext(Dispatchers.Main) {
                         if (usuarioEncontrado != null && res.verified) {
                             Toast.makeText(this@LoginActivity, "¡Bienvenido ${usuarioEncontrado.nombre}!", Toast.LENGTH_SHORT).show()
-
+                            gestorSesion.guardarSesion(usuarioEncontrado)
                             val intent = Intent(this@LoginActivity, MainActivity::class.java)
                             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                             startActivity(intent)

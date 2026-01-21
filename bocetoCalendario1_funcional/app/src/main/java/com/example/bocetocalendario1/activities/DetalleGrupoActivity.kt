@@ -1,9 +1,9 @@
 package com.example.bocetocalendario1.activities
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -50,8 +50,9 @@ class DetalleGrupoActivity : AppCompatActivity() {
 
         //  RICARDO->>>>>>>>> añadir miembro
         btnAnadirMiembro.setOnClickListener {
-            val idABuscar =
-            Toast.makeText(this, "Añadir miembro (conectar con BD)", Toast.LENGTH_SHORT).show()
+            val intent = Intent(this, AnadirMiembroActivity::class.java)
+            intent.putExtra("GRUPO_ID", grupoId)
+            startActivity(intent)
         }
     }
 }
