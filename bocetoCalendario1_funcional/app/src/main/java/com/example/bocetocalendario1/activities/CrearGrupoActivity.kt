@@ -23,7 +23,7 @@ class CrearGrupoActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val db = AppDatabase.getDatabase(this)
-        val GestorSesion = GestorSesion(this)
+        val gestorSesion = GestorSesion(this)
 
         setContentView(R.layout.activity_crear_grupo)
 
@@ -45,7 +45,7 @@ class CrearGrupoActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            val unGrupo = Grupo(nombre = nombre, descripcion = descripcion, id_admin = GestorSesion.obtenerIdUsuario())
+            val unGrupo = Grupo(nombre = nombre, descripcion = descripcion, id_admin = gestorSesion.obtenerIdUsuario())
 
             //GUARDADO EN LA BASE DE DATOS
             lifecycleScope.launch(Dispatchers.IO) {

@@ -21,15 +21,6 @@ data class Evento(
     val idCalendario: Int = 0
 )
 
-// Grupo - tabla grupos
-data class Grupo(
-    val id: Int = 0,
-    val nombre: String = "",
-    val descripcion: String = "",
-    val idAdmin: Int = 0,
-    val miembros: Int = 0
-)
-
 // Notificacion - tabla notificaciones
 data class Notificacion(
     val id: Int = 0,

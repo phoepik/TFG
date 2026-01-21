@@ -11,6 +11,7 @@ import com.example.bocetocalendario1.R
 import com.example.bocetocalendario1.adaptadores.MiembroAdapter
 import com.example.bocetocalendario1.models.Usuario
 
+// SIN CAMBIAR NADA POR AHORA
 class DetalleGrupoActivity : AppCompatActivity() {
 
     private lateinit var tvNombreGrupo: TextView
@@ -55,4 +56,5 @@ class DetalleGrupoActivity : AppCompatActivity() {
             startActivity(intent)
         }
     }
+
 }

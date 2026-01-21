@@ -44,7 +44,21 @@ class GruposFragment : Fragment() {
         btnNuevoGrupo = view.findViewById(R.id.btnNuevoGrupo)
         // confirmacion RecyclerView
         rvGrupos.layoutManager = LinearLayoutManager(context)
+        cargarPersonasGrupo()
 
+
+        // boton de nuevo grupo
+        btnNuevoGrupo.setOnClickListener {
+            startActivity(Intent(context, CrearGrupoActivity::class.java))
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        cargarPersonasGrupo()
+    }
+
+    private fun cargarPersonasGrupo(){
         viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO){
             val idUsuario = gestorSesion.obtenerIdUsuario() ?: 0
             val db = AppDatabase.getDatabase(requireContext())
@@ -61,12 +75,6 @@ class GruposFragment : Fragment() {
                     startActivity(intent)
                 }
             }
-        }
-
-
-        // boton de nuevo grupo
-        btnNuevoGrupo.setOnClickListener {
-            startActivity(Intent(context, CrearGrupoActivity::class.java))
         }
     }
 }
