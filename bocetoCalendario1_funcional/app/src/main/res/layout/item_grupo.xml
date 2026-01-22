@@ -51,7 +51,6 @@
                 android:id="@+id/tvMiembros"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text=" 5 miembros"
                 android:textSize="12sp"
                 android:textColor="@color/gray"
                 android:layout_marginTop="4dp"/>

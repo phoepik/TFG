@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -18,6 +19,7 @@ class DetalleGrupoActivity : AppCompatActivity() {
     private lateinit var tvDescripcion: TextView
     private lateinit var rvMiembros: RecyclerView
     private lateinit var btnAnadirMiembro: Button
+    private lateinit var btnBorrarGrupo: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,6 +30,8 @@ class DetalleGrupoActivity : AppCompatActivity() {
         tvDescripcion = findViewById(R.id.tvDescripcion)
         rvMiembros = findViewById(R.id.rvMiembros)
         btnAnadirMiembro = findViewById(R.id.btnAnadirMiembro)
+        btnBorrarGrupo = findViewById(R.id.btnBorrarGrupo)
+
 
         // Obtener datos del intent
         val grupoId = intent.getIntExtra("GRUPO_ID", 0)
@@ -55,6 +59,8 @@ class DetalleGrupoActivity : AppCompatActivity() {
             intent.putExtra("GRUPO_ID", grupoId)
             startActivity(intent)
         }
+
+
     }
 
 }
