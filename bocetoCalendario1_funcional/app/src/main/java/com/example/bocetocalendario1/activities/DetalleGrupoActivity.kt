@@ -60,6 +60,10 @@ class DetalleGrupoActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
+        btnBorrarGrupo.setOnClickListener {
+            Toast.makeText(this, "Grupo borrado", Toast.LENGTH_SHORT).show()
+            finish()
+        }
 
     }
 
