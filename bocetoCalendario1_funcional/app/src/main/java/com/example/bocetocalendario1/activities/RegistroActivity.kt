@@ -10,12 +10,13 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import at.favre.lib.crypto.bcrypt.BCrypt
-import com.example.bocetocalendario1.MainActivity
 import com.example.bocetocalendario1.R
 import com.example.bocetocalendario1.datos.basedatos.AppDatabase
 import com.example.bocetocalendario1.datos.modelo.Usuario
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import com.example.bocetocalendario1.datos.modelo.Calendario
+import kotlinx.coroutines.withContext
 
 class RegistroActivity : AppCompatActivity() {
 
@@ -56,12 +57,23 @@ class RegistroActivity : AppCompatActivity() {
 
             lifecycleScope.launch(Dispatchers.IO) {
                 db.appDao().insertarUsuario(unUsuario)
+                val usuarioInsertado = db.appDao().verificarUsuario(email)
+                if (usuarioInsertado != null) {
+                    val calendarioPersonal = Calendario(
+                        nombre = "Mi calendario",
+                        tipo = "PERSONAL",
+                        id_propietario = usuarioInsertado.id_usuario,
+                        id_grupo = null
+                    )
+                    db.appDao().insertarCalendario(calendarioPersonal)
+                }
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(this@RegistroActivity, "Registro exitoso!", Toast.LENGTH_SHORT).show()
+                    val intent = Intent(this@RegistroActivity, LoginActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    startActivity(intent)
+                }
             }
-            Toast.makeText(this, "Registro exitoso!", Toast.LENGTH_SHORT).show()
-            
-            val intent = Intent(this, LoginActivity::class.java)
-            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-            startActivity(intent)
         }
 
         //login

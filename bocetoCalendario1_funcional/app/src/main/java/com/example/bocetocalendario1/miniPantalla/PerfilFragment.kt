@@ -10,9 +10,14 @@ import android.widget.Switch
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import com.example.bocetocalendario1.R
 import com.example.bocetocalendario1.activities.LoginActivity
+import com.example.bocetocalendario1.datos.basedatos.AppDatabase
 import com.example.bocetocalendario1.utilidades.GestorSesion
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class PerfilFragment : Fragment() {
 
@@ -36,6 +41,7 @@ class PerfilFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val gestorSesion = GestorSesion(this.requireContext())
+        val db = AppDatabase.getDatabase(requireContext())
         tvNombre = view.findViewById(R.id.tvNombre)
         tvEmail = view.findViewById(R.id.tvEmail)
         tvIdUsuario = view.findViewById(R.id.tvIdUsuario)
@@ -47,13 +53,32 @@ class PerfilFragment : Fragment() {
         tvNombre.text = gestorSesion.obtenerNombreUsuario()
         tvEmail.text = gestorSesion.obtenerEmail()
         tvIdUsuario.text = gestorSesion.obtenerIdUsuario().toString()
-        switchNotificaciones.isChecked = gestorSesion.estanNotificacionesActivas()
 
+        val idUsuario = gestorSesion.obtenerIdUsuario() ?: -1
 
-        // cambiar las notoficaciones
-        switchNotificaciones.setOnCheckedChangeListener { _, isChecked ->
-            val mensaje = if (isChecked) "Notificaciones activadas" else "Notificaciones desactivadas"
-            Toast.makeText(context, mensaje, Toast.LENGTH_SHORT).show()
+        // Ocultar el switch hasta tener el valor real
+        switchNotificaciones.visibility = View.INVISIBLE
+
+        if (idUsuario != -1) {
+            lifecycleScope.launch(Dispatchers.IO) {
+                val usuario = db.appDao().verificarUsuario(gestorSesion.obtenerEmail() ?: "")
+                withContext(Dispatchers.Main) {
+                    // Poner el valor correcto antes de activar el listener
+                    switchNotificaciones.isChecked = usuario?.notificaciones_activas ?: false
+                    switchNotificaciones.visibility = View.VISIBLE
+
+                    // el listener se registra aquí, cuando el valor ya está puesto
+                    switchNotificaciones.setOnCheckedChangeListener { _, isChecked ->
+                        lifecycleScope.launch(Dispatchers.IO) {
+                            db.appDao().actualizarNotificaciones(idUsuario, isChecked)
+                            withContext(Dispatchers.Main) {
+                                val mensaje = if (isChecked) "Notificaciones activadas" else "Notificaciones desactivadas"
+                                Toast.makeText(context, mensaje, Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         // cerrar sesion
