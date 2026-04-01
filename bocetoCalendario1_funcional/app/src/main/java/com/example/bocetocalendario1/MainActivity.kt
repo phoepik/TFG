@@ -1,22 +1,16 @@
 package com.example.bocetocalendario1
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
-import com.example.bocetocalendario1.datos.basedatos.AppDatabase
-import com.example.bocetocalendario1.datos.modelo.Usuario
 import com.example.bocetocalendario1.miniPantalla.GruposFragment
 import com.example.bocetocalendario1.miniPantalla.InicioFragment
 import com.example.bocetocalendario1.miniPantalla.NotificacionesFragment
 import com.example.bocetocalendario1.miniPantalla.PerfilFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
 
