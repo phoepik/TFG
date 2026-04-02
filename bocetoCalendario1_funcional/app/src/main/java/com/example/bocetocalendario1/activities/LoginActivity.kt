@@ -13,6 +13,7 @@ import at.favre.lib.crypto.bcrypt.BCrypt
 import com.example.bocetocalendario1.MainActivity
 import com.example.bocetocalendario1.R
 import com.example.bocetocalendario1.datos.basedatos.AppDatabase
+import com.example.bocetocalendario1.notificaciones.canales.NotificacionesManagerCanales
 import com.example.bocetocalendario1.utilidades.GestorSesion
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -28,6 +29,8 @@ class LoginActivity : AppCompatActivity() {
     private var idCuenta: Int? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        NotificacionesManagerCanales.createAll(this)
+
         setContentView(R.layout.activity_login)
 
         val db = AppDatabase.getDatabase(this)
