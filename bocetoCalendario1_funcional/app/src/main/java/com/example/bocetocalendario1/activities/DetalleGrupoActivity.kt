@@ -6,11 +6,15 @@ import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.bocetocalendario1.R
 import com.example.bocetocalendario1.adaptadores.MiembroAdapter
+import com.example.bocetocalendario1.datos.basedatos.AppDatabase
 import com.example.bocetocalendario1.models.Usuario
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 // SIN CAMBIAR NADA POR AHORA
 class DetalleGrupoActivity : AppCompatActivity() {
@@ -23,6 +27,7 @@ class DetalleGrupoActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val db = AppDatabase.getDatabase(this)
         setContentView(R.layout.activity_detalle_grupo)
 
         // inicializar vistas
@@ -61,6 +66,9 @@ class DetalleGrupoActivity : AppCompatActivity() {
         }
 
         btnBorrarGrupo.setOnClickListener {
+            lifecycleScope.launch(Dispatchers.IO) {
+                db.appDao().eliminarGrupoPorId(grupoId)
+            }
             Toast.makeText(this, "Grupo borrado", Toast.LENGTH_SHORT).show()
             finish()
         }

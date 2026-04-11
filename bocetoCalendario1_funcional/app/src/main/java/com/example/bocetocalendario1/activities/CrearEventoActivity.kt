@@ -17,10 +17,8 @@ import com.example.bocetocalendario1.datos.basedatos.AppDatabase
 import com.example.bocetocalendario1.datos.modelo.Evento
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.time.LocalDate
 import java.util.Calendar
-import com.example.bocetocalendario1.datos.modelo.Calendario
-import com.example.bocetocalendario1.utilidades.GestorSesion
-import kotlinx.coroutines.withContext
 
 class   CrearEventoActivity : AppCompatActivity() {
 
@@ -33,8 +31,6 @@ class   CrearEventoActivity : AppCompatActivity() {
     private lateinit var spinnerCalendario: Spinner
     private lateinit var btnGuardar: Button
     private lateinit var btnCancelar: Button
-
-    private var calendarios: List<Calendario> = emptyList()
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -59,28 +55,9 @@ class   CrearEventoActivity : AppCompatActivity() {
         val estados = arrayOf("PENDIENTE", "CONFIRMADO")
         spinnerEstado.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, estados)
 
-        val gestor = GestorSesion(this)
-        val idUsuario = gestor.obtenerIdUsuario() ?: -1
-
-        lifecycleScope.launch(Dispatchers.IO) {
-            val calsBD = if (idUsuario != -1) {
-                db.appDao().obtenerCalendariosDeUsuario(idUsuario)
-            } else emptyList()
-
-            withContext(Dispatchers.Main) {
-                calendarios = calsBD
-                val nombresCalendarios = if (calendarios.isEmpty()) {
-                    arrayOf("Sin calendario disponible")
-                } else {
-                    calendarios.map { it.nombre }.toTypedArray()
-                }
-                spinnerCalendario.adapter = ArrayAdapter(
-                    this@CrearEventoActivity,
-                    android.R.layout.simple_spinner_dropdown_item,
-                    nombresCalendarios
-                )
-            }
-        }// Selectores de fecha
+        val calendarios = arrayOf("Mi calendario (Personal)", "Trabajo DAM (Grupal)", "Familia (Grupal)")
+        spinnerCalendario.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, calendarios)
+        // Selectores de fecha
         etFechaInicio.setOnClickListener { mostrarDateTimePicker(etFechaInicio) }
         etFechaFin.setOnClickListener { mostrarDateTimePicker(etFechaFin) }
 
@@ -92,37 +69,22 @@ class   CrearEventoActivity : AppCompatActivity() {
             val fechaFin = etFechaFin.text.toString()
             val ubicacion = etUbicacion.text.toString()
             val tipoEstado = spinnerEstado.selectedItem.toString()
-            val posicion = spinnerCalendario.selectedItemPosition
-            val idCalendario = calendarios[posicion].id_calendario
+            val tipoCalendario = spinnerCalendario.selectedItemPosition
 
             if (titulo.isEmpty()) {
                 Toast.makeText(this, "El título es obligatorio", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
-            if (fechaInicio.isEmpty()) {
-                Toast.makeText(this, "La fecha de inicio es obligatoria", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
-            }
-            if (fechaFin.isEmpty()) {
-                Toast.makeText(this, "La fecha de fin es obligatoria", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
-            }
-            if (calendarios.isEmpty()) {
-                Toast.makeText(this, "No hay calendarios disponibles.", Toast.LENGTH_LONG).show()
-                return@setOnClickListener
-            }
 
-            val unEvento = Evento(titulo=titulo, descripcion=descripcion,
-                fecha_inicio=fechaInicio, fecha_fin=fechaFin,
-                ubicacion=ubicacion, estado=tipoEstado, id_calendario=idCalendario)
-
+            val unEvento = Evento(titulo=titulo,descripcion=descripcion,
+                fecha_inicio=fechaInicio,fecha_fin=fechaFin,
+                ubicacion= ubicacion,estado= tipoEstado,id_calendario= tipoCalendario)
+            //guardado en la BD
             lifecycleScope.launch(Dispatchers.IO) {
                 db.appDao().insertarEvento(unEvento)
-                withContext(Dispatchers.Main) {
-                    Toast.makeText(this@CrearEventoActivity, "Evento guardado!", Toast.LENGTH_SHORT).show()
-                    finish()
-                }
             }
+            Toast.makeText(this, "Evento guardado!", Toast.LENGTH_SHORT).show()
+            finish()
         }
         // boton cancelar
         btnCancelar.setOnClickListener {

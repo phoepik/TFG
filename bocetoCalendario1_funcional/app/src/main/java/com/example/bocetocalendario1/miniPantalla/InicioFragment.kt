@@ -7,18 +7,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.bocetocalendario1.R
 import com.example.bocetocalendario1.activities.CrearEventoActivity
 import com.example.bocetocalendario1.adaptadores.EventoAdapter
-import com.example.bocetocalendario1.datos.basedatos.AppDatabase
 import com.example.bocetocalendario1.models.Evento
-import com.example.bocetocalendario1.utilidades.GestorSesion
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class InicioFragment : Fragment() {
 
@@ -39,46 +33,22 @@ class InicioFragment : Fragment() {
         rvEventos = view.findViewById(R.id.rvEventos)
         btnNuevoEvento = view.findViewById(R.id.btnNuevoEvento)
 
+        // RICARDO->>>>>>datos de ejemplo (después se conectará con la BD)
+        val eventosEjemplo = listOf(
+            Evento(1, "Reunión de equipo", "Revisión semanal del proyecto", "04/01/2026 10:00", "04/01/2026 11:00", "Sala A", "CONFIRMADO", 1),
+            Evento(2, "Entrega proyecto", "Fecha límite del trabajo", "10/01/2026 23:59", "10/01/2026 23:59", "Online", "PENDIENTE", 1),
+            Evento(3, "Cumpleaños María", "Fiesta sorpresa", "15/01/2026 20:00", "15/01/2026 23:00", "Casa de Ana", "CONFIRMADO", 2)
+        )
+
+        // conftimacion de RecyclerView, aquis e abre con mas detealle
         rvEventos.layoutManager = LinearLayoutManager(context)
-        rvEventos.adapter = EventoAdapter(emptyList()) {}
+        rvEventos.adapter = EventoAdapter(eventosEjemplo) { evento ->
+
+        }
 
         // boton de nuevo evcento
         btnNuevoEvento.setOnClickListener {
             startActivity(Intent(context, CrearEventoActivity::class.java))
         }
     }
-    override fun onResume() {
-        super.onResume()
-        cargarEventos()
-    }
-
-    private fun cargarEventos() {
-        val db = AppDatabase.getDatabase(requireContext())
-        val gestor = GestorSesion(requireContext())
-        val idUsuario = gestor.obtenerIdUsuario() ?: -1
-
-        lifecycleScope.launch(Dispatchers.IO) {
-            val eventosDB = if (idUsuario != -1) {
-                db.appDao().obtenerEventosDeUsuario(idUsuario)
-            } else emptyList()
-
-            val eventosUI = eventosDB.map { e ->
-                Evento(
-                    id = e.id_evento,
-                    titulo = e.titulo,
-                    descripcion = e.descripcion ?: "",
-                    fechaInicio = e.fecha_inicio,
-                    fechaFin = e.fecha_fin,
-                    ubicacion = e.ubicacion ?: "",
-                    estado = e.estado,
-                    idCalendario = e.id_calendario
-                )
-            }
-
-            withContext(Dispatchers.Main) {
-                rvEventos.adapter = EventoAdapter(eventosUI) { }
-            }
-        }
-    }
-
 }

@@ -20,6 +20,12 @@
         android:layout_weight="1"/>
 
     <Button
+        android:id="@+id/btnNotificacion"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="notificaciones " />
+
+    <Button
         android:id="@+id/btnNuevoEvento"
         android:layout_width="match_parent"
         android:layout_height="50dp"
