@@ -1,6 +1,7 @@
 package com.example.bocetocalendario1.datos.dao
 
 import androidx.room.*
+import com.example.bocetocalendario1.datos.modelo.Calendario
 import com.example.bocetocalendario1.datos.modelo.Evento
 import com.example.bocetocalendario1.datos.modelo.Grupo
 import com.example.bocetocalendario1.datos.modelo.Usuario
@@ -19,6 +20,9 @@ interface AppDao {
     @Insert
     suspend fun insertarGrupo(unGrupo: Grupo)
 
+    @Insert
+    suspend fun insertarCalendario(calendario: Calendario)
+
 
     //Obtener
 
@@ -36,7 +40,11 @@ interface AppDao {
 
     @Query("SELECT * FROM usuarios WHERE email = :emailRecibido LIMIT 1")
     suspend fun verificarUsuario(emailRecibido: String): Usuario?
-    fun eliminarGrupoPorId(grupoId: Int)
+    @Query("DELETE FROM grupos WHERE id_grupo = :grupoId")
+    suspend fun eliminarGrupoPorId(grupoId: Int)
+
+    @Query("UPDATE usuarios SET notificaciones_activas = :activas WHERE id_usuario = :idUsuario")
+    suspend fun actualizarNotificaciones(idUsuario: Int, activas: Boolean)
 
 
 }

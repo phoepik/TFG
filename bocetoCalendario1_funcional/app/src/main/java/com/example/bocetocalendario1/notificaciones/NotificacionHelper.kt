@@ -2,9 +2,11 @@ package com.example.bocetocalendario1.notificaciones
 
 import android.app.PendingIntent
 import android.content.Context
+import android.content.Intent
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.example.bocetocalendario1.MainActivity
+import com.example.bocetocalendario1.R
 import com.example.bocetocalendario1.notificaciones.modelos.NotificacionesPayload
 
 object NotificationHelper {
@@ -22,7 +24,7 @@ object NotificationHelper {
         )
 
         val notification = NotificationCompat.Builder(context, payload.type.channelId)
-            .setSmallIcon(R.drawable.ic_notification)
+            .setSmallIcon(R.mipmap.ic_launcher)
             .setContentTitle(payload.title)
             .setContentText(payload.body)
             .setContentIntent(contentIntent)
