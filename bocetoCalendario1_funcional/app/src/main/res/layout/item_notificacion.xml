@@ -1,68 +1,100 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<!--
+    Fila de notificación en la lista de Notificaciones.
+
+    Diseño:
+    ┌──────────────────────────────────────────────────┐
+    │  [●]  Título de la notificación                  │
+    │       Mensaje descriptivo de la notif.           │
+    │       [RECORDATORIO]  ·  15 min antes            │
+    └──────────────────────────────────────────────────┘
+
+    El círculo de color a la izquierda cambia de color según el tipo
+    de notificación (recordatorio, invitación...).
+-->
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="8dp"
-    app:cardCornerRadius="8dp"
-    app:cardElevation="2dp">
+    android:layout_marginBottom="10dp"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="0dp"
+    app:strokeColor="@color/divider"
+    app:strokeWidth="1dp"
+    app:cardBackgroundColor="@color/white">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:padding="12dp">
+        android:padding="16dp"
+        android:gravity="top">
 
+        <!-- ─── ICONO DE TIPO DE NOTIFICACIÓN ─── -->
+        <!-- El color del fondo circular indica el tipo; se cambia en el adaptador -->
         <TextView
             android:id="@+id/tvIcono"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:text="🔔"
-            android:textSize="20sp"
+            android:textSize="18sp"
             android:gravity="center"
-            android:background="@color/light_gray"/>
+            android:background="@drawable/bg_avatar_placeholder"
+            android:backgroundTint="@color/primary_container"
+            android:layout_marginTop="2dp"/>
 
+        <!-- ─── CONTENIDO DE LA NOTIFICACIÓN ─── -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_marginStart="12dp">
+            android:layout_marginStart="14dp">
 
+            <!-- Título de la notificación -->
             <TextView
                 android:id="@+id/tvTituloNotif"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Título notificación"
-                android:textSize="16sp"
+                android:textSize="15sp"
                 android:textStyle="bold"
                 android:textColor="@color/black"/>
 
+            <!-- Mensaje / descripción -->
             <TextView
                 android:id="@+id/tvMensaje"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Mensaje de la notificación"
-                android:textSize="14sp"
+                android:textSize="13sp"
                 android:textColor="@color/gray"
-                android:maxLines="2"/>
+                android:maxLines="2"
+                android:layout_marginTop="2dp"
+                android:layout_marginBottom="8dp"/>
 
+            <!-- Fila inferior: tipo y tiempo de anticipación -->
             <LinearLayout
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_marginTop="4dp">
+                android:gravity="center_vertical">
 
+                <!-- Badge con el tipo de notificación -->
                 <TextView
                     android:id="@+id/tvTipo"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="RECORDATORIO"
                     android:textSize="10sp"
+                    android:textStyle="bold"
                     android:textColor="@color/primary"
-                    android:background="@color/light_gray"
+                    android:background="@drawable/bg_status_chip"
+                    android:backgroundTint="@color/primary_container"
                     android:paddingHorizontal="8dp"
-                    android:paddingVertical="2dp"/>
+                    android:paddingVertical="3dp"/>
 
+                <!-- Tiempo de anticipación -->
                 <TextView
                     android:id="@+id/tvTiempoAnticipacion"
                     android:layout_width="wrap_content"
@@ -78,4 +110,4 @@
 
     </LinearLayout>
 
-</androidx.cardview.widget.CardView>
+</com.google.android.material.card.MaterialCardView>

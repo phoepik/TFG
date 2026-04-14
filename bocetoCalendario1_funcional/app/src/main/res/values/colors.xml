@@ -1,12 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="primary">#6200EE</color>
-    <color name="primary_dark">#3700B3</color>
+
+    <!-- ===================================================
+         PALETA PRINCIPAL — Azul índigo profesional
+         Inspirada en apps de productividad modernas
+         =================================================== -->
+    <color name="primary">#3B5BDB</color>
+    <color name="primary_dark">#2F4AC7</color>
+    <color name="primary_light">#748FFC</color>
+    <color name="primary_container">#EDF2FF</color>
+
+    <!-- ===================================================
+         SUPERFICIE Y FONDO
+         =================================================== -->
     <color name="white">#FFFFFF</color>
-    <color name="black">#000000</color>
-    <color name="gray">#757575</color>
-    <color name="light_gray">#E0E0E0</color>
-    <color name="green">#4CAF50</color>
-    <color name="orange">#FF9800</color>
-    <color name="red">#F44336</color>
+    <color name="black">#1A1D36</color>
+    <color name="surface">#F7F9FF</color>
+
+    <!-- ===================================================
+         TEXTO Y TONOS NEUTROS
+         =================================================== -->
+    <color name="gray">#5C6080</color>
+    <color name="light_gray">#EEF0F6</color>
+    <color name="divider">#E4E7F5</color>
+
+    <!-- ===================================================
+         ESTADOS SEMÁNTICOS
+         Verde = confirmado | Naranja = pendiente | Rojo = cancelado
+         =================================================== -->
+    <color name="green">#087F5B</color>
+    <color name="green_container">#EBFBEE</color>
+    <color name="orange">#E67700</color>
+    <color name="orange_container">#FFF4E6</color>
+    <color name="red">#C92A2A</color>
+    <color name="red_container">#FFF5F5</color>
+
 </resources>

@@ -1,51 +1,81 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+    Fila de miembro en la lista de miembros de un grupo.
+
+    Diseño:
+    ┌──────────────────────────────────────────────┐
+    │  [Avatar]  Nombre del miembro   [ADMIN]      │
+    │            email@ejemplo.com                 │
+    └──────────────────────────────────────────────┘
+
+    El badge de rol (Admin / Miembro) solo se muestra cuando aplica.
+    El adaptador controla su visibilidad y texto.
+-->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:padding="12dp"
+    android:padding="14dp"
     android:gravity="center_vertical">
 
+    <!-- ─── AVATAR DEL MIEMBRO ─── -->
+    <!-- Muestra la inicial del nombre; el adaptador actualiza el texto -->
     <TextView
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:text="👤"
-        android:textSize="20sp"
+        android:id="@+id/tvInicialMiembro"
+        android:layout_width="44dp"
+        android:layout_height="44dp"
+        android:text="U"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:textColor="@color/primary"
         android:gravity="center"
-        android:background="@color/light_gray"/>
+        android:background="@drawable/bg_avatar_placeholder"
+        android:backgroundTint="@color/primary_container"/>
 
+    <!-- ─── DATOS DEL MIEMBRO ─── -->
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:orientation="vertical"
-        android:layout_marginStart="12dp">
+        android:layout_marginStart="14dp">
 
+        <!-- Nombre completo -->
         <TextView
             android:id="@+id/tvNombreMiembro"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Nombre del miembro"
-            android:textSize="16sp"
+            android:textSize="15sp"
+            android:textStyle="bold"
             android:textColor="@color/black"/>
 
+        <!-- Email -->
         <TextView
             android:id="@+id/tvEmailMiembro"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="email@ejemplo.com"
             android:textSize="12sp"
-            android:textColor="@color/gray"/>
+            android:textColor="@color/gray"
+            android:layout_marginTop="2dp"/>
 
     </LinearLayout>
 
+    <!-- ─── BADGE DE ROL ─── -->
+    <!-- Solo visible si el miembro es administrador del grupo -->
     <TextView
         android:id="@+id/tvRol"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Admin"
-        android:textSize="12sp"
+        android:textSize="10sp"
+        android:textStyle="bold"
         android:textColor="@color/primary"
+        android:background="@drawable/bg_status_chip"
+        android:backgroundTint="@color/primary_container"
+        android:paddingHorizontal="8dp"
+        android:paddingVertical="3dp"
         android:visibility="gone"/>
 
 </LinearLayout>

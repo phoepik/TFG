@@ -1,31 +1,83 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+    Fragment de grupos: lista los grupos a los que pertenece el usuario.
+
+    Estructura visual:
+    ┌─────────────────────────────────────┐
+    │  Mis Grupos                         │  ← cabecera
+    ├─────────────────────────────────────┤
+    │                                     │
+    │   [Lista de tarjetas de grupos]     │  ← RecyclerView
+    │                                     │
+    ├─────────────────────────────────────┤
+    │   [+ Crear nuevo grupo]             │  ← acción principal
+    └─────────────────────────────────────┘
+-->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:background="@color/surface">
 
-    <TextView
-        android:layout_width="wrap_content"
+    <!-- ─── CABECERA ─── -->
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/grupos"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:layout_marginBottom="16dp"/>
+        android:orientation="vertical"
+        android:paddingHorizontal="20dp"
+        android:paddingTop="24dp"
+        android:paddingBottom="16dp">
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/grupos"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:textColor="@color/black"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Grupos en los que participas"
+            android:textSize="13sp"
+            android:textColor="@color/gray"
+            android:layout_marginTop="2dp"/>
+
+    </LinearLayout>
+
+    <!-- ─── LISTA DE GRUPOS ─── -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvGrupos"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"/>
+        android:layout_weight="1"
+        android:paddingHorizontal="16dp"
+        android:paddingBottom="8dp"
+        android:clipToPadding="false"/>
 
-    <Button
-        android:id="@+id/btnNuevoGrupo"
+    <!-- ─── BOTÓN CREAR GRUPO ─── -->
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:text="@string/nuevo_grupo"
-        android:backgroundTint="@color/primary"
-        android:textColor="@color/white"
-        android:layout_marginTop="16dp"/>
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="16dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="16dp">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnNuevoGrupo"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:text="@string/nuevo_grupo"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            app:backgroundTint="@color/primary"
+            app:cornerRadius="14dp"
+            app:icon="@android:drawable/ic_input_add"
+            app:iconTint="@color/white"
+            app:iconGravity="textStart"/>
+
+    </LinearLayout>
 
 </LinearLayout>

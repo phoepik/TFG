@@ -1,129 +1,263 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<!--
+    Fragment de perfil: muestra los datos del usuario y opciones de cuenta.
+
+    Estructura visual:
+    ┌─────────────────────────────────────┐
+    │   [Avatar circular + nombre/email]  │  ← bloque de identidad
+    ├─────────────────────────────────────┤
+    │   Información de cuenta             │
+    │   ┌──────────────────────────────┐  │
+    │   │ ID de usuario                │  │  ← tarjeta info
+    │   │ Nombre                       │  │
+    │   │ Email                        │  │
+    │   └──────────────────────────────┘  │
+    ├─────────────────────────────────────┤
+    │   Preferencias                      │
+    │   [Switch] Notificaciones           │
+    ├─────────────────────────────────────┤
+    │   [Cerrar sesión]                   │  ← botón destructivo
+    └─────────────────────────────────────┘
+-->
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="16dp">
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/perfil"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:layout_marginBottom="24dp"/>
+    android:background="@color/surface"
+    android:fillViewport="true">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:gravity="center"
-        android:layout_marginBottom="24dp">
+        android:orientation="vertical">
 
-        <TextView
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:text="👤"
-            android:textSize="40sp"
-            android:gravity="center"
-            android:background="@color/light_gray"/>
-
-    </LinearLayout>
-
-    <!-- ID del usuario -->
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="ID de usuario"
-        android:textSize="12sp"
-        android:textColor="@color/gray"/>
-
-    <TextView
-        android:id="@+id/tvIdUsuario"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="CAMBIAR ID"
-        android:textSize="18sp"
-        android:textColor="@color/black"
-        android:padding="12dp"
-        android:background="@color/light_gray"
-        android:layout_marginBottom="16dp"/>
-
-    <!-- Nombre -->
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/nombre"
-        android:textSize="12sp"
-        android:textColor="@color/gray"/>
-
-    <TextView
-        android:id="@+id/tvNombre"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Nombre del usuario"
-        android:textSize="18sp"
-        android:textColor="@color/black"
-        android:padding="12dp"
-        android:background="@color/light_gray"
-        android:layout_marginBottom="16dp"/>
-
-    <!-- Email -->
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/email"
-        android:textSize="12sp"
-        android:textColor="@color/gray"/>
-
-    <TextView
-        android:id="@+id/tvEmail"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="email@ejemplo.com"
-        android:textSize="18sp"
-        android:textColor="@color/black"
-        android:padding="12dp"
-        android:background="@color/light_gray"
-        android:layout_marginBottom="16dp"/>
-
-    <!-- Notificaciones -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:padding="12dp"
-        android:background="@color/light_gray"
-        android:layout_marginBottom="24dp">
-
-        <TextView
-            android:layout_width="0dp"
+        <!-- ─── BLOQUE DE IDENTIDAD ─── -->
+        <!-- Fondo degradado azul con datos del usuario -->
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/notificaciones_activadas"
-            android:textSize="16sp"
-            android:textColor="@color/black"/>
+            android:orientation="vertical"
+            android:gravity="center"
+            android:paddingTop="40dp"
+            android:paddingBottom="32dp"
+            android:background="@drawable/bg_section_header">
 
-        <Switch
-            android:id="@+id/switchNotificaciones"
+            <!-- Avatar circular — placeholder con iniciales -->
+            <TextView
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:text="@string/perfil"
+                android:textSize="12sp"
+                android:gravity="center"
+                android:background="@drawable/bg_avatar_placeholder"
+                android:backgroundTint="#33FFFFFF"
+                android:textColor="@color/white"
+                android:layout_marginBottom="16dp"/>
+
+            <!-- Nombre del usuario (se rellena desde el fragment) -->
+            <TextView
+                android:id="@+id/tvNombre"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Nombre del usuario"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="@color/white"/>
+
+            <!-- Email del usuario -->
+            <TextView
+                android:id="@+id/tvEmail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="email@ejemplo.com"
+                android:textSize="14sp"
+                android:textColor="#CCFFFFFF"
+                android:layout_marginTop="4dp"/>
+
+        </LinearLayout>
+
+        <!-- ─── SECCIÓN: INFORMACIÓN DE CUENTA ─── -->
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:checked="true"/>
+            android:text="Información de cuenta"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:textColor="@color/gray"
+            android:letterSpacing="0.08"
+            android:paddingHorizontal="20dp"
+            android:paddingTop="24dp"
+            android:paddingBottom="8dp"/>
+
+        <!-- Tarjeta con los datos de perfil -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="0dp"
+            app:strokeColor="@color/divider"
+            app:strokeWidth="1dp"
+            app:cardBackgroundColor="@color/white">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="4dp">
+
+                <!-- Fila: ID de usuario -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingHorizontal="16dp"
+                    android:paddingVertical="14dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="ID de usuario"
+                        android:textSize="11sp"
+                        android:textColor="@color/gray"
+                        android:textAllCaps="true"
+                        android:letterSpacing="0.06"/>
+
+                    <TextView
+                        android:id="@+id/tvIdUsuario"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="—"
+                        android:textSize="15sp"
+                        android:textColor="@color/black"
+                        android:layout_marginTop="4dp"/>
+
+                </LinearLayout>
+
+                <!-- Línea separadora -->
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginHorizontal="16dp"
+                    android:background="@color/divider"/>
+
+                <!-- Fila: Nombre -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingHorizontal="16dp"
+                    android:paddingVertical="14dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/nombre"
+                        android:textSize="11sp"
+                        android:textColor="@color/gray"
+                        android:textAllCaps="true"
+                        android:letterSpacing="0.06"/>
+
+                    <!-- tvNombre ya se usa arriba para el avatar header;
+                         aquí mostramos el mismo dato en la tarjeta -->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Nombre del usuario"
+                        android:textSize="15sp"
+                        android:textColor="@color/black"
+                        android:layout_marginTop="4dp"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- ─── SECCIÓN: PREFERENCIAS ─── -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Preferencias"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:textColor="@color/gray"
+            android:letterSpacing="0.08"
+            android:paddingHorizontal="20dp"
+            android:paddingTop="24dp"
+            android:paddingBottom="8dp"/>
+
+        <!-- Tarjeta de preferencias -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="0dp"
+            app:strokeColor="@color/divider"
+            app:strokeWidth="1dp"
+            app:cardBackgroundColor="@color/white">
+
+            <!-- Fila: activar / desactivar notificaciones -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingHorizontal="16dp"
+                android:paddingVertical="14dp">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/notificaciones_activadas"
+                        android:textSize="15sp"
+                        android:textColor="@color/black"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Recordatorios de eventos"
+                        android:textSize="12sp"
+                        android:textColor="@color/gray"
+                        android:layout_marginTop="2dp"/>
+
+                </LinearLayout>
+
+                <com.google.android.material.switchmaterial.SwitchMaterial
+                    android:id="@+id/switchNotificaciones"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="true"/>
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Espaciado antes del botón de cerrar sesión -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="32dp"/>
+
+        <!-- ─── BOTÓN CERRAR SESIÓN ─── -->
+        <!-- Estilo destructivo: contorno rojo, texto rojo, sin fondo sólido -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnCerrarSesion"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginBottom="32dp"
+            android:text="@string/cerrar_sesion"
+            android:textSize="15sp"
+            android:textColor="@color/red"
+            style="@style/Widget.App.Button.Destructive"/>
 
     </LinearLayout>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"/>
-
-    <Button
-        android:id="@+id/btnCerrarSesion"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:text="@string/cerrar_sesion"
-        android:backgroundTint="@color/red"
-        android:textColor="@color/white"/>
-
-</LinearLayout>
+</ScrollView>

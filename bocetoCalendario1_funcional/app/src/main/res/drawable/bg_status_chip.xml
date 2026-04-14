@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Pastilla (chip) para etiquetas de estado.
+     El color de fondo se cambia en tiempo de ejecución con backgroundTint
+     según el estado del evento (confirmado, pendiente, cancelado...) -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="@color/green_container"/>
+    <corners android:radius="100dp"/>
+</shape>

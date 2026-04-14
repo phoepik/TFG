@@ -1,87 +1,209 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+    Pantalla de registro de nuevo usuario.
+
+    Estructura visual:
+    ┌─────────────────────────────────────┐
+    │   [Cabecera azul con título]        │
+    ├─────────────────────────────────────┤
+    │   [Formulario con scroll]           │
+    │     Nombre + Email + Contraseña     │
+    │     Switch notificaciones           │
+    │     Botón crear cuenta              │
+    └─────────────────────────────────────┘
+-->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="24dp">
+    android:background="@color/primary">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/registrarse"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:textColor="@color/primary"
-        android:layout_marginBottom="32dp"/>
-
-    <EditText
-        android:id="@+id/etNombre"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:hint="@string/nombre"
-        android:inputType="textPersonName"
-        android:background="@drawable/edittext_border"
-        android:padding="12dp"
-        android:layout_marginBottom="16dp"/>
-
-    <EditText
-        android:id="@+id/etEmail"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:hint="@string/email"
-        android:inputType="textEmailAddress"
-        android:background="@drawable/edittext_border"
-        android:padding="12dp"
-        android:layout_marginBottom="16dp"/>
-
-    <EditText
-        android:id="@+id/etContrasena"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:hint="@string/contrasena"
-        android:inputType="textPassword"
-        android:background="@drawable/edittext_border"
-        android:padding="12dp"
-        android:layout_marginBottom="16dp"/>
-
+    <!-- ─── CABECERA ─── -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:layout_marginBottom="24dp">
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:paddingBottom="12dp"
+        android:paddingTop="40dp">
 
         <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/notificaciones_activadas"
-            android:textSize="16sp"/>
-
-        <Switch
-            android:id="@+id/switchNotificaciones"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:checked="true"/>
+            android:text="Crear cuenta"
+            android:textSize="26sp"
+            android:textStyle="bold"
+            android:textColor="@color/white"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Completa tus datos para empezar"
+            android:textSize="13sp"
+            android:textColor="#CCFFFFFF"
+            android:layout_marginTop="6dp"/>
 
     </LinearLayout>
 
-    <Button
-        android:id="@+id/btnRegistrarse"
+    <!-- ─── FORMULARIO DE REGISTRO ─── -->
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:text="@string/registrarse"
-        android:backgroundTint="@color/primary"
-        android:textColor="@color/white"
-        android:layout_marginBottom="16dp"/>
+        android:layout_height="0dp"
+        android:layout_weight="4"
+        app:cardCornerRadius="28dp"
+        app:cardElevation="0dp"
+        app:cardBackgroundColor="@color/white">
 
-    <TextView
-        android:id="@+id/tvIrLogin"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/ya_tienes_cuenta"
-        android:textColor="@color/primary"
-        android:layout_gravity="center"
-        android:padding="8dp"/>
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fillViewport="true">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="28dp"
+                android:paddingTop="32dp">
+
+                <!-- ─── Campo: nombre ─── -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/nombre"
+                    android:layout_marginBottom="16dp"
+                    app:boxCornerRadiusTopStart="12dp"
+                    app:boxCornerRadiusTopEnd="12dp"
+                    app:boxCornerRadiusBottomStart="12dp"
+                    app:boxCornerRadiusBottomEnd="12dp">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etNombre"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="textPersonName"
+                        android:imeOptions="actionNext"
+                        android:singleLine="true"
+                        android:capitalize="words"/>
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- ─── Campo: correo electrónico ─── -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/email"
+                    android:layout_marginBottom="16dp"
+                    app:boxCornerRadiusTopStart="12dp"
+                    app:boxCornerRadiusTopEnd="12dp"
+                    app:boxCornerRadiusBottomStart="12dp"
+                    app:boxCornerRadiusBottomEnd="12dp">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etEmail"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="textEmailAddress"
+                        android:imeOptions="actionNext"
+                        android:singleLine="true"/>
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- ─── Campo: contraseña ─── -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/contrasena"
+                    android:layout_marginBottom="24dp"
+                    app:boxCornerRadiusTopStart="12dp"
+                    app:boxCornerRadiusTopEnd="12dp"
+                    app:boxCornerRadiusBottomStart="12dp"
+                    app:boxCornerRadiusBottomEnd="12dp"
+                    app:endIconMode="password_toggle">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etContrasena"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="textPassword"
+                        android:imeOptions="actionDone"
+                        android:singleLine="true"/>
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- ─── Fila: activar notificaciones ─── -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:padding="16dp"
+                    android:background="@color/light_gray"
+                    android:layout_marginBottom="28dp">
+
+                    <!-- Texto de la opción -->
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/notificaciones_activadas"
+                            android:textSize="15sp"
+                            android:textColor="@color/black"
+                            android:textStyle="bold"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Recibe recordatorios de tus eventos"
+                            android:textSize="12sp"
+                            android:textColor="@color/gray"
+                            android:layout_marginTop="2dp"/>
+
+                    </LinearLayout>
+
+                    <!-- Switch de Material Components -->
+                    <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:id="@+id/switchNotificaciones"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checked="true"/>
+
+                </LinearLayout>
+
+                <!-- ─── Botón principal: crear cuenta ─── -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnRegistrarse"
+                    android:layout_width="match_parent"
+                    android:layout_height="54dp"
+                    android:text="@string/registrarse"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    app:backgroundTint="@color/primary"
+                    app:cornerRadius="14dp"
+                    android:layout_marginBottom="20dp"/>
+
+                <!-- ─── Enlace a login ─── -->
+                <TextView
+                    android:id="@+id/tvIrLogin"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/ya_tienes_cuenta"
+                    android:textColor="@color/primary"
+                    android:textSize="14sp"
+                    android:layout_gravity="center"
+                    android:padding="8dp"/>
+
+            </LinearLayout>
+
+        </ScrollView>
+
+    </androidx.cardview.widget.CardView>
 
 </LinearLayout>

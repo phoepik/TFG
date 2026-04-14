@@ -1,8 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
+    <!-- Tema base de la aplicación.
+         Extiende MaterialComponents para tener acceso a todos los
+         componentes de Material Design (botones, campos, tarjetas...) -->
     <style name="Theme.BocetoCalendario1" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="colorPrimary">@color/primary</item>
         <item name="colorPrimaryVariant">@color/primary_dark</item>
         <item name="colorOnPrimary">@color/white</item>
+        <item name="android:colorBackground">@color/surface</item>
+        <item name="android:windowBackground">@color/surface</item>
+
+        <!-- Estilo global de todos los TextInputLayout de la app -->
+        <item name="textInputStyle">@style/Widget.App.TextInput</item>
+
+        <!-- Estilo global de todos los MaterialButton de la app -->
+        <item name="materialButtonStyle">@style/Widget.App.Button.Primary</item>
     </style>
+
+    <!-- Campo de texto con borde redondeado (estilo OutlinedBox de Material) -->
+    <style name="Widget.App.TextInput" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="boxCornerRadiusTopStart">12dp</item>
+        <item name="boxCornerRadiusTopEnd">12dp</item>
+        <item name="boxCornerRadiusBottomStart">12dp</item>
+        <item name="boxCornerRadiusBottomEnd">12dp</item>
+        <item name="boxStrokeColor">@color/divider</item>
+        <item name="hintTextColor">@color/gray</item>
+    </style>
+
+    <!-- Botón principal: fondo sólido, esquinas redondeadas -->
+    <style name="Widget.App.Button.Primary" parent="Widget.MaterialComponents.Button">
+        <item name="cornerRadius">12dp</item>
+        <item name="android:letterSpacing">0.01</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:paddingTop">14dp</item>
+        <item name="android:paddingBottom">14dp</item>
+        <item name="backgroundTint">@color/primary</item>
+    </style>
+
+    <!-- Botón secundario: contorno sin relleno -->
+    <style name="Widget.App.Button.Outlined" parent="Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="cornerRadius">12dp</item>
+        <item name="android:letterSpacing">0.01</item>
+        <item name="android:textSize">15sp</item>
+        <item name="strokeColor">@color/divider</item>
+        <item name="android:textColor">@color/gray</item>
+    </style>
+
+    <!-- Botón destructivo: rojo para acciones peligrosas (borrar, cerrar sesión...) -->
+    <style name="Widget.App.Button.Destructive" parent="Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="cornerRadius">12dp</item>
+        <item name="android:textSize">15sp</item>
+        <item name="strokeColor">@color/red_container</item>
+        <item name="android:textColor">@color/red</item>
+    </style>
+
+    <!-- Tarjeta estándar con borde sutil y esquinas redondeadas -->
+    <style name="Widget.App.Card" parent="Widget.MaterialComponents.CardView">
+        <item name="cardCornerRadius">16dp</item>
+        <item name="cardElevation">0dp</item>
+        <item name="strokeColor">@color/divider</item>
+        <item name="strokeWidth">1dp</item>
+        <item name="cardBackgroundColor">@color/white</item>
+    </style>
+
 </resources>

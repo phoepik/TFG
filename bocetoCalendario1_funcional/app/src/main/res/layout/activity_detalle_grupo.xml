@@ -1,58 +1,142 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+    Pantalla de detalle de un grupo.
+
+    Estructura visual:
+    ┌─────────────────────────────────────┐
+    │   [Cabecera: nombre + descripción]  │  ← fondo degradado azul
+    ├─────────────────────────────────────┤
+    │   Miembros (N)                      │
+    │   ─────────────────────────────     │
+    │   [Lista de miembros]               │  ← RecyclerView
+    ├─────────────────────────────────────┤
+    │   [Añadir miembro]                  │  ← acción secundaria
+    │   [Borrar grupo]                    │  ← acción destructiva
+    └─────────────────────────────────────┘
+-->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:background="@color/surface">
 
-    <TextView
-        android:id="@+id/tvNombreGrupo"
-        android:layout_width="wrap_content"
+    <!-- ─── CABECERA: identidad del grupo ─── -->
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Nombre del grupo"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:layout_marginBottom="8dp"/>
+        android:orientation="vertical"
+        android:paddingHorizontal="20dp"
+        android:paddingTop="32dp"
+        android:paddingBottom="28dp"
+        android:background="@drawable/bg_section_header">
 
-    <TextView
-        android:id="@+id/tvDescripcion"
-        android:layout_width="wrap_content"
+        <!-- Avatar circular del grupo con inicial del nombre -->
+        <TextView
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:text="G"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:textColor="@color/primary"
+            android:gravity="center"
+            android:background="@drawable/bg_avatar_placeholder"
+            android:backgroundTint="@color/white"
+            android:layout_marginBottom="16dp"/>
+
+        <!-- Nombre del grupo (se rellena desde la activity) -->
+        <TextView
+            android:id="@+id/tvNombreGrupo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Nombre del grupo"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:textColor="@color/white"/>
+
+        <!-- Descripción del grupo -->
+        <TextView
+            android:id="@+id/tvDescripcion"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Descripción del grupo"
+            android:textSize="14sp"
+            android:textColor="#CCFFFFFF"
+            android:layout_marginTop="4dp"
+            android:maxLines="2"/>
+
+    </LinearLayout>
+
+    <!-- ─── SECCIÓN: MIEMBROS ─── -->
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Descripción del grupo"
-        android:textSize="14sp"
-        android:textColor="@color/gray"
-        android:layout_marginBottom="24dp"/>
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingHorizontal="20dp"
+        android:paddingTop="20dp"
+        android:paddingBottom="8dp">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/miembros"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        android:layout_marginBottom="8dp"/>
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/miembros"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="@color/black"/>
 
+    </LinearLayout>
+
+    <!-- Línea separadora -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginHorizontal="20dp"
+        android:background="@color/divider"/>
+
+    <!-- ─── LISTA DE MIEMBROS ─── -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvMiembros"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"/>
+        android:layout_weight="1"
+        android:paddingHorizontal="16dp"
+        android:paddingTop="8dp"
+        android:clipToPadding="false"/>
 
-    <Button
-        android:id="@+id/btnAnadirMiembro"
+    <!-- ─── BOTONES DE ACCIÓN ─── -->
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:text="Añadir miembro"
-        android:backgroundTint="@color/primary"
-        android:textColor="@color/white"
-        android:layout_marginTop="16dp"/>
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingHorizontal="16dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="16dp">
 
-    <Button
-        android:id="@+id/btnBorrarGrupo"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:text="Borrar Grupo"
-        android:backgroundTint="@color/red"
-        android:textColor="@color/white"
-        android:layout_marginTop="16dp"/>
+        <!-- Añadir nuevo miembro al grupo -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnAnadirMiembro"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:text="Añadir miembro"
+            android:textStyle="bold"
+            app:backgroundTint="@color/primary"
+            app:cornerRadius="14dp"
+            android:layout_marginBottom="10dp"
+            app:icon="@android:drawable/ic_input_add"
+            app:iconTint="@color/white"
+            app:iconGravity="textStart"/>
+
+        <!-- Borrar el grupo — acción destructiva -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnBorrarGrupo"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:text="Eliminar grupo"
+            android:textColor="@color/red"
+            style="@style/Widget.App.Button.Destructive"/>
+
+    </LinearLayout>
 
 </LinearLayout>

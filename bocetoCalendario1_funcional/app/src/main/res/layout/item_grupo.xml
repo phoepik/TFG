@@ -1,69 +1,98 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<!--
+    Tarjeta de un grupo en la lista de Grupos.
+
+    Diseño:
+    ┌──────────────────────────────────────────┐
+    │  [Avatar]  Nombre del grupo          ›   │
+    │            Descripción · X miembros      │
+    └──────────────────────────────────────────┘
+
+    El avatar muestra la inicial del nombre del grupo.
+    Su color de fondo se puede personalizar desde el adaptador.
+-->
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="8dp"
-    app:cardCornerRadius="8dp"
-    app:cardElevation="2dp">
+    android:layout_marginBottom="10dp"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="0dp"
+    app:strokeColor="@color/divider"
+    app:strokeWidth="1dp"
+    app:cardBackgroundColor="@color/white">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:padding="12dp"
+        android:padding="16dp"
         android:gravity="center_vertical">
 
+        <!-- ─── AVATAR DEL GRUPO ─── -->
+        <!-- Muestra la inicial del nombre del grupo; el adaptador cambia el texto -->
         <TextView
+            android:id="@+id/tvInicialGrupo"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:text="👥"
-            android:textSize="24sp"
+            android:text="G"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="@color/primary"
             android:gravity="center"
-            android:background="@color/light_gray"/>
+            android:background="@drawable/bg_avatar_placeholder"
+            android:backgroundTint="@color/primary_container"/>
 
+        <!-- ─── INFORMACIÓN DEL GRUPO ─── -->
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:orientation="vertical"
-            android:layout_marginStart="12dp">
+            android:layout_marginStart="14dp">
 
+            <!-- Nombre del grupo -->
             <TextView
                 android:id="@+id/tvNombreGrupo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Nombre del grupo"
-                android:textSize="16sp"
+                android:textSize="15sp"
                 android:textStyle="bold"
                 android:textColor="@color/black"/>
 
+            <!-- Descripción breve -->
             <TextView
                 android:id="@+id/tvDescripcionGrupo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Descripción del grupo"
-                android:textSize="14sp"
+                android:textSize="13sp"
                 android:textColor="@color/gray"
-                android:maxLines="1"/>
+                android:maxLines="1"
+                android:layout_marginTop="2dp"/>
 
+            <!-- Número de miembros -->
             <TextView
                 android:id="@+id/tvMiembros"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="12sp"
-                android:textColor="@color/gray"
+                android:textColor="@color/primary"
                 android:layout_marginTop="4dp"/>
 
         </LinearLayout>
 
+        <!-- ─── FLECHA DE NAVEGACIÓN ─── -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="›"
-            android:textSize="24sp"
-            android:textColor="@color/gray"/>
+            android:textSize="22sp"
+            android:textColor="@color/gray"
+            android:paddingStart="8dp"/>
 
     </LinearLayout>
 
-</androidx.cardview.widget.CardView>
+</com.google.android.material.card.MaterialCardView>

@@ -1,37 +1,108 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+    Fragment de inicio: muestra la lista de eventos del usuario.
+
+    Estructura visual:
+    ┌─────────────────────────────────────┐
+    │  Mis Eventos              [fecha]   │  ← cabecera
+    ├─────────────────────────────────────┤
+    │                                     │
+    │   [Lista de tarjetas de eventos]    │  ← RecyclerView
+    │                                     │
+    ├─────────────────────────────────────┤
+    │  [Notificaciones] [+ Nuevo Evento]  │  ← acciones
+    └─────────────────────────────────────┘
+-->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:background="@color/surface">
 
-    <TextView
-        android:layout_width="wrap_content"
+    <!-- ─── CABECERA ─── -->
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/eventos"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:layout_marginBottom="16dp"/>
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingHorizontal="20dp"
+        android:paddingTop="24dp"
+        android:paddingBottom="16dp">
 
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <!-- Saludo contextual (puede modificarse desde el fragment) -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Mis Eventos"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:textColor="@color/black"/>
+
+            <!-- Fecha actual — se actualiza en código -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Hoy"
+                android:textSize="13sp"
+                android:textColor="@color/gray"
+                android:layout_marginTop="2dp"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <!-- ─── LISTA DE EVENTOS ─── -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvEventos"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"/>
+        android:layout_weight="1"
+        android:paddingHorizontal="16dp"
+        android:paddingBottom="8dp"
+        android:clipToPadding="false"/>
 
-    <Button
-        android:id="@+id/btnNotificacion"
+    <!-- ─── BARRA DE ACCIONES INFERIOR ─── -->
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="notificaciones " />
+        android:orientation="horizontal"
+        android:paddingHorizontal="16dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="16dp"
+        android:gravity="center_vertical">
 
-    <Button
-        android:id="@+id/btnNuevoEvento"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:text="@string/nuevo_evento"
-        android:backgroundTint="@color/primary"
-        android:textColor="@color/white"
-        android:layout_marginTop="16dp"/>
+        <!-- Botón secundario: acceso rápido a notificaciones -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnNotificacion"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:text="Notificaciones"
+            android:textSize="13sp"
+            style="@style/Widget.App.Button.Outlined"
+            android:layout_marginEnd="10dp"/>
+
+        <!-- Botón principal: crear nuevo evento -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnNuevoEvento"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="2"
+            android:text="@string/nuevo_evento"
+            android:textSize="14sp"
+            app:backgroundTint="@color/primary"
+            app:cornerRadius="12dp"
+            app:icon="@android:drawable/ic_input_add"
+            app:iconTint="@color/white"
+            app:iconGravity="textStart"/>
+
+    </LinearLayout>
 
 </LinearLayout>
