@@ -12,7 +12,6 @@ import com.example.bocetocalendario1.datos.modelo.Calendario
 import com.example.bocetocalendario1.datos.modelo.Evento
 import com.example.bocetocalendario1.datos.modelo.Notificacion
 
-
 @Database(
     entities = [
         Usuario::class,
@@ -22,9 +21,9 @@ import com.example.bocetocalendario1.datos.modelo.Notificacion
         Evento::class,
         Notificacion::class
     ],
-    version = 1
+    version = 2,
+    exportSchema = false
 )
-
 abstract class AppDatabase : RoomDatabase() {
     abstract fun appDao(): AppDao
 
@@ -38,7 +37,9 @@ abstract class AppDatabase : RoomDatabase() {
                     context.applicationContext,
                     AppDatabase::class.java,
                     "base_calendario"
-                ).build()
+                )
+                    .fallbackToDestructiveMigration() // En desarrollo; en producción usar Migration
+                    .build()
                 INSTANCE = instance
                 instance
             }

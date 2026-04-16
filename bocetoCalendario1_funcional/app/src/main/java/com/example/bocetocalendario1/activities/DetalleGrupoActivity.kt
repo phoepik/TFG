@@ -16,7 +16,6 @@ import com.example.bocetocalendario1.models.Usuario
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-// SIN CAMBIAR NADA POR AHORA
 class DetalleGrupoActivity : AppCompatActivity() {
 
     private lateinit var tvNombreGrupo: TextView
@@ -30,15 +29,12 @@ class DetalleGrupoActivity : AppCompatActivity() {
         val db = AppDatabase.getDatabase(this)
         setContentView(R.layout.activity_detalle_grupo)
 
-        // inicializar vistas
         tvNombreGrupo = findViewById(R.id.tvNombreGrupo)
         tvDescripcion = findViewById(R.id.tvDescripcion)
         rvMiembros = findViewById(R.id.rvMiembros)
         btnAnadirMiembro = findViewById(R.id.btnAnadirMiembro)
         btnBorrarGrupo = findViewById(R.id.btnBorrarGrupo)
 
-
-        // Obtener datos del intent
         val grupoId = intent.getIntExtra("GRUPO_ID", 0)
         val grupoNombre = intent.getStringExtra("GRUPO_NOMBRE") ?: "Grupo"
         val grupoDescripcion = intent.getStringExtra("GRUPO_DESCRIPCION") ?: ""
@@ -54,14 +50,13 @@ class DetalleGrupoActivity : AppCompatActivity() {
             Usuario(4, "Jorge", "jorge@email.com", "", true)
         )
 
-        // Configuracion de recicled view
         rvMiembros.layoutManager = LinearLayoutManager(this)
-        rvMiembros.adapter = MiembroAdapter(miembrosEjemplo, 1) // 1 = id del admin
+        rvMiembros.adapter = MiembroAdapter(miembrosEjemplo, 1)
 
-        //  RICARDO->>>>>>>>> añadir miembro
         btnAnadirMiembro.setOnClickListener {
             val intent = Intent(this, AnadirMiembroActivity::class.java)
             intent.putExtra("GRUPO_ID", grupoId)
+            intent.putExtra("GRUPO_NOMBRE", grupoNombre)
             startActivity(intent)
         }
 
@@ -72,7 +67,5 @@ class DetalleGrupoActivity : AppCompatActivity() {
             Toast.makeText(this, "Grupo borrado", Toast.LENGTH_SHORT).show()
             finish()
         }
-
     }
-
 }

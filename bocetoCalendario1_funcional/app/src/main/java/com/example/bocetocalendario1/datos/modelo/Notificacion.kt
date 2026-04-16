@@ -12,6 +12,12 @@ import androidx.room.PrimaryKey
             parentColumns = ["id_evento"],
             childColumns = ["id_evento"],
             onDelete = ForeignKey.CASCADE
+        ),
+        ForeignKey(
+            entity = Usuario::class,
+            parentColumns = ["id_usuario"],
+            childColumns = ["id_usuario"],
+            onDelete = ForeignKey.CASCADE
         )
     ]
 )
@@ -19,7 +25,12 @@ data class Notificacion(
     @PrimaryKey(autoGenerate = true) val id_notificacion: Int = 0,
     val titulo: String,
     val mensaje: String?,
-    val tiempo_anticipacion: Int?,
-    val tipo: String, // 'RECORDATORIO', 'INVITACION', 'SISTEMA'
-    val id_evento: Int?
+    val tiempo_anticipacion: Int?,       // minutos antes del evento
+    val tipo: String,                     // 'RECORDATORIO', 'INVITACION', 'SISTEMA'
+    val id_evento: Int?,
+    val id_usuario: Int,                  // destinatario
+    val leida: Boolean = false,
+    val fecha_creacion: Long = System.currentTimeMillis(),
+    val id_grupo_invitacion: Int? = null, // solo para tipo INVITACION
+    val estado_invitacion: String? = null  // 'PENDIENTE', 'ACEPTADA', 'RECHAZADA'
 )

@@ -1,8 +1,13 @@
 package com.example.bocetocalendario1
 
+import android.Manifest
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
@@ -17,6 +22,12 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var bottomNavigation: BottomNavigationView
 
+    // Lanzador para pedir permiso de notificaciones (Android 13+)
+    private val requestNotificationPermission =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
+            // No se necesita acción especial; si deniega, simplemente no verá push
+        }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -27,14 +38,35 @@ class MainActivity : AppCompatActivity() {
             insets
         }
 
-        bottomNavigation = findViewById(R.id.bottomNavigation)
+        // Crear canales de notificación
+        NotificacionesManagerCanales.createAll(this)
 
-        // cargar parte inicial
-        if (savedInstanceState == null) {
-            cargarFragment(InicioFragment())
+        // Pedir permiso POST_NOTIFICATIONS en Android 13+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
+                != PackageManager.PERMISSION_GRANTED
+            ) {
+                requestNotificationPermission.launch(Manifest.permission.POST_NOTIFICATIONS)
+            }
         }
 
-        // configurar navegacion
+        bottomNavigation = findViewById(R.id.bottomNavigation)
+
+        // Determinar qué tab abrir (puede venir de una notificación push)
+        val abrirTab = intent.getStringExtra("abrir_tab")
+
+        if (savedInstanceState == null) {
+            when (abrirTab) {
+                "notificaciones" -> {
+                    cargarFragment(NotificacionesFragment())
+                    bottomNavigation.selectedItemId = R.id.nav_notificaciones
+                }
+                else -> {
+                    cargarFragment(InicioFragment())
+                }
+            }
+        }
+
         bottomNavigation.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.nav_inicio -> {
