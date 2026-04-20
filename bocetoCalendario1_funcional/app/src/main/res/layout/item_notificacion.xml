@@ -7,6 +7,8 @@
     │  [●]  Título de la notificación                  │
     │       Mensaje descriptivo de la notif.           │
     │       [RECORDATORIO]  ·  15 min antes            │
+    ├──────────────────────────────────────────────────┤
+    │                [Rechazar]  [Aceptar]             │  ← sólo si es invitación
     └──────────────────────────────────────────────────┘
 
     El círculo de color a la izquierda cambia de color según el tipo
@@ -27,86 +29,131 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="16dp"
-        android:gravity="top">
+        android:orientation="vertical"
+        android:padding="16dp">
 
-        <!-- ─── ICONO DE TIPO DE NOTIFICACIÓN ─── -->
-        <!-- El color del fondo circular indica el tipo; se cambia en el adaptador -->
-        <TextView
-            android:id="@+id/tvIcono"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:text="🔔"
-            android:textSize="18sp"
-            android:gravity="center"
-            android:background="@drawable/bg_avatar_placeholder"
-            android:backgroundTint="@color/primary_container"
-            android:layout_marginTop="2dp"/>
-
-        <!-- ─── CONTENIDO DE LA NOTIFICACIÓN ─── -->
+        <!-- ─── FILA SUPERIOR: icono + contenido ─── -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_marginStart="14dp">
+            android:orientation="horizontal"
+            android:gravity="top">
 
-            <!-- Título de la notificación -->
+            <!-- Icono circular del tipo de notificación; el color se ajusta desde el adaptador -->
             <TextView
-                android:id="@+id/tvTituloNotif"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Título notificación"
-                android:textSize="15sp"
-                android:textStyle="bold"
-                android:textColor="@color/black"/>
+                android:id="@+id/tvIcono"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:text="🔔"
+                android:textSize="18sp"
+                android:gravity="center"
+                android:background="@drawable/bg_avatar_placeholder"
+                android:backgroundTint="@color/primary_container"
+                android:layout_marginTop="2dp"/>
 
-            <!-- Mensaje / descripción -->
-            <TextView
-                android:id="@+id/tvMensaje"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Mensaje de la notificación"
-                android:textSize="13sp"
-                android:textColor="@color/gray"
-                android:maxLines="2"
-                android:layout_marginTop="2dp"
-                android:layout_marginBottom="8dp"/>
-
-            <!-- Fila inferior: tipo y tiempo de anticipación -->
+            <!-- ─── CONTENIDO ─── -->
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical">
+                android:orientation="vertical"
+                android:layout_marginStart="14dp">
 
-                <!-- Badge con el tipo de notificación -->
+                <!-- Título -->
                 <TextView
-                    android:id="@+id/tvTipo"
+                    android:id="@+id/tvTituloNotif"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="RECORDATORIO"
-                    android:textSize="10sp"
+                    android:text="Título notificación"
+                    android:textSize="15sp"
                     android:textStyle="bold"
-                    android:textColor="@color/primary"
-                    android:background="@drawable/bg_status_chip"
-                    android:backgroundTint="@color/primary_container"
-                    android:paddingHorizontal="8dp"
-                    android:paddingVertical="3dp"/>
+                    android:textColor="@color/black"/>
 
-                <!-- Tiempo de anticipación -->
+                <!-- Mensaje -->
                 <TextView
-                    android:id="@+id/tvTiempoAnticipacion"
+                    android:id="@+id/tvMensaje"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="15 min antes"
-                    android:textSize="12sp"
+                    android:text="Mensaje de la notificación"
+                    android:textSize="13sp"
                     android:textColor="@color/gray"
-                    android:layout_marginStart="8dp"/>
+                    android:maxLines="2"
+                    android:layout_marginTop="2dp"
+                    android:layout_marginBottom="8dp"/>
+
+                <!-- Fila: badge tipo + tiempo anticipación -->
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                    <TextView
+                        android:id="@+id/tvTipo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="RECORDATORIO"
+                        android:textSize="10sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/primary"
+                        android:background="@drawable/bg_status_chip"
+                        android:backgroundTint="@color/primary_container"
+                        android:paddingHorizontal="8dp"
+                        android:paddingVertical="3dp"/>
+
+                    <TextView
+                        android:id="@+id/tvTiempoAnticipacion"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="15 min antes"
+                        android:textSize="12sp"
+                        android:textColor="@color/gray"
+                        android:layout_marginStart="8dp"/>
+
+                </LinearLayout>
 
             </LinearLayout>
+        </LinearLayout>
+
+        <!-- ─── BOTONES ACEPTAR / RECHAZAR (solo para invitaciones) ─── -->
+        <LinearLayout
+            android:id="@+id/layoutAcciones"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="12dp"
+            android:visibility="gone"
+            android:gravity="end">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnRechazar"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:text="Rechazar"
+                android:textSize="12sp"
+                android:layout_marginEnd="8dp"
+                app:strokeColor="@color/gray"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnAceptar"
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:text="Aceptar"
+                android:textSize="12sp"
+                app:backgroundTint="@color/primary"/>
 
         </LinearLayout>
+
+        <!-- ─── ESTADO DE INVITACIÓN YA RESPONDIDA ─── -->
+        <TextView
+            android:id="@+id/tvEstadoInvitacion"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:textSize="13sp"
+            android:textStyle="italic"
+            android:textColor="@color/gray"
+            android:visibility="gone"/>
 
     </LinearLayout>
 

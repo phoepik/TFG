@@ -65,7 +65,7 @@ class RegistroActivity : AppCompatActivity() {
                         id_propietario = usuarioInsertado.id_usuario,
                         id_grupo = null
                     )
-                    db.appDao().insertarCalendario(calendarioPersonal)
+                    //db.appDao().insertarCalendario(calendarioPersonal)
                 }
                 withContext(Dispatchers.Main) {
                     Toast.makeText(this@RegistroActivity, "Registro exitoso!", Toast.LENGTH_SHORT).show()

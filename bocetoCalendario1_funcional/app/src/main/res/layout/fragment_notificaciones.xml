@@ -8,6 +8,7 @@
     ├─────────────────────────────────────┤
     │                                     │
     │   [Lista de tarjetas de notif.]     │  ← RecyclerView
+    │   o  "No tienes notificaciones"     │  ← estado vacío
     │                                     │
     └─────────────────────────────────────┘
 -->
@@ -43,6 +44,18 @@
             android:layout_marginTop="2dp"/>
 
     </LinearLayout>
+
+    <!-- ─── ESTADO VACÍO (oculto por defecto, visible cuando no hay notificaciones) ─── -->
+    <TextView
+        android:id="@+id/tvVacio"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="No tienes notificaciones"
+        android:textSize="16sp"
+        android:textColor="@color/gray"
+        android:gravity="center"
+        android:layout_marginTop="48dp"
+        android:visibility="gone"/>
 
     <!-- ─── LISTA DE NOTIFICACIONES ─── -->
     <androidx.recyclerview.widget.RecyclerView
