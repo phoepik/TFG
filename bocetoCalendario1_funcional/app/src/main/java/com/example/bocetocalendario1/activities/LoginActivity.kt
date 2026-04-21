@@ -9,10 +9,11 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
-import at.favre.lib.crypto.bcrypt.BCrypt
 import com.example.bocetocalendario1.MainActivity
 import com.example.bocetocalendario1.R
-import com.example.bocetocalendario1.datos.basedatos.AppDatabase
+import com.example.bocetocalendario1.datos.modelo.Usuario
+import com.example.bocetocalendario1.network.LoginRequest
+import com.example.bocetocalendario1.network.RetrofitClient
 import com.example.bocetocalendario1.notificaciones.canales.NotificacionesManagerCanales
 import com.example.bocetocalendario1.utilidades.GestorSesion
 import kotlinx.coroutines.Dispatchers
@@ -26,21 +27,19 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var btnLogin: Button
     private lateinit var tvIrRegistro: TextView
 
-    private var idCuenta: Int? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         NotificacionesManagerCanales.createAll(this)
 
         setContentView(R.layout.activity_login)
 
-        val db = AppDatabase.getDatabase(this)
         val gestorSesion = GestorSesion(this)
 
-        if(gestorSesion.estaLogueado()){
+        if (gestorSesion.estaLogueado()) {
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
-            finish()    // para que no puedas volver a esta pestaña echando hacia atrás
-            return  // sale de la actividad
+            finish()
+            return
         }
 
         etEmail = findViewById(R.id.etEmail)
@@ -59,15 +58,21 @@ class LoginActivity : AppCompatActivity() {
 
             lifecycleScope.launch(Dispatchers.IO) {
                 try {
-                    val usuarioEncontrado = db.appDao().verificarUsuario(email)
-                    idCuenta = usuarioEncontrado?.id_usuario ?: 0
-                    val res= BCrypt.verifyer().verify(contrasena.toCharArray(),
-                        usuarioEncontrado?.contrasena
-                    )
+                    val response = RetrofitClient.api.login(LoginRequest(email, contrasena))
+
                     withContext(Dispatchers.Main) {
-                        if (usuarioEncontrado != null && res.verified) {
-                            Toast.makeText(this@LoginActivity, "¡Bienvenido ${usuarioEncontrado.nombre}!", Toast.LENGTH_SHORT).show()
-                            gestorSesion.guardarSesion(usuarioEncontrado)
+                        if (response.isSuccessful && response.body() != null) {
+                            val u = response.body()!!
+                            // Convertir a Usuario local para guardar sesion
+                            val usuarioLocal = Usuario(
+                                id_usuario = u.idUsuario,
+                                nombre = u.nombre,
+                                email = u.email,
+                                contrasena = u.contrasena,
+                                notificaciones_activas = u.notificacionesActivas
+                            )
+                            gestorSesion.guardarSesion(usuarioLocal)
+                            Toast.makeText(this@LoginActivity, "Bienvenido ${u.nombre}!", Toast.LENGTH_SHORT).show()
                             val intent = Intent(this@LoginActivity, MainActivity::class.java)
                             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                             startActivity(intent)
@@ -77,14 +82,13 @@ class LoginActivity : AppCompatActivity() {
                     }
                 } catch (e: Exception) {
                     withContext(Dispatchers.Main) {
-                        Log.e("DB_PRUEBA", "Error: ${e.message}")
-                        Toast.makeText(this@LoginActivity, "Error al conectar con la base de datos", Toast.LENGTH_SHORT).show()
+                        Log.e("LOGIN", "Error: ${e.message}")
+                        Toast.makeText(this@LoginActivity, "Error al conectar con el servidor", Toast.LENGTH_SHORT).show()
                     }
                 }
             }
         }
 
-        // Link a registro
         tvIrRegistro.setOnClickListener {
             startActivity(Intent(this, RegistroActivity::class.java))
         }

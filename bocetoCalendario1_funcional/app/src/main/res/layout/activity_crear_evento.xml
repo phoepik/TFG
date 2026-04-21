@@ -221,6 +221,25 @@
                 android:layout_height="52dp"
                 android:background="@drawable/edittext_border"
                 android:paddingHorizontal="12dp"
+                android:layout_marginBottom="16dp"/>
+
+            <!-- ─── Selector: recordatorio del evento ─── -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Recordatorio"
+                android:textSize="12sp"
+                android:textColor="@color/gray"
+                android:textAllCaps="true"
+                android:letterSpacing="0.06"
+                android:layout_marginBottom="8dp"/>
+
+            <Spinner
+                android:id="@+id/spinnerRecordatorio"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:background="@drawable/edittext_border"
+                android:paddingHorizontal="12dp"
                 android:layout_marginBottom="28dp"/>
 
             <!-- ─── Botones: cancelar y guardar ─── -->

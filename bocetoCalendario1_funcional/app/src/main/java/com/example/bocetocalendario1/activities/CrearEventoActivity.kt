@@ -4,6 +4,7 @@ import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
@@ -13,16 +14,14 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.example.bocetocalendario1.R
-import com.example.bocetocalendario1.datos.basedatos.AppDatabase
-import com.example.bocetocalendario1.datos.modelo.Evento
+import com.example.bocetocalendario1.network.EventoResponse
+import com.example.bocetocalendario1.network.RetrofitClient
 import com.example.bocetocalendario1.notificaciones.NotificacionService
 import com.example.bocetocalendario1.utilidades.GestorSesion
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.text.SimpleDateFormat
 import java.util.Calendar
-import java.util.Locale
 
 class CrearEventoActivity : AppCompatActivity() {
 
@@ -37,12 +36,10 @@ class CrearEventoActivity : AppCompatActivity() {
     private lateinit var btnGuardar: Button
     private lateinit var btnCancelar: Button
 
-    // Almacenar la fecha de inicio en millis para la alarma
     private var fechaInicioMillis: Long = 0L
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
-        val db = AppDatabase.getDatabase(this)
         val gestorSesion = GestorSesion(this)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_crear_evento)
@@ -54,17 +51,12 @@ class CrearEventoActivity : AppCompatActivity() {
         etUbicacion = findViewById(R.id.etUbicacion)
         spinnerEstado = findViewById(R.id.spinnerEstado)
         spinnerCalendario = findViewById(R.id.spinnerCalendario)
+        spinnerRecordatorio = findViewById(R.id.spinnerRecordatorio)
         btnGuardar = findViewById(R.id.btnGuardar)
         btnCancelar = findViewById(R.id.btnCancelar)
 
-        // Spinner de recordatorio (si existe en el layout, si no se ignora)
-        /*try {
-            spinnerRecordatorio = findViewById(R.id.spinnerRecordatorio)
-            val opcionesRecordatorio = arrayOf("Sin recordatorio", "5 minutos antes", "15 minutos antes", "30 minutos antes", "1 hora antes", "1 día antes")
-            spinnerRecordatorio.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, opcionesRecordatorio)
-        } catch (_: Exception) {
-            // Si no existe el spinner en el layout, se usa 15 min por defecto
-        }*/
+        val opcionesRecordatorio = arrayOf("Sin recordatorio", "5 minutos antes", "15 minutos antes", "30 minutos antes", "1 hora antes", "1 día antes")
+        spinnerRecordatorio.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, opcionesRecordatorio)
 
         val estados = arrayOf("PENDIENTE", "CONFIRMADO")
         spinnerEstado.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, estados)
@@ -83,6 +75,7 @@ class CrearEventoActivity : AppCompatActivity() {
             val ubicacion = etUbicacion.text.toString()
             val tipoEstado = spinnerEstado.selectedItem.toString()
             val tipoCalendario = spinnerCalendario.selectedItemPosition
+            val minutosAntes = obtenerMinutosRecordatorio()
 
             if (titulo.isEmpty()) {
                 Toast.makeText(this, "El título es obligatorio", Toast.LENGTH_SHORT).show()
@@ -94,39 +87,51 @@ class CrearEventoActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            // Determinar minutos de anticipación
-            val minutosAntes = obtenerMinutosRecordatorio()
-
-            val unEvento = Evento(
+            val eventoRequest = EventoResponse(
                 titulo = titulo,
                 descripcion = descripcion,
-                fecha_inicio = fechaInicio,
-                fecha_fin = fechaFin,
+                fechaInicio = fechaInicio,
+                fechaFin = fechaFin,
                 ubicacion = ubicacion,
                 estado = tipoEstado,
-                id_calendario = tipoCalendario
+                idCalendario = tipoCalendario
             )
 
             lifecycleScope.launch(Dispatchers.IO) {
-                val idEvento = db.appDao().insertarEvento(unEvento)
-                val idUsuario = gestorSesion.obtenerIdUsuario() ?: -1
+                try {
+                    val response = RetrofitClient.api.crearEvento(eventoRequest)
 
-                // Programar recordatorio si se ha seleccionado
-                if (minutosAntes > 0 && fechaInicioMillis > 0 && idUsuario > 0) {
-                    NotificacionService.programarRecordatorioEvento(
-                        context = this@CrearEventoActivity,
-                        idUsuario = idUsuario,
-                        idEvento = idEvento.toInt(),
-                        tituloEvento = titulo,
-                        descripcionEvento = descripcion.ifEmpty { null },
-                        fechaEventoMillis = fechaInicioMillis,
-                        minutosAntes = minutosAntes
-                    )
-                }
+                    if (response.isSuccessful && response.body() != null) {
+                        val eventoCreado = response.body()!!
+                        val idUsuario = gestorSesion.obtenerIdUsuario() ?: -1
 
-                withContext(Dispatchers.Main) {
-                    Toast.makeText(this@CrearEventoActivity, "Evento guardado!", Toast.LENGTH_SHORT).show()
-                    finish()
+                        // Programar recordatorio local si corresponde
+                        if (minutosAntes > 0 && fechaInicioMillis > 0 && idUsuario > 0) {
+                            NotificacionService.programarRecordatorioEvento(
+                                context = this@CrearEventoActivity,
+                                idUsuario = idUsuario,
+                                idEvento = eventoCreado.idEvento ?: 0,
+                                tituloEvento = titulo,
+                                descripcionEvento = descripcion.ifEmpty { null },
+                                fechaEventoMillis = fechaInicioMillis,
+                                minutosAntes = minutosAntes
+                            )
+                        }
+
+                        withContext(Dispatchers.Main) {
+                            Toast.makeText(this@CrearEventoActivity, "Evento guardado!", Toast.LENGTH_SHORT).show()
+                            finish()
+                        }
+                    } else {
+                        withContext(Dispatchers.Main) {
+                            Toast.makeText(this@CrearEventoActivity, "Error al guardar evento", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                } catch (e: Exception) {
+                    withContext(Dispatchers.Main) {
+                        Log.e("EVENTO", "Error: ${e.message}")
+                        Toast.makeText(this@CrearEventoActivity, "Error al conectar con el servidor", Toast.LENGTH_SHORT).show()
+                    }
                 }
             }
         }
@@ -137,18 +142,14 @@ class CrearEventoActivity : AppCompatActivity() {
     }
 
     private fun obtenerMinutosRecordatorio(): Int {
-        return try {
-            when (spinnerRecordatorio.selectedItemPosition) {
-                0 -> 0      // Sin recordatorio
-                1 -> 5
-                2 -> 15
-                3 -> 30
-                4 -> 60
-                5 -> 1440   // 1 día
-                else -> 0
-            }
-        } catch (_: Exception) {
-            15 // Por defecto si no existe el spinner
+        return when (spinnerRecordatorio.selectedItemPosition) {
+            0 -> 0
+            1 -> 5
+            2 -> 15
+            3 -> 30
+            4 -> 60
+            5 -> 1440
+            else -> 0
         }
     }
 
@@ -161,7 +162,6 @@ class CrearEventoActivity : AppCompatActivity() {
                 editText.setText(fecha)
 
                 if (esInicio) {
-                    // Guardar millis para la alarma
                     val cal = Calendar.getInstance().apply {
                         set(año, mes, dia, hora, minuto, 0)
                         set(Calendar.MILLISECOND, 0)
@@ -172,4 +172,3 @@ class CrearEventoActivity : AppCompatActivity() {
         }, calendario.get(Calendar.YEAR), calendario.get(Calendar.MONTH), calendario.get(Calendar.DAY_OF_MONTH)).show()
     }
 }
-

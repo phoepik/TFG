@@ -2,6 +2,7 @@ package com.example.bocetocalendario1.activities
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
@@ -11,10 +12,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.bocetocalendario1.R
 import com.example.bocetocalendario1.adaptadores.MiembroAdapter
-import com.example.bocetocalendario1.datos.basedatos.AppDatabase
 import com.example.bocetocalendario1.models.Usuario
+import com.example.bocetocalendario1.network.RetrofitClient
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class DetalleGrupoActivity : AppCompatActivity() {
 
@@ -26,7 +28,6 @@ class DetalleGrupoActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val db = AppDatabase.getDatabase(this)
         setContentView(R.layout.activity_detalle_grupo)
 
         tvNombreGrupo = findViewById(R.id.tvNombreGrupo)
@@ -42,7 +43,7 @@ class DetalleGrupoActivity : AppCompatActivity() {
         tvNombreGrupo.text = grupoNombre
         tvDescripcion.text = grupoDescripcion
 
-        // Miembros de ejemplo (después vendrán de la BD)
+        // Miembros de ejemplo (después se cargarán del servidor)
         val miembrosEjemplo = listOf(
             Usuario(1, "Tú (Admin)", "tu@email.com", "", true),
             Usuario(2, "Paco porras", "paquito@email.com", "", true),
@@ -62,10 +63,23 @@ class DetalleGrupoActivity : AppCompatActivity() {
 
         btnBorrarGrupo.setOnClickListener {
             lifecycleScope.launch(Dispatchers.IO) {
-                db.appDao().eliminarGrupoPorId(grupoId)
+                try {
+                    val response = RetrofitClient.api.borrarGrupo(grupoId)
+                    withContext(Dispatchers.Main) {
+                        if (response.isSuccessful) {
+                            Toast.makeText(this@DetalleGrupoActivity, "Grupo borrado", Toast.LENGTH_SHORT).show()
+                            finish()
+                        } else {
+                            Toast.makeText(this@DetalleGrupoActivity, "Error al borrar grupo", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                } catch (e: Exception) {
+                    withContext(Dispatchers.Main) {
+                        Log.e("DETALLE", "Error: ${e.message}")
+                        Toast.makeText(this@DetalleGrupoActivity, "Error al conectar con el servidor", Toast.LENGTH_SHORT).show()
+                    }
+                }
             }
-            Toast.makeText(this, "Grupo borrado", Toast.LENGTH_SHORT).show()
-            finish()
         }
     }
 }

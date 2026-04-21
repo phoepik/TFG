@@ -1,13 +1,14 @@
 package com.example.bocetocalendario1.activities
 
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.example.bocetocalendario1.R
-import com.example.bocetocalendario1.datos.basedatos.AppDatabase
+import com.example.bocetocalendario1.network.RetrofitClient
 import com.example.bocetocalendario1.notificaciones.NotificacionService
 import com.example.bocetocalendario1.utilidades.GestorSesion
 import kotlinx.coroutines.Dispatchers
@@ -24,7 +25,6 @@ class AnadirMiembroActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_anadir_miembro)
 
-        val db = AppDatabase.getDatabase(this)
         val gestorSesion = GestorSesion(this)
         val grupoId = intent.getIntExtra("GRUPO_ID", 0)
         val grupoNombre = intent.getStringExtra("GRUPO_NOMBRE") ?: "Grupo"
@@ -48,37 +48,44 @@ class AnadirMiembroActivity : AppCompatActivity() {
             }
 
             lifecycleScope.launch(Dispatchers.IO) {
-                // Verificar que el usuario existe
-                val usuarioDestino = db.appDao().obtenerUsuarioPorId(idUsuarioDestino)
-                if (usuarioDestino == null) {
-                    withContext(Dispatchers.Main) {
-                        Toast.makeText(this@AnadirMiembroActivity, "Usuario no encontrado", Toast.LENGTH_SHORT).show()
+                try {
+                    // Verificar que el usuario existe en el servidor
+                    val userResponse = RetrofitClient.api.obtenerUsuario(idUsuarioDestino)
+                    if (!userResponse.isSuccessful || userResponse.body() == null) {
+                        withContext(Dispatchers.Main) {
+                            Toast.makeText(this@AnadirMiembroActivity, "Usuario no encontrado", Toast.LENGTH_SHORT).show()
+                        }
+                        return@launch
                     }
-                    return@launch
-                }
 
-                // Verificar que no es ya miembro
-                val yaEsMiembro = db.appDao().esMiembroDeGrupo(idUsuarioDestino, grupoId)
-                if (yaEsMiembro) {
-                    withContext(Dispatchers.Main) {
-                        Toast.makeText(this@AnadirMiembroActivity, "Ya es miembro del grupo", Toast.LENGTH_SHORT).show()
+                    // Verificar que no es ya miembro
+                    val memberResponse = RetrofitClient.api.esMiembro(idUsuarioDestino, grupoId)
+                    if (memberResponse.isSuccessful && memberResponse.body()?.get("esMiembro") == true) {
+                        withContext(Dispatchers.Main) {
+                            Toast.makeText(this@AnadirMiembroActivity, "Ya es miembro del grupo", Toast.LENGTH_SHORT).show()
+                        }
+                        return@launch
                     }
-                    return@launch
-                }
 
-                // Enviar notificación de invitación
-                val nombreQuienInvita = gestorSesion.obtenerNombreUsuario() ?: "Alguien"
-                NotificacionService.enviarInvitacionGrupo(
-                    context = this@AnadirMiembroActivity,
-                    idUsuarioDestino = idUsuarioDestino,
-                    nombreGrupo = grupoNombre,
-                    idGrupo = grupoId,
-                    nombreQuienInvita = nombreQuienInvita
-                )
+                    // Enviar notificación de invitación (se guarda en Room local)
+                    val nombreQuienInvita = gestorSesion.obtenerNombreUsuario() ?: "Alguien"
+                    NotificacionService.enviarInvitacionGrupo(
+                        context = this@AnadirMiembroActivity,
+                        idUsuarioDestino = idUsuarioDestino,
+                        nombreGrupo = grupoNombre,
+                        idGrupo = grupoId,
+                        nombreQuienInvita = nombreQuienInvita
+                    )
 
-                withContext(Dispatchers.Main) {
-                    Toast.makeText(this@AnadirMiembroActivity, "Invitación enviada", Toast.LENGTH_SHORT).show()
-                    finish()
+                    withContext(Dispatchers.Main) {
+                        Toast.makeText(this@AnadirMiembroActivity, "Invitación enviada", Toast.LENGTH_SHORT).show()
+                        finish()
+                    }
+                } catch (e: Exception) {
+                    withContext(Dispatchers.Main) {
+                        Log.e("ANADIR", "Error: ${e.message}")
+                        Toast.makeText(this@AnadirMiembroActivity, "Error al conectar con el servidor", Toast.LENGTH_SHORT).show()
+                    }
                 }
             }
         }

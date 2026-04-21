@@ -5,23 +5,11 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.example.bocetocalendario1.datos.dao.AppDao
-import com.example.bocetocalendario1.datos.modelo.Usuario
-import com.example.bocetocalendario1.datos.modelo.Grupo
-import com.example.bocetocalendario1.datos.modelo.UsuarioGrupo
-import com.example.bocetocalendario1.datos.modelo.Calendario
-import com.example.bocetocalendario1.datos.modelo.Evento
 import com.example.bocetocalendario1.datos.modelo.Notificacion
 
 @Database(
-    entities = [
-        Usuario::class,
-        Grupo::class,
-        UsuarioGrupo::class,
-        Calendario::class,
-        Evento::class,
-        Notificacion::class
-    ],
-    version = 2,
+    entities = [Notificacion::class],
+    version = 3,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
@@ -38,7 +26,7 @@ abstract class AppDatabase : RoomDatabase() {
                     AppDatabase::class.java,
                     "base_calendario"
                 )
-                    .fallbackToDestructiveMigration() // En desarrollo; en producción usar Migration
+                    .fallbackToDestructiveMigration()
                     .build()
                 INSTANCE = instance
                 instance
