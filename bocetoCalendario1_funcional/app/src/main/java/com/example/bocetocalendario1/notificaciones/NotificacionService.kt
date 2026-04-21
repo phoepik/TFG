@@ -3,19 +3,13 @@ package com.example.bocetocalendario1.notificaciones
 import android.content.Context
 import com.example.bocetocalendario1.datos.basedatos.AppDatabase
 import com.example.bocetocalendario1.datos.modelo.Notificacion
+import com.example.bocetocalendario1.network.RetrofitClient
 import com.example.bocetocalendario1.notificaciones.modelos.NotificacionesPayload
 import com.example.bocetocalendario1.notificaciones.modelos.NotificacionesTipo
 import com.example.bocetocalendario1.notificaciones.programadas.RecordatorioProgramadas
 
-/**
- * Servicio centralizado para crear y despachar notificaciones.
- * Inserta en Room + muestra la notificación del sistema (o la programa si es futura).
- */
 object NotificacionService {
 
-    /**
-     * Invitación a grupo: guarda en BD y muestra push inmediato.
-     */
     suspend fun enviarInvitacionGrupo(
         context: Context,
         idUsuarioDestino: Int,
@@ -49,9 +43,6 @@ object NotificacionService {
         NotificationHelper.show(context, payload)
     }
 
-    /**
-     * Recordatorio de evento: guarda en BD y programa alarma.
-     */
     suspend fun programarRecordatorioEvento(
         context: Context,
         idUsuario: Int,
@@ -62,6 +53,7 @@ object NotificacionService {
         minutosAntes: Int
     ) {
         val db = AppDatabase.getDatabase(context)
+        val triggerAt = fechaEventoMillis - (minutosAntes * 60 * 1000L)
 
         val notificacion = Notificacion(
             titulo = "Recordatorio: $tituloEvento",
@@ -69,14 +61,12 @@ object NotificacionService {
             tiempo_anticipacion = minutosAntes,
             tipo = "RECORDATORIO",
             id_evento = idEvento,
-            id_usuario = idUsuario
+            id_usuario = idUsuario,
+            trigger_at_millis = triggerAt
         )
         val idNotif = db.appDao().insertarNotificacion(notificacion)
 
-        val triggerAt = fechaEventoMillis - (minutosAntes * 60 * 1000L)
-
         if (triggerAt > System.currentTimeMillis()) {
-            // Evento futuro → programar alarma
             val payload = NotificacionesPayload(
                 type = NotificacionesTipo.REMINDER,
                 title = "Recordatorio: $tituloEvento",
@@ -86,7 +76,6 @@ object NotificacionService {
             )
             RecordatorioProgramadas.schedule(context, payload, idNotif.toInt())
         } else {
-            // Evento ya pasó o es ahora → notificación inmediata
             val payload = NotificacionesPayload(
                 type = NotificacionesTipo.REMINDER,
                 title = "Recordatorio: $tituloEvento",
@@ -96,9 +85,6 @@ object NotificacionService {
         }
     }
 
-    /**
-     * Invitación a evento de calendario.
-     */
     suspend fun enviarInvitacionEvento(
         context: Context,
         idUsuarioDestino: Int,
@@ -128,9 +114,6 @@ object NotificacionService {
         NotificationHelper.show(context, payload)
     }
 
-    /**
-     * Notificación de sistema genérica.
-     */
     suspend fun enviarNotificacionSistema(
         context: Context,
         idUsuario: Int,
@@ -157,27 +140,23 @@ object NotificacionService {
         NotificationHelper.show(context, payload)
     }
 
-    /**
-     * Aceptar invitación: actualiza estado y, si es grupo, añade al usuario.
-     */
     suspend fun aceptarInvitacion(context: Context, notificacion: Notificacion) {
         val db = AppDatabase.getDatabase(context)
         db.appDao().actualizarEstadoInvitacion(notificacion.id_notificacion, "ACEPTADA")
         db.appDao().marcarComoLeida(notificacion.id_notificacion)
 
-        // Si es invitación a grupo, insertar en usuarios_grupos
+        // Añadir al grupo via servidor
         notificacion.id_grupo_invitacion?.let { idGrupo ->
-            val ug = com.example.bocetocalendario1.datos.modelo.UsuarioGrupo(
-                id_usuario = notificacion.id_usuario,
-                id_grupo = idGrupo
-            )
-            db.appDao().insertarUsuarioGrupo(ug)
+            try {
+                RetrofitClient.api.anadirMiembro(
+                    mapOf("idUsuario" to notificacion.id_usuario, "idGrupo" to idGrupo)
+                )
+            } catch (_: Exception) {
+                // Si falla la red, la invitación queda aceptada localmente
+            }
         }
     }
 
-    /**
-     * Rechazar invitación.
-     */
     suspend fun rechazarInvitacion(context: Context, notificacion: Notificacion) {
         val db = AppDatabase.getDatabase(context)
         db.appDao().actualizarEstadoInvitacion(notificacion.id_notificacion, "RECHAZADA")

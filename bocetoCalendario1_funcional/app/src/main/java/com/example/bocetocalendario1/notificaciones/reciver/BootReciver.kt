@@ -11,11 +11,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-/**
- * Tras reinicio del dispositivo, las alarmas de AlarmManager se pierden.
- * Este receiver las reprograma consultando las notificaciones de tipo RECORDATORIO
- * que aún no se han leído y cuyo evento no ha pasado.
- */
 class BootReciver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
@@ -25,35 +20,19 @@ class BootReciver : BroadcastReceiver() {
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 val db = AppDatabase.getDatabase(context)
-                // Obtener todos los usuarios (simplificación; en producción se haría por usuario activo)
-                val usuarios = db.appDao().obtenerUsuarios()
                 val ahora = System.currentTimeMillis()
+                val pendientes = db.appDao().obtenerRecordatoriosPendientes(ahora)
 
-                for (usuario in usuarios) {
-                    val notificaciones = db.appDao().obtenerNotificacionesDeUsuario(usuario.id_usuario)
-                    for (notif in notificaciones) {
-                        if (notif.tipo != "RECORDATORIO") continue
-                        if (notif.leida) continue
-                        if (notif.tiempo_anticipacion == null) continue
-                        if (notif.id_evento == null) continue
+                for (notif in pendientes) {
+                    val triggerAt = notif.trigger_at_millis ?: continue
 
-                        val evento = db.appDao().obtenerEventoPorId(notif.id_evento) ?: continue
-
-                        // Parsear fecha del evento (formato dd/MM/yyyy HH:mm)
-                        val sdf = java.text.SimpleDateFormat("dd/MM/yyyy HH:mm", java.util.Locale.getDefault())
-                        val fechaEvento = try { sdf.parse(evento.fecha_inicio)?.time ?: continue } catch (_: Exception) { continue }
-                        val triggerAt = fechaEvento - (notif.tiempo_anticipacion * 60 * 1000L)
-
-                        if (triggerAt > ahora) {
-                            val payload = NotificacionesPayload(
-                                type = NotificacionesTipo.REMINDER,
-                                title = notif.titulo,
-                                body = notif.mensaje ?: "",
-                                triggerAtMillis = triggerAt
-                            )
-                            RecordatorioProgramadas.schedule(context, payload, notif.id_notificacion)
-                        }
-                    }
+                    val payload = NotificacionesPayload(
+                        type = NotificacionesTipo.REMINDER,
+                        title = notif.titulo,
+                        body = notif.mensaje ?: "",
+                        triggerAtMillis = triggerAt
+                    )
+                    RecordatorioProgramadas.schedule(context, payload, notif.id_notificacion)
                 }
             } finally {
                 pendingResult.finish()

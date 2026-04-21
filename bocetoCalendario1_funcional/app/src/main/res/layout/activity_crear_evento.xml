@@ -131,7 +131,21 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal">ç
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Recordatorio"
+                android:textSize="14sp"
+                android:textColor="@color/gray"/>
+
+            <Spinner
+                android:id="@+id/spinnerRecordatorio"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@drawable/edittext_border"
+                android:layout_marginBottom="24dp"/>
 
             <Button
                 android:id="@+id/btnCancelar"
