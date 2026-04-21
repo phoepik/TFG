@@ -21,7 +21,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 class MainActivity : AppCompatActivity() {
 
     private lateinit var bottomNavigation: BottomNavigationView
-
+    //Santiago BUenos dias 
     // Lanzador para pedir permiso de notificaciones (Android 13+)
     private val requestNotificationPermission =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
