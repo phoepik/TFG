@@ -1,12 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="primary">#6200EE</color>
-    <color name="primary_dark">#3700B3</color>
+    <!-- Brand -->
+    <color name="brand">#0B5FFF</color>
+    <color name="brand_600">#0A4FD9</color>
+    <color name="brand_50">#EAF1FF</color>
+    <color name="brand_100">#D6E4FF</color>
+    <color name="accent">#FFD60A</color>
+    <color name="accent_soft">#FFF4B8</color>
+
+    <!-- Categories -->
+    <color name="cat_blue">#0B5FFF</color>
+    <color name="cat_yellow">#FFC700</color>
+    <color name="cat_magenta">#E94B7B</color>
+    <color name="cat_green">#22C55E</color>
+    <color name="cat_purple">#8B5CF6</color>
+    <color name="cat_orange">#F97316</color>
+    <color name="cat_teal">#14B8A6</color>
+
+    <!-- Text -->
+    <color name="ink">#0A1330</color>
+    <color name="ink_2">#2B3556</color>
+    <color name="muted">#6B7494</color>
+    <color name="muted_2">#98A0BC</color>
+
+    <!-- Surfaces -->
+    <color name="line">#E7EAF3</color>
+    <color name="line_2">#EFF1F8</color>
+    <color name="bg">#F6F7FB</color>
+    <color name="surface">#FFFFFF</color>
+
+    <!-- Legacy compat aliases -->
+    <color name="primary">#0B5FFF</color>
+    <color name="primary_dark">#0A4FD9</color>
     <color name="white">#FFFFFF</color>
-    <color name="black">#000000</color>
-    <color name="gray">#757575</color>
-    <color name="light_gray">#E0E0E0</color>
-    <color name="green">#4CAF50</color>
-    <color name="orange">#FF9800</color>
-    <color name="red">#F44336</color>
+    <color name="black">#0A1330</color>
+    <color name="gray">#6B7494</color>
+    <color name="light_gray">#EFF1F8</color>
+    <color name="green">#22C55E</color>
+    <color name="orange">#F97316</color>
+    <color name="red">#E94B7B</color>
 </resources>

@@ -1,129 +1,135 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="16dp">
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/perfil"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:layout_marginBottom="24dp"/>
+    android:background="@color/bg">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:gravity="center"
-        android:layout_marginBottom="24dp">
+        android:padding="20dp">
 
+        <!-- Header -->
         <TextView
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:text="👤"
-            android:textSize="40sp"
-            android:gravity="center"
-            android:background="@color/light_gray"/>
-
-    </LinearLayout>
-
-    <!-- ID del usuario -->
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="ID de usuario"
-        android:textSize="12sp"
-        android:textColor="@color/gray"/>
-
-    <TextView
-        android:id="@+id/tvIdUsuario"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="CAMBIAR ID"
-        android:textSize="18sp"
-        android:textColor="@color/black"
-        android:padding="12dp"
-        android:background="@color/light_gray"
-        android:layout_marginBottom="16dp"/>
-
-    <!-- Nombre -->
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/nombre"
-        android:textSize="12sp"
-        android:textColor="@color/gray"/>
-
-    <TextView
-        android:id="@+id/tvNombre"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Nombre del usuario"
-        android:textSize="18sp"
-        android:textColor="@color/black"
-        android:padding="12dp"
-        android:background="@color/light_gray"
-        android:layout_marginBottom="16dp"/>
-
-    <!-- Email -->
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/email"
-        android:textSize="12sp"
-        android:textColor="@color/gray"/>
-
-    <TextView
-        android:id="@+id/tvEmail"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="email@ejemplo.com"
-        android:textSize="18sp"
-        android:textColor="@color/black"
-        android:padding="12dp"
-        android:background="@color/light_gray"
-        android:layout_marginBottom="16dp"/>
-
-    <!-- Notificaciones -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:padding="12dp"
-        android:background="@color/light_gray"
-        android:layout_marginBottom="24dp">
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/notificaciones_activadas"
-            android:textSize="16sp"
-            android:textColor="@color/black"/>
-
-        <Switch
-            android:id="@+id/switchNotificaciones"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:checked="true"/>
+            android:text="@string/perfil"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:textColor="@color/ink"
+            android:layout_marginBottom="24dp" />
+
+        <!-- Avatar con iniciales -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:layout_marginBottom="28dp">
+
+            <TextView
+                android:id="@+id/tvInicialUsuario"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:text="U"
+                android:textSize="32sp"
+                android:textStyle="bold"
+                android:textColor="#FFFFFF"
+                android:gravity="center"
+                android:background="@drawable/bg_avatar"
+                android:layout_marginBottom="12dp" />
+
+            <TextView
+                android:id="@+id/tvNombre"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Nombre del usuario"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="@color/ink" />
+
+            <TextView
+                android:id="@+id/tvEmail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="email@ejemplo.com"
+                android:textSize="14sp"
+                android:textColor="@color/muted"
+                android:layout_marginTop="4dp" />
+
+        </LinearLayout>
+
+        <!-- Info card -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/bg_card"
+            android:padding="16dp"
+            android:layout_marginBottom="14dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="ID de usuario"
+                android:textSize="12sp"
+                android:textColor="@color/muted"
+                android:layout_marginBottom="4dp" />
+
+            <TextView
+                android:id="@+id/tvIdUsuario"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="—"
+                android:textSize="15sp"
+                android:textColor="@color/ink" />
+
+        </LinearLayout>
+
+        <!-- Notificaciones card -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:background="@drawable/bg_card"
+            android:padding="16dp"
+            android:layout_marginBottom="28dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="🔔  @string/notificaciones_activadas"
+                android:textSize="15sp"
+                android:textColor="@color/ink" />
+
+            <Switch
+                android:id="@+id/switchNotificaciones"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:thumbTint="@color/brand"
+                android:trackTint="@color/brand_100" />
+
+        </LinearLayout>
+
+        <!-- Spacer -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="16dp" />
+
+        <!-- Cerrar sesión -->
+        <Button
+            android:id="@+id/btnCerrarSesion"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:text="@string/cerrar_sesion"
+            android:backgroundTint="@color/cat_magenta"
+            android:textColor="@color/white"
+            android:textStyle="bold" />
 
     </LinearLayout>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"/>
-
-    <Button
-        android:id="@+id/btnCerrarSesion"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:text="@string/cerrar_sesion"
-        android:backgroundTint="@color/red"
-        android:textColor="@color/white"/>
-
-</LinearLayout>
+</ScrollView>
