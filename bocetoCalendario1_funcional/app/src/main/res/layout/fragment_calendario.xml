@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg">
+
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/bg">
+
+    <!-- Header: mes + navegación -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingStart="20dp"
+        android:paddingEnd="12dp"
+        android:paddingTop="18dp"
+        android:paddingBottom="8dp">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tvEtiquetaHoy"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="HOY"
+                android:textSize="11sp"
+                android:textStyle="bold"
+                android:textColor="@color/brand"
+                android:letterSpacing="0.06" />
+
+            <TextView
+                android:id="@+id/tvMesAnio"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Abril 2026"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                android:textColor="@color/ink"
+                android:layout_marginTop="2dp" />
+        </LinearLayout>
+
+        <!-- Navegación -->
+        <Button
+            android:id="@+id/btnAnteriorMes"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:text="‹"
+            android:textSize="18sp"
+            android:backgroundTint="@color/line_2"
+            android:textColor="@color/ink_2"
+            android:padding="0dp" />
+
+        <Button
+            android:id="@+id/btnHoy"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:text="Hoy"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:backgroundTint="@color/brand_50"
+            android:textColor="@color/brand"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp" />
+
+        <Button
+            android:id="@+id/btnSiguienteMes"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:text="›"
+            android:textSize="18sp"
+            android:backgroundTint="@color/line_2"
+            android:textColor="@color/ink_2"
+            android:padding="0dp" />
+
+    </LinearLayout>
+
+    <!-- Vista selector: Mes / Semana / Día -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:paddingBottom="12dp">
+
+        <LinearLayout
+            android:id="@+id/tabsMes"
+            android:layout_width="wrap_content"
+            android:layout_height="38dp"
+            android:orientation="horizontal"
+            android:background="@color/line_2"
+            android:padding="3dp">
+
+            <Button
+                android:id="@+id/btnTabMes"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="Mes"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:backgroundTint="@color/surface"
+                android:textColor="@color/ink"
+                android:paddingStart="14dp"
+                android:paddingEnd="14dp" />
+
+            <Button
+                android:id="@+id/btnTabSemana"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="Semana"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:backgroundTint="@android:color/transparent"
+                android:textColor="@color/muted"
+                android:paddingStart="14dp"
+                android:paddingEnd="14dp" />
+
+            <Button
+                android:id="@+id/btnTabDia"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="Día"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:backgroundTint="@android:color/transparent"
+                android:textColor="@color/muted"
+                android:paddingStart="14dp"
+                android:paddingEnd="14dp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <!-- Días de la semana -->
+    <GridLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:columnCount="7"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp">
+
+        <TextView android:layout_width="0dp" android:layout_columnWeight="1"
+            android:text="L" android:gravity="center" android:textSize="11sp"
+            android:textStyle="bold" android:textColor="@color/muted"
+            android:paddingTop="4dp" android:paddingBottom="6dp" />
+        <TextView android:layout_width="0dp" android:layout_columnWeight="1"
+            android:text="M" android:gravity="center" android:textSize="11sp"
+            android:textStyle="bold" android:textColor="@color/muted"
+            android:paddingTop="4dp" android:paddingBottom="6dp" />
+        <TextView android:layout_width="0dp" android:layout_columnWeight="1"
+            android:text="X" android:gravity="center" android:textSize="11sp"
+            android:textStyle="bold" android:textColor="@color/muted"
+            android:paddingTop="4dp" android:paddingBottom="6dp" />
+        <TextView android:layout_width="0dp" android:layout_columnWeight="1"
+            android:text="J" android:gravity="center" android:textSize="11sp"
+            android:textStyle="bold" android:textColor="@color/muted"
+            android:paddingTop="4dp" android:paddingBottom="6dp" />
+        <TextView android:layout_width="0dp" android:layout_columnWeight="1"
+            android:text="V" android:gravity="center" android:textSize="11sp"
+            android:textStyle="bold" android:textColor="@color/muted"
+            android:paddingTop="4dp" android:paddingBottom="6dp" />
+        <TextView android:layout_width="0dp" android:layout_columnWeight="1"
+            android:text="S" android:gravity="center" android:textSize="11sp"
+            android:textStyle="bold" android:textColor="@color/muted"
+            android:paddingTop="4dp" android:paddingBottom="6dp" />
+        <TextView android:layout_width="0dp" android:layout_columnWeight="1"
+            android:text="D" android:gravity="center" android:textSize="11sp"
+            android:textStyle="bold" android:textColor="@color/muted"
+            android:paddingTop="4dp" android:paddingBottom="6dp" />
+
+    </GridLayout>
+
+    <!-- Grid del calendario -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvCalendario"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp" />
+
+    <!-- Divisor -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/line"
+        android:layout_marginTop="8dp" />
+
+    <!-- Título eventos del día -->
+    <TextView
+        android:id="@+id/tvTituloDia"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Hoy · 0 eventos"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        android:textColor="@color/ink"
+        android:paddingStart="20dp"
+        android:paddingTop="14dp"
+        android:paddingBottom="8dp" />
+
+    <!-- Lista eventos del día seleccionado -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvEventosDia"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:paddingBottom="16dp"
+        android:clipToPadding="false" />
+
+
+</LinearLayout>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabNuevoEvento"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|bottom"
+        android:layout_margin="20dp"
+        android:src="@android:drawable/ic_input_add"
+        android:backgroundTint="@color/brand"
+        app:tint="@color/white" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

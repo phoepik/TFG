@@ -44,6 +44,14 @@ data class GrupoResponse(
     val idAdmin: Int? = null
 )
 
+data class CalendarioResponse(
+    val idCalendario: Int? = null,
+    val nombre: String = "",
+    val tipo: String = "PERSONAL",
+    val idPropietario: Int? = null,
+    val idGrupo: Int? = null
+)
+
 data class NotificacionResponse(
     val idNotificacion: Int = 0,
     val titulo: String = "",
@@ -141,6 +149,11 @@ interface CalendarioApi {
 
     @DELETE("api/notificaciones/{id}")
     suspend fun borrarNotificacion(@Path("id") id: Int): Response<Void>
+
+    // ── Calendarios ──
+
+    @GET("api/calendarios/propietario/{id}")
+    suspend fun obtenerCalendariosDeUsuario(@Path("id") id: Int): Response<List<CalendarioResponse>>
 
     // ── Miembros de grupo ──
 

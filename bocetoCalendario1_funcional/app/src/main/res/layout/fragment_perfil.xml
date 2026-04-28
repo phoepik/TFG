@@ -47,7 +47,8 @@
                 android:text="Nombre del usuario"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                android:textColor="@color/ink" />
+                android:textColor="@color/ink"
+                android:gravity="center" />
 
             <TextView
                 android:id="@+id/tvEmail"
@@ -57,6 +58,70 @@
                 android:textSize="14sp"
                 android:textColor="@color/muted"
                 android:layout_marginTop="4dp" />
+
+        </LinearLayout>
+
+        <!-- Stats row -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="16dp">
+
+            <!-- Eventos stat -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:padding="16dp"
+                android:background="@drawable/bg_card"
+                android:layout_marginEnd="8dp">
+
+                <TextView
+                    android:id="@+id/tvStatEventos"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:textSize="28sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/brand" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Eventos"
+                    android:textSize="12sp"
+                    android:textColor="@color/muted" />
+            </LinearLayout>
+
+            <!-- Grupos stat -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:padding="16dp"
+                android:background="@drawable/bg_card">
+
+                <TextView
+                    android:id="@+id/tvStatGrupos"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:textSize="28sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/cat_magenta" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Grupos"
+                    android:textSize="12sp"
+                    android:textColor="@color/muted" />
+            </LinearLayout>
 
         </LinearLayout>
 

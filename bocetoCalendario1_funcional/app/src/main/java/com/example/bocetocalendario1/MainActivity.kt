@@ -11,6 +11,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
+import com.example.bocetocalendario1.miniPantalla.CalendarioFragment
 import com.example.bocetocalendario1.miniPantalla.GruposFragment
 import com.example.bocetocalendario1.miniPantalla.InicioFragment
 import com.example.bocetocalendario1.miniPantalla.NotificacionesFragment
@@ -21,12 +22,9 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 class MainActivity : AppCompatActivity() {
 
     private lateinit var bottomNavigation: BottomNavigationView
-    //Santiago BUenos dias 
-    // Lanzador para pedir permiso de notificaciones (Android 13+)
+
     private val requestNotificationPermission =
-        registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
-            // No se necesita acción especial; si deniega, simplemente no verá push
-        }
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,21 +36,17 @@ class MainActivity : AppCompatActivity() {
             insets
         }
 
-        // Crear canales de notificación
         NotificacionesManagerCanales.createAll(this)
 
-        // Pedir permiso POST_NOTIFICATIONS en Android 13+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
-                != PackageManager.PERMISSION_GRANTED
-            ) {
+                != PackageManager.PERMISSION_GRANTED) {
                 requestNotificationPermission.launch(Manifest.permission.POST_NOTIFICATIONS)
             }
         }
 
         bottomNavigation = findViewById(R.id.bottomNavigation)
 
-        // Determinar qué tab abrir (puede venir de una notificación push)
         val abrirTab = intent.getStringExtra("abrir_tab")
 
         if (savedInstanceState == null) {
@@ -62,7 +56,8 @@ class MainActivity : AppCompatActivity() {
                     bottomNavigation.selectedItemId = R.id.nav_notificaciones
                 }
                 else -> {
-                    cargarFragment(InicioFragment())
+                    cargarFragment(CalendarioFragment())
+                    bottomNavigation.selectedItemId = R.id.nav_inicio
                 }
             }
         }
@@ -70,7 +65,7 @@ class MainActivity : AppCompatActivity() {
         bottomNavigation.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.nav_inicio -> {
-                    cargarFragment(InicioFragment())
+                    cargarFragment(CalendarioFragment())
                     true
                 }
                 R.id.nav_grupos -> {
@@ -88,6 +83,11 @@ class MainActivity : AppCompatActivity() {
                 else -> false
             }
         }
+    }
+
+    fun navegarANotificaciones() {
+        cargarFragment(NotificacionesFragment())
+        bottomNavigation.selectedItemId = R.id.nav_notificaciones
     }
 
     private fun cargarFragment(fragment: Fragment) {

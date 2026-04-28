@@ -16,6 +16,7 @@ class GrupoAdapter(
     class GrupoViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val tvNombreGrupo: TextView = view.findViewById(R.id.tvNombreGrupo)
         val tvDescripcionGrupo: TextView = view.findViewById(R.id.tvDescripcionGrupo)
+        val tvMiembros: TextView? = view.findViewById(R.id.tvMiembros)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GrupoViewHolder {
@@ -28,6 +29,19 @@ class GrupoAdapter(
         val grupo = grupos[position]
         holder.tvNombreGrupo.text = grupo.nombre
         holder.tvDescripcionGrupo.text = grupo.descripcion
+
+        val backgrounds = listOf(
+            R.drawable.bg_group_blue,
+            R.drawable.bg_group_magenta,
+            R.drawable.bg_group_green,
+            R.drawable.bg_group_purple,
+            R.drawable.bg_group_orange,
+            R.drawable.bg_group_teal,
+        )
+        holder.itemView.setBackgroundResource(backgrounds[position % backgrounds.size])
+
+        val tvInicial = holder.itemView.findViewById<TextView>(R.id.tvInicialGrupo)
+        tvInicial?.text = grupo.nombre.firstOrNull()?.uppercaseChar()?.toString() ?: "G"
 
         holder.itemView.setOnClickListener { onClick(grupo) }
     }
