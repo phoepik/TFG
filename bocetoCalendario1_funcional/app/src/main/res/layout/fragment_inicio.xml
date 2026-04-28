@@ -3,35 +3,73 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:background="@color/bg">
 
-    <TextView
-        android:layout_width="wrap_content"
+    <!-- Header -->
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/eventos"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:layout_marginBottom="16dp"/>
+        android:orientation="horizontal"
+        android:padding="20dp"
+        android:paddingBottom="12dp"
+        android:gravity="center_vertical">
 
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Hoy"
+                android:textSize="11sp"
+                android:textStyle="bold"
+                android:textColor="@color/brand"
+                android:letterSpacing="0.06" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/eventos"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                android:textColor="@color/ink"
+                android:layout_marginTop="2dp" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btnNotificacion"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:text="🔔"
+            android:textSize="18sp"
+            android:backgroundTint="@color/brand_50"
+            android:layout_marginEnd="8dp" />
+
+        <Button
+            android:id="@+id/btnNuevoEvento"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:text="+ Nuevo"
+            android:backgroundTint="@color/brand"
+            android:textColor="@color/white"
+            android:textSize="13sp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+    <!-- Lista de eventos -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvEventos"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"/>
-
-    <Button
-        android:id="@+id/btnNotificacion"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="notificaciones " />
-
-    <Button
-        android:id="@+id/btnNuevoEvento"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:text="@string/nuevo_evento"
-        android:backgroundTint="@color/primary"
-        android:textColor="@color/white"
-        android:layout_marginTop="16dp"/>
+        android:layout_weight="1"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="16dp"
+        android:clipToPadding="false" />
 
 </LinearLayout>
