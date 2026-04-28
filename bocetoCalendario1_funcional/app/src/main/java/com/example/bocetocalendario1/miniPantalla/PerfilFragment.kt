@@ -53,6 +53,30 @@ class PerfilFragment : Fragment() {
 
         val idUsuario = gestorSesion.obtenerIdUsuario() ?: -1
 
+        // Stats views
+        val tvStatEventos = view.findViewById<TextView>(R.id.tvStatEventos)
+        val tvStatGrupos = view.findViewById<TextView>(R.id.tvStatGrupos)
+        val tvInicial = view.findViewById<TextView>(R.id.tvInicialUsuario)
+
+        // Set initials
+        val nombre = gestorSesion.obtenerNombreUsuario() ?: ""
+        val iniciales = nombre.trim().split(" ").take(2).mapNotNull { it.firstOrNull()?.uppercaseChar() }.joinToString("")
+        tvInicial?.text = if (iniciales.isNotEmpty()) iniciales else "U"
+
+        // Load groups count
+        if (idUsuario != -1) {
+            lifecycleScope.launch(Dispatchers.IO) {
+                try {
+                    val gruposResp = RetrofitClient.api.obtenerGruposDeUsuario(idUsuario)
+                    withContext(Dispatchers.Main) {
+                        if (gruposResp.isSuccessful) {
+                            tvStatGrupos?.text = gruposResp.body()?.size?.toString() ?: "0"
+                        }
+                    }
+                } catch (e: Exception) { /* ignore */ }
+            }
+        }
+
         switchNotificaciones.visibility = View.INVISIBLE
 
         if (idUsuario != -1) {

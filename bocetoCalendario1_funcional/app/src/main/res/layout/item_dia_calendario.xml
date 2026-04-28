@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:padding="4dp">
+
+    <!-- Número del día -->
+    <TextView
+        android:id="@+id/tvDia"
+        android:layout_width="34dp"
+        android:layout_height="34dp"
+        android:gravity="center"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        android:textColor="@color/ink" />
+
+    <!-- Dots de eventos -->
+    <LinearLayout
+        android:id="@+id/llDots"
+        android:layout_width="wrap_content"
+        android:layout_height="6dp"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginTop="2dp" />
+
+</LinearLayout>
