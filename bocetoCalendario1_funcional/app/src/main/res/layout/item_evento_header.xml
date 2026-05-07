@@ -1,13 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/tvHeaderFecha"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:text="Lunes, 28 de abril"
-    android:textSize="13sp"
-    android:textStyle="bold"
-    android:textColor="@color/muted"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
     android:paddingTop="16dp"
     android:paddingBottom="8dp"
     android:paddingStart="4dp"
-    android:letterSpacing="0.04" />
+    android:paddingEnd="4dp">
+
+    <!-- Day number (large) -->
+    <TextView
+        android:id="@+id/tvHeaderDayNumber"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="28"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:textColor="@color/ink"
+        android:layout_marginEnd="8dp" />
+
+    <!-- Weekday + Month labels -->
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tvHeaderWeekday"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Lunes"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            android:textColor="@color/ink" />
+
+        <TextView
+            android:id="@+id/tvHeaderMonth"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="abril"
+            android:textSize="11sp"
+            android:textColor="@color/muted" />
+
+    </LinearLayout>
+
+    <!-- "Hoy" chip (only shown when today) -->
+    <TextView
+        android:id="@+id/tvHeaderHoyChip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Hoy"
+        android:textSize="11sp"
+        android:textStyle="bold"
+        android:textColor="@color/brand"
+        android:background="@drawable/bg_chip_brand"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp"
+        android:visibility="gone" />
+
+</LinearLayout>

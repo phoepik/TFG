@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Dark theme overrides -->
+    <color name="ink">#F1F4FF</color>
+    <color name="ink_2">#C8CFE6</color>
+    <color name="muted">#8C95B5</color>
+    <color name="muted_2">#6B7494</color>
+    <color name="line">#232844</color>
+    <color name="line_2">#1B2040</color>
+    <color name="bg">#0B0E1F</color>
+    <color name="surface">#14182E</color>
+    <color name="surface_2">#181D38</color>
+    <color name="brand_50">#15224A</color>
+    <color name="brand_100">#1D2E66</color>
+    <color name="accent_soft">#3B341A</color>
+</resources>

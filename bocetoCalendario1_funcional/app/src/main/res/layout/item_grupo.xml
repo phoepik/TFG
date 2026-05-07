@@ -1,69 +1,87 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:padding="16dp"
-    android:layout_marginBottom="10dp"
-    android:background="@drawable/bg_group_blue"
-    android:gravity="center_vertical">
+    android:orientation="vertical"
+    android:layout_marginBottom="12dp"
+    android:padding="18dp"
+    android:background="@drawable/bg_group_blue">
 
-    <!-- Avatar inicial del grupo -->
-    <TextView
-        android:id="@+id/tvInicialGrupo"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:text="G"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        android:textColor="#FFFFFF"
-        android:gravity="center"
-        android:background="@drawable/bg_avatar"
-        android:layout_marginEnd="14dp" />
-
-    <!-- Info -->
+    <!-- Row 1: emoji + avatar stack (top) -->
     <LinearLayout
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:orientation="vertical">
+        android:orientation="horizontal"
+        android:gravity="top">
 
+        <!-- Emoji -->
         <TextView
-            android:id="@+id/tvNombreGrupo"
+            android:id="@+id/tvEmojiGrupo"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="&#127881;"
+            android:textSize="32sp" />
+
+        <!-- Miembros count chip -->
+        <TextView
+            android:id="@+id/tvMiembrosCount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Nombre del grupo"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:textColor="#FFFFFF" />
-
-        <TextView
-            android:id="@+id/tvDescripcionGrupo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Descripción del grupo"
-            android:textSize="13sp"
-            android:textColor="#CCFFFFFF"
-            android:maxLines="1"
-            android:layout_marginTop="2dp" />
-
-        <TextView
-            android:id="@+id/tvMiembros"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Ver grupo"
+            android:text="0"
             android:textSize="12sp"
-            android:textColor="#AAFFFFFF"
-            android:layout_marginTop="4dp" />
+            android:textColor="#CCFFFFFF"
+            android:textStyle="bold"
+            android:background="#33000000"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp" />
 
     </LinearLayout>
 
-    <!-- Flecha -->
+    <!-- Row 2: group name -->
     <TextView
+        android:id="@+id/tvNombreGrupo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Nombre del grupo"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:textColor="#FFFFFF"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="4dp" />
+
+    <!-- Row 3: members + events info -->
+    <TextView
+        android:id="@+id/tvEventosCount"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="0 miembros"
+        android:textSize="12sp"
+        android:textColor="#CCFFFFFF"
+        android:textStyle="bold" />
+
+    <!-- Hidden compat views -->
+    <TextView
+        android:id="@+id/tvDescripcionGrupo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="›"
-        android:textSize="26sp"
-        android:textColor="#AAFFFFFF" />
+        android:text=""
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/tvMiembros"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/tvInicialGrupo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:visibility="gone" />
 
 </LinearLayout>

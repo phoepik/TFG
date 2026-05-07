@@ -28,6 +28,7 @@
     <color name="line_2">#EFF1F8</color>
     <color name="bg">#F6F7FB</color>
     <color name="surface">#FFFFFF</color>
+    <color name="surface_2">#FBFBFE</color>
 
     <!-- Legacy compat aliases -->
     <color name="primary">#0B5FFF</color>

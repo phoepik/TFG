@@ -9,31 +9,65 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="20dp"
-        android:paddingBottom="12dp"
-        android:gravity="center_vertical">
+        android:orientation="vertical"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:paddingTop="20dp"
+        android:paddingBottom="8dp">
 
         <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/grupos"
-            android:textSize="22sp"
-            android:textStyle="bold"
-            android:textColor="@color/ink" />
-
-        <Button
-            android:id="@+id/btnNuevoGrupo"
             android:layout_width="wrap_content"
-            android:layout_height="40dp"
-            android:text="+ Nuevo grupo"
-            android:backgroundTint="@color/brand"
-            android:textColor="@color/white"
-            android:textSize="13sp"
-            android:textStyle="bold" />
+            android:layout_height="wrap_content"
+            android:text="TUS GRUPOS"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            android:textColor="@color/brand"
+            android:letterSpacing="0.08" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/grupos"
+            android:textSize="26sp"
+            android:textStyle="bold"
+            android:textColor="@color/ink"
+            android:layout_marginTop="2dp" />
 
     </LinearLayout>
+
+    <!-- Search bar -->
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="12dp">
+
+        <EditText
+            android:id="@+id/etBuscarGrupos"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:hint="Buscar grupos..."
+            android:background="@drawable/bg_field"
+            android:paddingStart="44dp"
+            android:paddingEnd="16dp"
+            android:textSize="14sp"
+            android:textColor="@color/ink"
+            android:textColorHint="@color/muted_2"
+            android:inputType="text"
+            android:imeOptions="actionSearch"
+            android:singleLine="true" />
+
+        <TextView
+            android:layout_width="40dp"
+            android:layout_height="match_parent"
+            android:text="🔍"
+            android:textSize="16sp"
+            android:gravity="center"
+            android:textColor="@color/muted"
+            android:layout_gravity="start|center_vertical" />
+
+    </FrameLayout>
 
     <!-- Lista de grupos -->
     <androidx.recyclerview.widget.RecyclerView
@@ -43,8 +77,24 @@
         android:layout_weight="1"
         android:paddingStart="16dp"
         android:paddingEnd="16dp"
-        android:paddingTop="8dp"
-        android:paddingBottom="16dp"
+        android:paddingTop="4dp"
+        android:paddingBottom="8dp"
         android:clipToPadding="false" />
+
+    <!-- Create group button (dashed style) -->
+    <TextView
+        android:id="@+id/btnNuevoGrupo"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:text="+ Crear nuevo grupo"
+        android:textColor="@color/brand"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:background="@drawable/bg_btn_crear_grupo"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:layout_marginTop="4dp" />
 
 </LinearLayout>

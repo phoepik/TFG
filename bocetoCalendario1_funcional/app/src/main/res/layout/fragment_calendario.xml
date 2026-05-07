@@ -84,6 +84,17 @@
             android:textColor="@color/ink_2"
             android:padding="0dp" />
 
+        <android.widget.ImageButton
+            android:id="@+id/btnSearch"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:src="@android:drawable/ic_menu_search"
+            android:background="@drawable/bg_back_white"
+            android:layout_marginStart="4dp"
+            android:scaleType="fitCenter"
+            android:padding="6dp"
+            android:contentDescription="Buscar" />
+
     </LinearLayout>
 
     <!-- Vista selector: Mes / Semana / Día -->
@@ -144,84 +155,254 @@
 
     </LinearLayout>
 
-    <!-- Días de la semana -->
-    <GridLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:columnCount="7"
-        android:paddingStart="8dp"
-        android:paddingEnd="8dp">
-
-        <TextView android:layout_width="0dp" android:layout_columnWeight="1"
-            android:text="L" android:gravity="center" android:textSize="11sp"
-            android:textStyle="bold" android:textColor="@color/muted"
-            android:paddingTop="4dp" android:paddingBottom="6dp" />
-        <TextView android:layout_width="0dp" android:layout_columnWeight="1"
-            android:text="M" android:gravity="center" android:textSize="11sp"
-            android:textStyle="bold" android:textColor="@color/muted"
-            android:paddingTop="4dp" android:paddingBottom="6dp" />
-        <TextView android:layout_width="0dp" android:layout_columnWeight="1"
-            android:text="X" android:gravity="center" android:textSize="11sp"
-            android:textStyle="bold" android:textColor="@color/muted"
-            android:paddingTop="4dp" android:paddingBottom="6dp" />
-        <TextView android:layout_width="0dp" android:layout_columnWeight="1"
-            android:text="J" android:gravity="center" android:textSize="11sp"
-            android:textStyle="bold" android:textColor="@color/muted"
-            android:paddingTop="4dp" android:paddingBottom="6dp" />
-        <TextView android:layout_width="0dp" android:layout_columnWeight="1"
-            android:text="V" android:gravity="center" android:textSize="11sp"
-            android:textStyle="bold" android:textColor="@color/muted"
-            android:paddingTop="4dp" android:paddingBottom="6dp" />
-        <TextView android:layout_width="0dp" android:layout_columnWeight="1"
-            android:text="S" android:gravity="center" android:textSize="11sp"
-            android:textStyle="bold" android:textColor="@color/muted"
-            android:paddingTop="4dp" android:paddingBottom="6dp" />
-        <TextView android:layout_width="0dp" android:layout_columnWeight="1"
-            android:text="D" android:gravity="center" android:textSize="11sp"
-            android:textStyle="bold" android:textColor="@color/muted"
-            android:paddingTop="4dp" android:paddingBottom="6dp" />
-
-    </GridLayout>
-
-    <!-- Grid del calendario -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvCalendario"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingStart="8dp"
-        android:paddingEnd="8dp" />
-
-    <!-- Divisor -->
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/line"
-        android:layout_marginTop="8dp" />
-
-    <!-- Título eventos del día -->
-    <TextView
-        android:id="@+id/tvTituloDia"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Hoy · 0 eventos"
-        android:textSize="15sp"
-        android:textStyle="bold"
-        android:textColor="@color/ink"
-        android:paddingStart="20dp"
-        android:paddingTop="14dp"
-        android:paddingBottom="8dp" />
-
-    <!-- Lista eventos del día seleccionado -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvEventosDia"
+    <!-- ============= MES VIEW ============= -->
+    <LinearLayout
+        android:id="@+id/viewMes"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:paddingStart="16dp"
-        android:paddingEnd="16dp"
-        android:paddingBottom="16dp"
-        android:clipToPadding="false" />
+        android:orientation="vertical"
+        android:visibility="visible">
 
+        <!-- Días de la semana -->
+        <GridLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:columnCount="7"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp">
+
+            <TextView android:layout_width="0dp" android:layout_columnWeight="1"
+                android:text="L" android:gravity="center" android:textSize="11sp"
+                android:textStyle="bold" android:textColor="@color/muted"
+                android:paddingTop="4dp" android:paddingBottom="6dp" />
+            <TextView android:layout_width="0dp" android:layout_columnWeight="1"
+                android:text="M" android:gravity="center" android:textSize="11sp"
+                android:textStyle="bold" android:textColor="@color/muted"
+                android:paddingTop="4dp" android:paddingBottom="6dp" />
+            <TextView android:layout_width="0dp" android:layout_columnWeight="1"
+                android:text="X" android:gravity="center" android:textSize="11sp"
+                android:textStyle="bold" android:textColor="@color/muted"
+                android:paddingTop="4dp" android:paddingBottom="6dp" />
+            <TextView android:layout_width="0dp" android:layout_columnWeight="1"
+                android:text="J" android:gravity="center" android:textSize="11sp"
+                android:textStyle="bold" android:textColor="@color/muted"
+                android:paddingTop="4dp" android:paddingBottom="6dp" />
+            <TextView android:layout_width="0dp" android:layout_columnWeight="1"
+                android:text="V" android:gravity="center" android:textSize="11sp"
+                android:textStyle="bold" android:textColor="@color/muted"
+                android:paddingTop="4dp" android:paddingBottom="6dp" />
+            <TextView android:layout_width="0dp" android:layout_columnWeight="1"
+                android:text="S" android:gravity="center" android:textSize="11sp"
+                android:textStyle="bold" android:textColor="@color/muted"
+                android:paddingTop="4dp" android:paddingBottom="6dp" />
+            <TextView android:layout_width="0dp" android:layout_columnWeight="1"
+                android:text="D" android:gravity="center" android:textSize="11sp"
+                android:textStyle="bold" android:textColor="@color/muted"
+                android:paddingTop="4dp" android:paddingBottom="6dp" />
+
+        </GridLayout>
+
+        <!-- Grid del calendario -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvCalendario"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp" />
+
+        <!-- Divisor -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/line"
+            android:layout_marginTop="8dp" />
+
+        <!-- Título eventos del día -->
+        <TextView
+            android:id="@+id/tvTituloDia"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Hoy · 0 eventos"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:textColor="@color/ink"
+            android:paddingStart="20dp"
+            android:paddingTop="14dp"
+            android:paddingBottom="8dp" />
+
+        <!-- Lista eventos del día seleccionado -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvEventosDia"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:paddingBottom="16dp"
+            android:clipToPadding="false" />
+
+    </LinearLayout>
+
+    <!-- ============= SEMANA VIEW ============= -->
+    <LinearLayout
+        android:id="@+id/viewSemana"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <!-- Week header row: 7 day columns -->
+        <LinearLayout
+            android:id="@+id/layoutWeekHeader"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:orientation="horizontal"
+            android:background="@color/surface">
+
+            <View android:layout_width="48dp" android:layout_height="match_parent" />
+
+            <LinearLayout
+                android:id="@+id/layoutDayColumns"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="horizontal" />
+        </LinearLayout>
+
+        <!-- Divider -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/line" />
+
+        <!-- Hour grid scroll -->
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:scrollbars="vertical">
+
+            <FrameLayout
+                android:id="@+id/frameWeekGrid"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <!-- Hour lines -->
+                <LinearLayout
+                    android:id="@+id/layoutHourRows"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical" />
+
+                <!-- Events per day columns overlay -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <View android:layout_width="48dp" android:layout_height="1dp" />
+
+                    <LinearLayout
+                        android:id="@+id/layoutEventColumns"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="horizontal" />
+
+                </LinearLayout>
+
+            </FrameLayout>
+
+        </ScrollView>
+
+    </LinearLayout>
+
+    <!-- ============= DÍA VIEW ============= -->
+    <LinearLayout
+        android:id="@+id/viewDia"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <!-- Day header -->
+        <TextView
+            android:id="@+id/tvDayViewTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="28 abril lunes"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="@color/ink"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:paddingTop="12dp"
+            android:paddingBottom="12dp"
+            android:background="@color/surface" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/line" />
+
+        <!-- Scrollable day grid -->
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:scrollbars="vertical">
+
+            <FrameLayout
+                android:id="@+id/frameDayGrid"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <LinearLayout
+                    android:id="@+id/layoutDayHourRows"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical" />
+
+                <FrameLayout
+                    android:id="@+id/layoutDayEvents"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </FrameLayout>
+
+        </ScrollView>
+
+        <!-- Empty state -->
+        <LinearLayout
+            android:id="@+id/layoutDayEmpty"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="🌤️"
+                android:textSize="40sp"
+                android:layout_marginBottom="8dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="No tienes eventos este día."
+                android:textSize="15sp"
+                android:textColor="@color/muted"
+                android:gravity="center" />
+
+        </LinearLayout>
+
+    </LinearLayout>
 
 </LinearLayout>
 

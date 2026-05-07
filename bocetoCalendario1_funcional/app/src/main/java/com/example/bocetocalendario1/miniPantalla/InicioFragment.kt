@@ -48,7 +48,7 @@ class InicioFragment : Fragment() {
             startActivity(Intent(context, CrearEventoActivity::class.java))
         }
         btnNotificacion.setOnClickListener {
-            (activity as? MainActivity)?.navegarANotificaciones()
+            // Navigate to Eventos tab
         }
     }
 

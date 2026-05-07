@@ -1,0 +1,376 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/bg_bottom_sheet"
+    android:paddingBottom="32dp">
+
+    <!-- Handle bar -->
+    <View
+        android:layout_width="36dp"
+        android:layout_height="4dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/bg_handle" />
+
+    <!-- Top row: group badge + close button -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingStart="20dp"
+        android:paddingEnd="16dp"
+        android:paddingBottom="12dp">
+
+        <TextView
+            android:id="@+id/tvGrupoBadge"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="📅 Personal"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            android:textColor="@color/brand"
+            android:background="@drawable/bg_chip_brand"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:paddingTop="6dp"
+            android:paddingBottom="6dp"
+            android:maxWidth="200dp" />
+
+        <TextView
+            android:id="@+id/btnCerrarSheet"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:text="✕"
+            android:textSize="18sp"
+            android:textColor="@color/muted"
+            android:gravity="center"
+            android:background="@drawable/bg_chip_muted"
+            android:layout_marginStart="12dp" />
+
+    </LinearLayout>
+
+    <!-- Event title -->
+    <TextView
+        android:id="@+id/tvTituloDetalle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Título del evento"
+        android:textSize="26sp"
+        android:textStyle="bold"
+        android:textColor="@color/ink"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:paddingBottom="16dp" />
+
+    <!-- Divider -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/line"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="12dp" />
+
+    <!-- Detail rows -->
+    <!-- Date/Time -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:paddingBottom="12dp">
+
+        <TextView
+            android:layout_width="28dp"
+            android:layout_height="wrap_content"
+            android:text="📅"
+            android:textSize="18sp" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tvFechaDetalle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Lunes, 28 de abril"
+                android:textSize="14sp"
+                android:textColor="@color/ink" />
+
+            <TextView
+                android:id="@+id/tvHoraDetalle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="10:00 – 11:00"
+                android:textSize="13sp"
+                android:textColor="@color/muted"
+                android:layout_marginTop="2dp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <!-- Location (conditionally visible) -->
+    <LinearLayout
+        android:id="@+id/layoutUbicacionDetalle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:paddingBottom="12dp"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="28dp"
+            android:layout_height="wrap_content"
+            android:text="📍"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/tvUbicacionDetalle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Ubicación"
+            android:textSize="14sp"
+            android:textColor="@color/cat_magenta" />
+
+    </LinearLayout>
+
+    <!-- Description (conditionally visible) -->
+    <LinearLayout
+        android:id="@+id/layoutDescripcionDetalle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:paddingBottom="16dp"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="DESCRIPCIÓN"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            android:textColor="@color/muted"
+            android:letterSpacing="0.06"
+            android:layout_marginBottom="6dp" />
+
+        <TextView
+            android:id="@+id/tvDescripcionDetalle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textSize="14sp"
+            android:textColor="@color/ink_2"
+            android:lineSpacingExtra="4dp" />
+
+    </LinearLayout>
+
+    <!-- Attendees section -->
+    <LinearLayout
+        android:id="@+id/layoutAsistentes"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:paddingBottom="16dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="ASISTENTES"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            android:textColor="@color/muted"
+            android:letterSpacing="0.06"
+            android:layout_marginBottom="10dp" />
+
+        <!-- Attendee row 1 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="8dp">
+
+            <TextView
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:text="AM"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:textColor="@color/white"
+                android:gravity="center"
+                android:background="@drawable/bg_chip"
+                android:backgroundTint="#0B5FFF"
+                android:layout_marginEnd="12dp" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Ana Martínez"
+                android:textSize="14sp"
+                android:textColor="@color/ink" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Confirmado"
+                android:textSize="11sp"
+                android:textStyle="bold"
+                android:textColor="@color/cat_green"
+                android:background="@drawable/bg_chip"
+                android:backgroundTint="#1A22C55E"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:paddingTop="3dp"
+                android:paddingBottom="3dp" />
+
+        </LinearLayout>
+
+        <!-- Attendee row 2 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="8dp">
+
+            <TextView
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:text="CG"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:textColor="@color/white"
+                android:gravity="center"
+                android:background="@drawable/bg_chip"
+                android:backgroundTint="#E94B7B"
+                android:layout_marginEnd="12dp" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Carlos García"
+                android:textSize="14sp"
+                android:textColor="@color/ink" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Pendiente"
+                android:textSize="11sp"
+                android:textStyle="bold"
+                android:textColor="@color/muted"
+                android:background="@drawable/bg_chip"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:paddingTop="3dp"
+                android:paddingBottom="3dp" />
+
+        </LinearLayout>
+
+        <!-- Attendee row 3 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:text="LR"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:textColor="@color/white"
+                android:gravity="center"
+                android:background="@drawable/bg_chip"
+                android:backgroundTint="#22C55E"
+                android:layout_marginEnd="12dp" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Laura Rodríguez"
+                android:textSize="14sp"
+                android:textColor="@color/ink" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Confirmado"
+                android:textSize="11sp"
+                android:textStyle="bold"
+                android:textColor="@color/cat_green"
+                android:background="@drawable/bg_chip"
+                android:backgroundTint="#1A22C55E"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:paddingTop="3dp"
+                android:paddingBottom="3dp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <!-- Divider -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/line"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="16dp" />
+
+    <!-- Bottom buttons -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp">
+
+        <Button
+            android:id="@+id/btnEditar"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:text="Editar"
+            android:textSize="14sp"
+            android:textColor="@color/brand"
+            android:backgroundTint="@color/brand_50"
+            android:layout_marginEnd="8dp" />
+
+        <Button
+            android:id="@+id/btnVoy"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:text="Voy"
+            android:textSize="14sp"
+            android:textColor="@color/white"
+            android:backgroundTint="@color/brand" />
+
+    </LinearLayout>
+
+</LinearLayout>

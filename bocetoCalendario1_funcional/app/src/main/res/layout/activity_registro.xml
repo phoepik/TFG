@@ -1,174 +1,306 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/bg"
+    android:background="@drawable/bg_gradient_auth"
     android:fillViewport="true">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="24dp"
         android:minHeight="640dp">
 
-        <!-- Barra de progreso pasos -->
+        <!-- Back button -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:paddingTop="12dp"
-            android:layout_marginBottom="24dp">
+            android:paddingStart="16dp"
+            android:paddingTop="20dp"
+            android:paddingEnd="16dp">
+
+            <TextView
+                android:id="@+id/btnBack"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:text="&#8592;"
+                android:textSize="22sp"
+                android:textColor="@color/ink_2"
+                android:gravity="center"
+                android:background="@drawable/bg_chip_muted" />
+
+        </LinearLayout>
+
+        <!-- Progress bars (2 steps) -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingStart="24dp"
+            android:paddingEnd="24dp"
+            android:paddingTop="16dp"
+            android:paddingBottom="4dp">
+
             <View
+                android:id="@+id/progressStep1"
                 android:layout_width="0dp"
                 android:layout_height="4dp"
                 android:layout_weight="1"
-                android:background="@drawable/bg_btn_primary"
-                android:layout_marginEnd="6dp" />
+                android:layout_marginEnd="6dp"
+                android:background="@drawable/bg_btn_primary" />
+
             <View
+                android:id="@+id/progressStep2"
                 android:layout_width="0dp"
                 android:layout_height="4dp"
                 android:layout_weight="1"
                 android:background="@color/line" />
+
         </LinearLayout>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Crea tu cuenta ✨"
-            android:textColor="@color/ink"
-            android:textSize="26sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="8dp" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Empieza a organizar tus planes en segundos."
-            android:textColor="@color/muted"
-            android:textSize="15sp"
-            android:layout_marginBottom="28dp" />
-
-        <!-- Nombre -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Nombre completo"
-            android:textColor="@color/ink_2"
-            android:textSize="13sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="6dp" />
-
-        <EditText
-            android:id="@+id/etNombre"
-            android:layout_width="match_parent"
-            android:layout_height="52dp"
-            android:hint="Tu nombre"
-            android:inputType="textPersonName"
-            android:background="@drawable/bg_field"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp"
-            android:textSize="15sp"
-            android:textColor="@color/ink"
-            android:textColorHint="@color/muted_2"
-            android:layout_marginBottom="16dp" />
-
-        <!-- Email -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Correo electrónico"
-            android:textColor="@color/ink_2"
-            android:textSize="13sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="6dp" />
-
-        <EditText
-            android:id="@+id/etEmail"
-            android:layout_width="match_parent"
-            android:layout_height="52dp"
-            android:hint="tu@correo.com"
-            android:inputType="textEmailAddress"
-            android:background="@drawable/bg_field"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp"
-            android:textSize="15sp"
-            android:textColor="@color/ink"
-            android:textColorHint="@color/muted_2"
-            android:layout_marginBottom="16dp" />
-
-        <!-- Contraseña -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Contraseña"
-            android:textColor="@color/ink_2"
-            android:textSize="13sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="6dp" />
-
-        <EditText
-            android:id="@+id/etContrasena"
-            android:layout_width="match_parent"
-            android:layout_height="52dp"
-            android:hint="Mínimo 6 caracteres"
-            android:inputType="textPassword"
-            android:background="@drawable/bg_field"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp"
-            android:textSize="15sp"
-            android:textColor="@color/ink"
-            android:textColorHint="@color/muted_2"
-            android:layout_marginBottom="16dp" />
-
-        <!-- Notificaciones -->
+        <!-- Title block -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:padding="14dp"
-            android:background="@drawable/bg_card"
-            android:layout_marginBottom="24dp">
+            android:orientation="vertical"
+            android:paddingStart="24dp"
+            android:paddingEnd="24dp"
+            android:paddingTop="20dp"
+            android:paddingBottom="8dp">
 
             <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/notificaciones_activadas"
-                android:textSize="15sp"
-                android:textColor="@color/ink" />
-
-            <Switch
-                android:id="@+id/switchNotificaciones"
+                android:id="@+id/tvTituloRegistro"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:checked="true"
-                android:thumbTint="@color/brand"
-                android:trackTint="@color/brand_100" />
+                android:text="Crea tu cuenta &#10024;"
+                android:textColor="@color/ink"
+                android:textSize="28sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvSubtituloRegistro"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Empieza a organizar tus planes en segundos."
+                android:textColor="@color/muted"
+                android:textSize="15sp"
+                android:layout_marginTop="8dp" />
 
         </LinearLayout>
 
-        <Button
-            android:id="@+id/btnRegistrarse"
-            android:layout_width="match_parent"
-            android:layout_height="52dp"
-            android:text="@string/registrarse"
-            android:backgroundTint="@color/brand"
-            android:textColor="@color/white"
-            android:textSize="15sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="10dp" />
-
-        <TextView
-            android:id="@+id/tvIrLogin"
+        <!-- STEP 1: Nombre + Email -->
+        <LinearLayout
+            android:id="@+id/layoutStep1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/ya_tienes_cuenta"
-            android:textColor="@color/brand"
-            android:textSize="14sp"
-            android:gravity="center"
-            android:padding="10dp" />
+            android:orientation="vertical"
+            android:paddingStart="24dp"
+            android:paddingEnd="24dp"
+            android:visibility="visible">
+
+            <!-- Nombre -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Nombre completo"
+                android:textColor="@color/ink_2"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="6dp" />
+
+            <EditText
+                android:id="@+id/etNombre"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:hint="Tu nombre"
+                android:inputType="textPersonName"
+                android:background="@drawable/bg_field"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:textSize="15sp"
+                android:textColor="@color/ink"
+                android:textColorHint="@color/muted_2"
+                android:layout_marginBottom="16dp" />
+
+            <!-- Email -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Correo electr&#243;nico"
+                android:textColor="@color/ink_2"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="6dp" />
+
+            <EditText
+                android:id="@+id/etEmail"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:hint="tu@correo.com"
+                android:inputType="textEmailAddress"
+                android:background="@drawable/bg_field"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:textSize="15sp"
+                android:textColor="@color/ink"
+                android:textColorHint="@color/muted_2"
+                android:layout_marginBottom="16dp" />
+
+        </LinearLayout>
+
+        <!-- STEP 2: Password + Terms -->
+        <LinearLayout
+            android:id="@+id/layoutStep2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingStart="24dp"
+            android:paddingEnd="24dp"
+            android:visibility="gone">
+
+            <!-- Contrasena -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Contrase&#241;a"
+                android:textColor="@color/ink_2"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="6dp" />
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:layout_marginBottom="16dp">
+
+                <EditText
+                    android:id="@+id/etContrasena"
+                    android:layout_width="match_parent"
+                    android:layout_height="52dp"
+                    android:hint="M&#237;nimo 6 caracteres"
+                    android:inputType="textPassword"
+                    android:background="@drawable/bg_field"
+                    android:paddingStart="48dp"
+                    android:paddingEnd="48dp"
+                    android:textSize="15sp"
+                    android:textColor="@color/ink"
+                    android:textColorHint="@color/muted_2" />
+
+                <TextView
+                    android:layout_width="40dp"
+                    android:layout_height="match_parent"
+                    android:text="&#128274;"
+                    android:textSize="16sp"
+                    android:textColor="@color/muted"
+                    android:gravity="center"
+                    android:layout_gravity="start|center_vertical" />
+
+                <TextView
+                    android:id="@+id/btnTogglePasswordReg"
+                    android:layout_width="48dp"
+                    android:layout_height="match_parent"
+                    android:text="&#128065;"
+                    android:textSize="16sp"
+                    android:textColor="@color/muted"
+                    android:gravity="center"
+                    android:layout_gravity="end|center_vertical" />
+
+            </FrameLayout>
+
+            <!-- Terms checkbox -->
+            <CheckBox
+                android:id="@+id/checkTerminos"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Acepto los T&#233;rminos y la Pol&#237;tica de privacidad"
+                android:textColor="@color/ink_2"
+                android:textSize="13sp"
+                android:layout_marginBottom="12dp" />
+
+            <!-- Notificaciones switch -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:padding="14dp"
+                android:background="@drawable/bg_card"
+                android:layout_marginBottom="16dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Activar notificaciones"
+                    android:textSize="14sp"
+                    android:textColor="@color/ink" />
+
+                <Switch
+                    android:id="@+id/switchNotificaciones"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:thumbTint="@color/brand"
+                    android:trackTint="@color/brand_100" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <!-- Spacer -->
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:minHeight="24dp" />
+
+        <!-- Buttons -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingStart="24dp"
+            android:paddingEnd="24dp"
+            android:paddingBottom="32dp">
+
+            <!-- Step 1: Continuar -->
+            <Button
+                android:id="@+id/btnSiguienteStep"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:text="Continuar"
+                android:backgroundTint="@color/brand"
+                android:textColor="@color/white"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="12dp"
+                android:visibility="visible" />
+
+            <!-- Step 2: Crear cuenta -->
+            <Button
+                android:id="@+id/btnRegistrarse"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:text="Crear cuenta"
+                android:backgroundTint="@color/brand"
+                android:textColor="@color/white"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="12dp"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/tvIrLogin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="&#191;Ya tienes cuenta? Iniciar sesi&#243;n"
+                android:textColor="@color/brand"
+                android:textSize="14sp"
+                android:gravity="center"
+                android:padding="10dp" />
+
+        </LinearLayout>
 
     </LinearLayout>
 

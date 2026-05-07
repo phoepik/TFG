@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <!-- Day header -->
+    <TextView
+        android:id="@+id/tvDayViewTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="28 abril lunes"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:textColor="@color/ink"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:paddingTop="12dp"
+        android:paddingBottom="12dp"
+        android:background="@color/surface" />
+
+    <!-- Divider -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/line" />
+
+    <!-- Scrollable day grid -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:scrollbars="vertical">
+
+        <FrameLayout
+            android:id="@+id/frameDayGrid"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <!-- Hour rows -->
+            <LinearLayout
+                android:id="@+id/layoutDayHourRows"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" />
+
+            <!-- Events overlay -->
+            <FrameLayout
+                android:id="@+id/layoutDayEvents"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <!-- Spacer for gutter -->
+            </FrameLayout>
+
+        </FrameLayout>
+
+    </ScrollView>
+
+    <!-- Empty state for day view -->
+    <LinearLayout
+        android:id="@+id/layoutDayEmpty"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:padding="32dp"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="🌤️"
+            android:textSize="40sp"
+            android:layout_marginBottom="8dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="No tienes eventos este día."
+            android:textSize="15sp"
+            android:textColor="@color/muted"
+            android:gravity="center" />
+
+    </LinearLayout>
+
+</LinearLayout>

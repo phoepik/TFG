@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@drawable/bg_bottom_sheet"
+        android:paddingBottom="32dp">
+
+        <!-- Handle -->
+        <View
+            android:layout_width="36dp"
+            android:layout_height="4dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="20dp"
+            android:background="@drawable/bg_handle" />
+
+        <!-- Title -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Privacidad"
+            android:textColor="@color/ink"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:paddingStart="24dp"
+            android:paddingEnd="24dp"
+            android:paddingBottom="16dp" />
+
+        <!-- Toggle card -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/bg_card"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp">
+
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="horizontal" android:gravity="center_vertical" android:padding="16dp">
+                <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                    android:layout_weight="1" android:text="Perfil público"
+                    android:textColor="@color/ink" android:textSize="15sp" android:textStyle="bold" />
+                <com.google.android.material.switchmaterial.SwitchMaterial
+                    android:id="@+id/switchPerfilPublico" android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" android:checked="true" />
+            </LinearLayout>
+
+            <View android:layout_width="match_parent" android:layout_height="1dp"
+                android:background="@color/line_2" android:layout_marginStart="16dp" />
+
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="horizontal" android:gravity="center_vertical" android:padding="16dp">
+                <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                    android:layout_weight="1" android:text="Mostrar correo electrónico"
+                    android:textColor="@color/ink" android:textSize="15sp" android:textStyle="bold" />
+                <com.google.android.material.switchmaterial.SwitchMaterial
+                    android:id="@+id/switchMostrarCorreo" android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" android:checked="false" />
+            </LinearLayout>
+
+            <View android:layout_width="match_parent" android:layout_height="1dp"
+                android:background="@color/line_2" android:layout_marginStart="16dp" />
+
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="horizontal" android:gravity="center_vertical" android:padding="16dp">
+                <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                    android:layout_weight="1" android:orientation="vertical">
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="Aceptar invitaciones automáticamente"
+                        android:textColor="@color/ink" android:textSize="15sp" android:textStyle="bold" />
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="Sin confirmación previa" android:textColor="@color/muted" android:textSize="12sp" />
+                </LinearLayout>
+                <com.google.android.material.switchmaterial.SwitchMaterial
+                    android:id="@+id/switchAutoInvite" android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" android:checked="false" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Action card -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/bg_card"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp">
+
+            <LinearLayout android:id="@+id/rowCambiarContrasena"
+                android:layout_width="match_parent" android:layout_height="56dp"
+                android:orientation="horizontal" android:gravity="center_vertical"
+                android:padding="16dp" android:background="?attr/selectableItemBackground">
+                <FrameLayout android:layout_width="36dp" android:layout_height="36dp" android:layout_marginEnd="14dp">
+                    <View android:layout_width="36dp" android:layout_height="36dp" android:background="#1A0B5FFF" android:backgroundTint="#1A0B5FFF" />
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:layout_gravity="center" android:text="🔒" android:textSize="16sp" />
+                </FrameLayout>
+                <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                    android:layout_weight="1" android:text="Cambiar contraseña"
+                    android:textColor="@color/ink" android:textSize="15sp" />
+            </LinearLayout>
+
+            <View android:layout_width="match_parent" android:layout_height="1dp"
+                android:background="@color/line_2" android:layout_marginStart="16dp" />
+
+            <LinearLayout android:id="@+id/rowDatosDescargables"
+                android:layout_width="match_parent" android:layout_height="56dp"
+                android:orientation="horizontal" android:gravity="center_vertical"
+                android:padding="16dp" android:background="?attr/selectableItemBackground">
+                <FrameLayout android:layout_width="36dp" android:layout_height="36dp" android:layout_marginEnd="14dp">
+                    <View android:layout_width="36dp" android:layout_height="36dp" android:background="#1A8B5CF6" android:backgroundTint="#1A8B5CF6" />
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:layout_gravity="center" android:text="📋" android:textSize="16sp" />
+                </FrameLayout>
+                <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                    android:layout_weight="1" android:text="Datos descargables"
+                    android:textColor="@color/ink" android:textSize="15sp" />
+            </LinearLayout>
+
+            <View android:layout_width="match_parent" android:layout_height="1dp"
+                android:background="@color/line_2" android:layout_marginStart="16dp" />
+
+            <LinearLayout android:id="@+id/rowEliminarCuenta"
+                android:layout_width="match_parent" android:layout_height="56dp"
+                android:orientation="horizontal" android:gravity="center_vertical"
+                android:padding="16dp" android:background="?attr/selectableItemBackground">
+                <FrameLayout android:layout_width="36dp" android:layout_height="36dp" android:layout_marginEnd="14dp">
+                    <View android:layout_width="36dp" android:layout_height="36dp" android:background="#1AE94B7B" android:backgroundTint="#1AE94B7B" />
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:layout_gravity="center" android:text="✕" android:textSize="16sp" android:textColor="#E94B7B" />
+                </FrameLayout>
+                <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                    android:layout_weight="1" android:text="Eliminar cuenta"
+                    android:textColor="#E94B7B" android:textSize="15sp" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</ScrollView>

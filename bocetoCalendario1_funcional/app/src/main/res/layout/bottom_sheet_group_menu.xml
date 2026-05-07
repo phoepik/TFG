@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/bg_bottom_sheet"
+    android:paddingBottom="32dp">
+
+    <!-- Handle -->
+    <View
+        android:layout_width="36dp"
+        android:layout_height="4dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="20dp"
+        android:background="@drawable/bg_handle" />
+
+    <!-- Group header -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:paddingBottom="20dp">
+
+        <FrameLayout
+            android:id="@+id/viewGroupMenuEmoji"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_marginEnd="14dp">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="👥"
+                android:textSize="28sp"
+                android:gravity="center" />
+        </FrameLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tvGroupMenuNombre"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Grupo"
+                android:textColor="@color/ink"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvGroupMenuMiembros"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0 miembros"
+                android:textColor="@color/muted"
+                android:textSize="13sp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <!-- Action rows -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@drawable/bg_card"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp">
+
+        <LinearLayout
+            android:id="@+id/rowSilenciar"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:padding="16dp"
+            android:background="?attr/selectableItemBackground">
+
+            <FrameLayout
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_marginEnd="14dp">
+                <View android:layout_width="36dp" android:layout_height="36dp"
+                    android:background="#1AF97316" android:backgroundTint="#1AF97316" />
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:layout_gravity="center" android:text="🔔" android:textSize="16sp" />
+            </FrameLayout>
+
+            <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                android:layout_weight="1" android:text="Silenciar notificaciones"
+                android:textColor="@color/ink" android:textSize="15sp" />
+
+        </LinearLayout>
+
+        <View android:layout_width="match_parent" android:layout_height="1dp"
+            android:background="@color/line_2" android:layout_marginStart="16dp" />
+
+        <LinearLayout
+            android:id="@+id/rowEditarGrupo"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:padding="16dp"
+            android:background="?attr/selectableItemBackground">
+
+            <FrameLayout
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_marginEnd="14dp">
+                <View android:layout_width="36dp" android:layout_height="36dp"
+                    android:background="#1A0B5FFF" android:backgroundTint="#1A0B5FFF" />
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:layout_gravity="center" android:text="✏️" android:textSize="16sp" />
+            </FrameLayout>
+
+            <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                android:layout_weight="1" android:text="Editar grupo"
+                android:textColor="@color/ink" android:textSize="15sp" />
+
+        </LinearLayout>
+
+        <View android:layout_width="match_parent" android:layout_height="1dp"
+            android:background="@color/line_2" android:layout_marginStart="16dp" />
+
+        <LinearLayout
+            android:id="@+id/rowGestionarMiembros"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:padding="16dp"
+            android:background="?attr/selectableItemBackground">
+
+            <FrameLayout
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_marginEnd="14dp">
+                <View android:layout_width="36dp" android:layout_height="36dp"
+                    android:background="#1A22C55E" android:backgroundTint="#1A22C55E" />
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:layout_gravity="center" android:text="👥" android:textSize="16sp" />
+            </FrameLayout>
+
+            <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                android:layout_weight="1" android:text="Gestionar miembros"
+                android:textColor="@color/ink" android:textSize="15sp" />
+
+        </LinearLayout>
+
+        <View android:layout_width="match_parent" android:layout_height="1dp"
+            android:background="@color/line_2" android:layout_marginStart="16dp" />
+
+        <LinearLayout
+            android:id="@+id/rowSalirGrupo"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:padding="16dp"
+            android:background="?attr/selectableItemBackground">
+
+            <FrameLayout
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_marginEnd="14dp">
+                <View android:layout_width="36dp" android:layout_height="36dp"
+                    android:background="#1AE94B7B" android:backgroundTint="#1AE94B7B" />
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:layout_gravity="center" android:text="🚪" android:textSize="16sp" />
+            </FrameLayout>
+
+            <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                android:layout_weight="1" android:text="Salir del grupo"
+                android:textColor="#E94B7B" android:textSize="15sp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

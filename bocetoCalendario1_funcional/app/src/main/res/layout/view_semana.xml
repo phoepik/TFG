@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <!-- Week header: days row -->
+    <LinearLayout
+        android:id="@+id/layoutWeekHeader"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:orientation="horizontal"
+        android:background="@color/surface">
+
+        <!-- Gutter for hours column -->
+        <View
+            android:layout_width="48dp"
+            android:layout_height="match_parent" />
+
+        <!-- Day columns (L M X J V S D) - filled programmatically -->
+        <LinearLayout
+            android:id="@+id/layoutDayColumns"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="horizontal" />
+
+    </LinearLayout>
+
+    <!-- Scrollable hour grid -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:scrollbars="vertical">
+
+        <FrameLayout
+            android:id="@+id/frameWeekGrid"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <!-- Hour lines background -->
+            <LinearLayout
+                android:id="@+id/layoutHourRows"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" />
+
+            <!-- Events overlay -->
+            <LinearLayout
+                android:id="@+id/layoutWeekEvents"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <!-- Gutter -->
+                <View android:layout_width="48dp" android:layout_height="1dp" />
+
+                <!-- Event columns per day (7) - filled programmatically -->
+                <LinearLayout
+                    android:id="@+id/layoutEventColumns"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="horizontal" />
+
+            </LinearLayout>
+
+        </FrameLayout>
+
+    </ScrollView>
+
+</LinearLayout>

@@ -3,70 +3,56 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:padding="14dp"
-    android:layout_marginBottom="10dp"
+    android:layout_marginBottom="8dp"
     android:background="@drawable/bg_card"
-    android:gravity="center_vertical">
+    android:minHeight="60dp">
 
-    <!-- Barra de color del grupo -->
+    <!-- Color bar (left side, full height, group/category color) -->
     <View
         android:id="@+id/viewColorBar"
         android:layout_width="4dp"
-        android:layout_height="48dp"
-        android:background="@color/cat_blue"
-        android:layout_marginEnd="12dp" />
+        android:layout_height="match_parent"
+        android:background="@color/brand"
+        android:minHeight="60dp" />
 
-    <!-- Hora inicio/fin -->
-    <LinearLayout
-        android:layout_width="56dp"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_marginEnd="12dp">
-
-        <TextView
-            android:id="@+id/tvHoraInicio"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="10:00"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            android:textColor="@color/ink" />
-
-        <TextView
-            android:id="@+id/tvFechaInicio"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="11:00"
-            android:textSize="12sp"
-            android:textColor="@color/muted" />
-    </LinearLayout>
-
-    <!-- Cuerpo del evento -->
+    <!-- Main content -->
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:padding="12dp">
 
-        <TextView
-            android:id="@+id/tvTitulo"
-            android:layout_width="wrap_content"
+        <!-- Title row + time on same line -->
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Título del evento"
-            android:textSize="15sp"
-            android:textStyle="bold"
-            android:textColor="@color/ink" />
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
 
-        <TextView
-            android:id="@+id/tvDescripcion"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Descripción"
-            android:textSize="12sp"
-            android:textColor="@color/muted"
-            android:maxLines="1"
-            android:layout_marginTop="2dp" />
+            <TextView
+                android:id="@+id/tvTitulo"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Título del evento"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:textColor="@color/ink"
+                android:layout_marginEnd="8dp"
+                android:maxLines="2" />
 
+            <TextView
+                android:id="@+id/tvHoraInicio"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="10:00"
+                android:textSize="12sp"
+                android:textColor="@color/muted" />
+
+        </LinearLayout>
+
+        <!-- Location row (hidden if empty) -->
         <TextView
             android:id="@+id/tvUbicacion"
             android:layout_width="wrap_content"
@@ -77,22 +63,21 @@
             android:layout_marginTop="4dp"
             android:visibility="gone" />
 
-    </LinearLayout>
+        <!-- Group chip -->
+        <TextView
+            android:id="@+id/tvGrupoChip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="📅 Personal"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            android:layout_marginTop="6dp"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:paddingTop="3dp"
+            android:paddingBottom="3dp"
+            android:background="@drawable/bg_chip" />
 
-    <!-- Estado badge -->
-    <TextView
-        android:id="@+id/tvEstado"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="OK"
-        android:textSize="11sp"
-        android:textStyle="bold"
-        android:textColor="@color/cat_green"
-        android:background="@drawable/bg_chip"
-        android:paddingStart="8dp"
-        android:paddingEnd="8dp"
-        android:paddingTop="4dp"
-        android:paddingBottom="4dp"
-        android:layout_marginStart="8dp" />
+    </LinearLayout>
 
 </LinearLayout>

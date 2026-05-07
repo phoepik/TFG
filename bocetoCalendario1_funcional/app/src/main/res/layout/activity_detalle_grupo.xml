@@ -3,56 +3,198 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:background="@color/bg">
 
-    <TextView
-        android:id="@+id/tvNombreGrupo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Nombre del grupo"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:layout_marginBottom="8dp"/>
+    <!-- Hero header -->
+    <FrameLayout
+        android:id="@+id/heroFrame"
+        android:layout_width="match_parent"
+        android:layout_height="160dp"
+        android:background="@drawable/bg_group_blue">
 
-    <TextView
-        android:id="@+id/tvDescripcion"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Descripción del grupo"
-        android:textSize="14sp"
-        android:textColor="@color/gray"
-        android:layout_marginBottom="24dp"/>
+        <!-- Back arrow -->
+        <TextView
+            android:id="@+id/btnBackDetalle"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:text="←"
+            android:textSize="20sp"
+            android:textColor="#FFFFFF"
+            android:gravity="center"
+            android:layout_gravity="start|top"
+            android:layout_margin="16dp"
+            android:background="@drawable/bg_back_white" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/miembros"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        android:layout_marginBottom="8dp"/>
+        <!-- Menu button -->
+        <TextView
+            android:id="@+id/btnMenuDetalle"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:text="⋯"
+            android:textSize="20sp"
+            android:textColor="#FFFFFF"
+            android:gravity="center"
+            android:layout_gravity="end|top"
+            android:layout_margin="16dp" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvMiembros"
+        <!-- Group info centered -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center_horizontal"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:paddingBottom="16dp">
+
+            <TextView
+                android:id="@+id/tvEmojiGrupo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="👥"
+                android:textSize="36sp"
+                android:layout_marginBottom="6dp" />
+
+            <TextView
+                android:id="@+id/tvNombreGrupo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Nombre del grupo"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                android:textColor="#FFFFFF"
+                android:gravity="center" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="4dp">
+
+                <TextView
+                    android:id="@+id/tvMiembrosCount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0 miembros"
+                    android:textSize="12sp"
+                    android:textColor="#CCFFFFFF" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=" · "
+                    android:textSize="12sp"
+                    android:textColor="#CCFFFFFF" />
+
+                <TextView
+                    android:id="@+id/tvEventosCount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0 eventos"
+                    android:textSize="12sp"
+                    android:textColor="#CCFFFFFF" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </FrameLayout>
+
+    <!-- Scrollable content -->
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"/>
+        android:layout_weight="1"
+        android:scrollbars="none">
 
-    <Button
-        android:id="@+id/btnAnadirMiembro"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:text="Añadir miembro"
-        android:backgroundTint="@color/primary"
-        android:textColor="@color/white"
-        android:layout_marginTop="16dp"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="20dp">
 
-    <Button
-        android:id="@+id/btnBorrarGrupo"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:text="Borrar Grupo"
-        android:backgroundTint="@color/red"
-        android:textColor="@color/white"
-        android:layout_marginTop="16dp"/>
+            <!-- Descripcion -->
+            <TextView
+                android:id="@+id/tvDescripcion"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textSize="14sp"
+                android:textColor="@color/muted"
+                android:layout_marginBottom="20dp" />
+
+            <!-- Miembros section -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="MIEMBROS"
+                android:textSize="11sp"
+                android:textStyle="bold"
+                android:textColor="@color/muted"
+                android:letterSpacing="0.06"
+                android:layout_marginBottom="12dp" />
+
+            <!-- Horizontal scroll of member avatars -->
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scrollbars="none"
+                android:layout_marginBottom="20dp">
+
+                <LinearLayout
+                    android:id="@+id/layoutMiembrosScroll"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal" />
+
+            </HorizontalScrollView>
+
+            <!-- Add member button -->
+            <Button
+                android:id="@+id/btnAnadirMiembro"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:text="+ Añadir miembro"
+                android:backgroundTint="@color/brand_50"
+                android:textColor="@color/brand"
+                android:textSize="14sp"
+                android:layout_marginBottom="24dp" />
+
+            <!-- Próximos eventos section -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="PRÓXIMOS EVENTOS"
+                android:textSize="11sp"
+                android:textStyle="bold"
+                android:textColor="@color/muted"
+                android:letterSpacing="0.06"
+                android:layout_marginBottom="12dp" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvMiembros"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:nestedScrollingEnabled="false" />
+
+            <!-- Danger zone -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/line"
+                android:layout_marginTop="24dp"
+                android:layout_marginBottom="16dp" />
+
+            <Button
+                android:id="@+id/btnBorrarGrupo"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:text="Eliminar grupo"
+                android:backgroundTint="@color/cat_magenta"
+                android:textColor="@color/white"
+                android:textSize="14sp" />
+
+        </LinearLayout>
+
+    </ScrollView>
 
 </LinearLayout>

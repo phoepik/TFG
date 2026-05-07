@@ -6,9 +6,9 @@ import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.widget.ArrayAdapter
-import android.widget.Button
 import android.widget.EditText
 import android.widget.Spinner
+import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
@@ -33,8 +33,8 @@ class CrearEventoActivity : AppCompatActivity() {
     private lateinit var spinnerEstado: Spinner
     private lateinit var spinnerCalendario: Spinner
     private lateinit var spinnerRecordatorio: Spinner
-    private lateinit var btnGuardar: Button
-    private lateinit var btnCancelar: Button
+    private lateinit var btnGuardar: TextView
+    private lateinit var btnCancelar: TextView
 
     private var fechaInicioMillis: Long = 0L
 
@@ -105,7 +105,6 @@ class CrearEventoActivity : AppCompatActivity() {
                         val eventoCreado = response.body()!!
                         val idUsuario = gestorSesion.obtenerIdUsuario() ?: -1
 
-                        // Programar recordatorio local si corresponde
                         if (minutosAntes > 0 && fechaInicioMillis > 0 && idUsuario > 0) {
                             NotificacionService.programarRecordatorioEvento(
                                 context = this@CrearEventoActivity,
@@ -119,7 +118,7 @@ class CrearEventoActivity : AppCompatActivity() {
                         }
 
                         withContext(Dispatchers.Main) {
-                            Toast.makeText(this@CrearEventoActivity, "Evento guardado!", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(this@CrearEventoActivity, "¡Evento creado!", Toast.LENGTH_SHORT).show()
                             finish()
                         }
                     } else {

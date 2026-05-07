@@ -9,42 +9,47 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="24dp"
-        android:minHeight="620dp">
+        android:minHeight="640dp">
 
-        <!-- Logo + titulo -->
+        <!-- Back arrow -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingStart="16dp"
+            android:paddingTop="20dp"
+            android:paddingEnd="16dp">
+
+            <TextView
+                android:id="@+id/btnBack"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:text="←"
+                android:textSize="22sp"
+                android:textColor="@color/ink_2"
+                android:gravity="center"
+                android:background="@drawable/bg_chip_muted" />
+
+        </LinearLayout>
+
+        <!-- Title block -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:gravity="center"
-            android:paddingTop="40dp"
-            android:paddingBottom="32dp">
-
-            <FrameLayout
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:layout_marginBottom="20dp">
-                <View
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
-                    android:background="@drawable/bg_btn_primary" />
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:text="📅"
-                    android:textSize="36sp" />
-            </FrameLayout>
+            android:paddingStart="24dp"
+            android:paddingEnd="24dp"
+            android:paddingTop="24dp"
+            android:paddingBottom="28dp">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Bienvenido de vuelta 👋"
+                android:text="Bienvenido/a de vuelta 👋"
                 android:textColor="@color/ink"
-                android:textSize="26sp"
+                android:textSize="30sp"
                 android:textStyle="bold"
-                android:gravity="center" />
+                android:lineSpacingExtra="2dp" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -52,83 +57,159 @@
                 android:text="Inicia sesión para ver tus planes."
                 android:textColor="@color/muted"
                 android:textSize="15sp"
-                android:layout_marginTop="8dp"
-                android:gravity="center" />
+                android:layout_marginTop="8dp" />
+
         </LinearLayout>
 
-        <!-- Campos -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Correo electrónico"
-            android:textColor="@color/ink_2"
-            android:textSize="13sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="6dp" />
-
-        <EditText
-            android:id="@+id/etEmail"
-            android:layout_width="match_parent"
-            android:layout_height="52dp"
-            android:hint="tu@correo.com"
-            android:inputType="textEmailAddress"
-            android:background="@drawable/bg_field"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp"
-            android:textSize="15sp"
-            android:textColor="@color/ink"
-            android:textColorHint="@color/muted_2"
-            android:layout_marginBottom="16dp" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Contraseña"
-            android:textColor="@color/ink_2"
-            android:textSize="13sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="6dp" />
-
-        <EditText
-            android:id="@+id/etContrasena"
-            android:layout_width="match_parent"
-            android:layout_height="52dp"
-            android:hint="••••••••"
-            android:inputType="textPassword"
-            android:background="@drawable/bg_field"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp"
-            android:textSize="15sp"
-            android:textColor="@color/ink"
-            android:textColorHint="@color/muted_2"
-            android:layout_marginBottom="24dp" />
-
-        <!-- Spacer -->
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="32dp" />
-
-        <!-- Botones -->
-        <Button
-            android:id="@+id/btnLogin"
-            android:layout_width="match_parent"
-            android:layout_height="52dp"
-            android:text="@string/iniciar_sesion"
-            android:backgroundTint="@color/brand"
-            android:textColor="@color/white"
-            android:textSize="15sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="10dp" />
-
-        <TextView
-            android:id="@+id/tvIrRegistro"
+        <!-- Fields card -->
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="¿No tienes cuenta? Crear cuenta"
-            android:textColor="@color/brand"
-            android:textSize="14sp"
-            android:gravity="center"
-            android:padding="10dp" />
+            android:orientation="vertical"
+            android:paddingStart="24dp"
+            android:paddingEnd="24dp">
+
+            <!-- Email label -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Correo electrónico"
+                android:textColor="@color/ink_2"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="6dp" />
+
+            <!-- Email field with icon -->
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:layout_marginBottom="16dp">
+
+                <EditText
+                    android:id="@+id/etEmail"
+                    android:layout_width="match_parent"
+                    android:layout_height="52dp"
+                    android:hint="tu@correo.com"
+                    android:inputType="textEmailAddress"
+                    android:background="@drawable/bg_field"
+                    android:paddingStart="48dp"
+                    android:paddingEnd="16dp"
+                    android:textSize="15sp"
+                    android:textColor="@color/ink"
+                    android:textColorHint="@color/muted_2" />
+
+                <TextView
+                    android:layout_width="40dp"
+                    android:layout_height="match_parent"
+                    android:text="✉"
+                    android:textSize="18sp"
+                    android:textColor="@color/muted"
+                    android:gravity="center"
+                    android:layout_gravity="start|center_vertical" />
+
+            </FrameLayout>
+
+            <!-- Password label -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Contraseña"
+                android:textColor="@color/ink_2"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="6dp" />
+
+            <!-- Password field with eye icon -->
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:layout_marginBottom="10dp">
+
+                <EditText
+                    android:id="@+id/etContrasena"
+                    android:layout_width="match_parent"
+                    android:layout_height="52dp"
+                    android:hint="••••••••"
+                    android:inputType="textPassword"
+                    android:background="@drawable/bg_field"
+                    android:paddingStart="48dp"
+                    android:paddingEnd="48dp"
+                    android:textSize="15sp"
+                    android:textColor="@color/ink"
+                    android:textColorHint="@color/muted_2" />
+
+                <TextView
+                    android:layout_width="40dp"
+                    android:layout_height="match_parent"
+                    android:text="🔒"
+                    android:textSize="16sp"
+                    android:textColor="@color/muted"
+                    android:gravity="center"
+                    android:layout_gravity="start|center_vertical" />
+
+                <TextView
+                    android:id="@+id/btnTogglePassword"
+                    android:layout_width="48dp"
+                    android:layout_height="match_parent"
+                    android:text="👁"
+                    android:textSize="16sp"
+                    android:textColor="@color/muted"
+                    android:gravity="center"
+                    android:layout_gravity="end|center_vertical" />
+
+            </FrameLayout>
+
+            <!-- Forgot password -->
+            <TextView
+                android:id="@+id/tvOlvideContrasena"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="¿Olvidaste la contraseña?"
+                android:textColor="@color/brand"
+                android:textSize="13sp"
+                android:gravity="end"
+                android:paddingBottom="8dp" />
+
+        </LinearLayout>
+
+        <!-- Spacer flex -->
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:minHeight="32dp" />
+
+        <!-- Bottom buttons -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingStart="24dp"
+            android:paddingEnd="24dp"
+            android:paddingBottom="32dp">
+
+            <Button
+                android:id="@+id/btnLogin"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:text="@string/iniciar_sesion"
+                android:backgroundTint="@color/brand"
+                android:textColor="@color/white"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="12dp" />
+
+            <TextView
+                android:id="@+id/tvIrRegistro"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="¿No tienes cuenta? Crear cuenta"
+                android:textColor="@color/brand"
+                android:textSize="14sp"
+                android:gravity="center"
+                android:padding="10dp" />
+
+        </LinearLayout>
 
     </LinearLayout>
 

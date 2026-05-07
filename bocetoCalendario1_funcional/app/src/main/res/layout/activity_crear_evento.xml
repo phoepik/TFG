@@ -1,173 +1,368 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/bg">
 
+    <!-- Header: Cancelar | Nuevo evento | Crear -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="16dp">
+        android:layout_height="56dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        android:background="@color/surface">
 
         <TextView
-            android:layout_width="wrap_content"
+            android:id="@+id/btnCancelar"
+            android:layout_width="80dp"
             android:layout_height="wrap_content"
-            android:text="@string/nuevo_evento"
-            android:textSize="24sp"
+            android:text="Cancelar"
+            android:textSize="14sp"
+            android:textColor="@color/muted"
+            android:gravity="start|center_vertical"
+            android:padding="8dp" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Nuevo evento"
+            android:textSize="16sp"
             android:textStyle="bold"
-            android:layout_marginBottom="24dp"/>
+            android:textColor="@color/ink"
+            android:gravity="center" />
 
         <TextView
-            android:layout_width="wrap_content"
+            android:id="@+id/btnGuardar"
+            android:layout_width="80dp"
             android:layout_height="wrap_content"
-            android:text="@string/titulo"
+            android:text="Crear"
             android:textSize="14sp"
-            android:textColor="@color/gray"/>
+            android:textStyle="bold"
+            android:textColor="@color/brand"
+            android:gravity="end|center_vertical"
+            android:padding="8dp" />
 
-        <EditText
-            android:id="@+id/etTitulo"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:background="@drawable/edittext_border"
-            android:padding="12dp"
-            android:layout_marginBottom="16dp"/>
+    </LinearLayout>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/descripcion"
-            android:textSize="14sp"
-            android:textColor="@color/gray"/>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/line" />
 
-        <EditText
-            android:id="@+id/etDescripcion"
-            android:layout_width="match_parent"
-            android:layout_height="100dp"
-            android:background="@drawable/edittext_border"
-            android:padding="12dp"
-            android:gravity="top"
-            android:inputType="textMultiLine"
-            android:layout_marginBottom="16dp"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/fecha_inicio"
-            android:textSize="14sp"
-            android:textColor="@color/gray"/>
-
-        <EditText
-            android:id="@+id/etFechaInicio"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:background="@drawable/edittext_border"
-            android:padding="12dp"
-            android:hint="DD/MM/AAAA HH:MM"
-            android:focusable="false"
-            android:clickable="true"
-            android:layout_marginBottom="16dp"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/fecha_fin"
-            android:textSize="14sp"
-            android:textColor="@color/gray"/>
-
-        <EditText
-            android:id="@+id/etFechaFin"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:background="@drawable/edittext_border"
-            android:padding="12dp"
-            android:hint="DD/MM/AAAA HH:MM"
-            android:focusable="false"
-            android:clickable="true"
-            android:layout_marginBottom="16dp"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/ubicacion"
-            android:textSize="14sp"
-            android:textColor="@color/gray"/>
-
-        <EditText
-            android:id="@+id/etUbicacion"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:background="@drawable/edittext_border"
-            android:padding="12dp"
-            android:layout_marginBottom="16dp"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/estado"
-            android:textSize="14sp"
-            android:textColor="@color/gray"/>
-
-        <Spinner
-            android:id="@+id/spinnerEstado"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:background="@drawable/edittext_border"
-            android:layout_marginBottom="16dp"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/seleccionar_calendario"
-            android:textSize="14sp"
-            android:textColor="@color/gray"/>
-
-        <Spinner
-            android:id="@+id/spinnerCalendario"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:background="@drawable/edittext_border"
-            android:layout_marginBottom="16dp"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Recordatorio"
-            android:textSize="14sp"
-            android:textColor="@color/gray"/>
-
-        <Spinner
-            android:id="@+id/spinnerRecordatorio"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:background="@drawable/edittext_border"
-            android:layout_marginBottom="24dp"/>
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:scrollbars="none">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="vertical"
+            android:padding="20dp">
 
-            <Button
-                android:id="@+id/btnCancelar"
-                android:layout_width="0dp"
-                android:layout_height="50dp"
-                android:layout_weight="1"
-                android:text="@string/cancelar"
-                android:backgroundTint="@color/gray"
-                android:textColor="@color/white"
-                android:layout_marginEnd="8dp"/>
+            <!-- Large title input -->
+            <EditText
+                android:id="@+id/etTitulo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Nombre del evento"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                android:textColor="@color/ink"
+                android:textColorHint="@color/muted_2"
+                android:background="@android:color/transparent"
+                android:padding="0dp"
+                android:layout_marginBottom="16dp"
+                android:inputType="textCapSentences"
+                android:maxLines="3" />
 
-            <Button
-                android:id="@+id/btnGuardar"
-                android:layout_width="0dp"
-                android:layout_height="50dp"
-                android:layout_weight="1"
-                android:text="@string/guardar"
-                android:backgroundTint="@color/primary"
-                android:textColor="@color/white"/>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/line"
+                android:layout_marginBottom="16dp" />
+
+            <!-- Group chips -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="CALENDARIO"
+                android:textSize="11sp"
+                android:textStyle="bold"
+                android:textColor="@color/muted"
+                android:letterSpacing="0.06"
+                android:layout_marginBottom="8dp" />
+
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scrollbars="none"
+                android:layout_marginBottom="16dp">
+
+                <LinearLayout
+                    android:id="@+id/layoutGroupChipsEvento"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="36dp"
+                        android:text="📅 Personal"
+                        android:textSize="13sp"
+                        android:textColor="@color/brand"
+                        android:gravity="center"
+                        android:background="@drawable/bg_chip_brand"
+                        android:paddingStart="14dp"
+                        android:paddingEnd="14dp" />
+
+                </LinearLayout>
+
+            </HorizontalScrollView>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/line"
+                android:layout_marginBottom="16dp" />
+
+            <!-- Date/time card -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/bg_card"
+                android:padding="16dp"
+                android:layout_marginBottom="16dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="FECHA Y HORA"
+                    android:textSize="11sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/muted"
+                    android:letterSpacing="0.06"
+                    android:layout_marginBottom="10dp" />
+
+                <!-- Date row -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="8dp">
+
+                    <TextView
+                        android:layout_width="28dp"
+                        android:layout_height="wrap_content"
+                        android:text="📅"
+                        android:textSize="16sp" />
+
+                    <EditText
+                        android:id="@+id/etFechaInicio"
+                        android:layout_width="0dp"
+                        android:layout_height="40dp"
+                        android:layout_weight="1"
+                        android:hint="Fecha inicio  DD/MM/AAAA HH:MM"
+                        android:textSize="14sp"
+                        android:textColor="@color/ink"
+                        android:textColorHint="@color/muted_2"
+                        android:background="@color/bg"
+                        android:paddingStart="8dp"
+                        android:paddingEnd="8dp"
+                        android:focusable="false"
+                        android:clickable="true" />
+
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/line"
+                    android:layout_marginBottom="8dp" />
+
+                <!-- End time row -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                    <TextView
+                        android:layout_width="28dp"
+                        android:layout_height="wrap_content"
+                        android:text="🔚"
+                        android:textSize="16sp" />
+
+                    <EditText
+                        android:id="@+id/etFechaFin"
+                        android:layout_width="0dp"
+                        android:layout_height="40dp"
+                        android:layout_weight="1"
+                        android:hint="Fecha fin  DD/MM/AAAA HH:MM"
+                        android:textSize="14sp"
+                        android:textColor="@color/ink"
+                        android:textColorHint="@color/muted_2"
+                        android:background="@color/bg"
+                        android:paddingStart="8dp"
+                        android:paddingEnd="8dp"
+                        android:focusable="false"
+                        android:clickable="true" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <!-- Location card -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:background="@drawable/bg_card"
+                android:padding="16dp"
+                android:layout_marginBottom="16dp">
+
+                <TextView
+                    android:layout_width="28dp"
+                    android:layout_height="wrap_content"
+                    android:text="📍"
+                    android:textSize="18sp" />
+
+                <EditText
+                    android:id="@+id/etUbicacion"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:hint="Añadir ubicación"
+                    android:textSize="14sp"
+                    android:textColor="@color/ink"
+                    android:textColorHint="@color/muted_2"
+                    android:background="@android:color/transparent"
+                    android:paddingStart="8dp" />
+
+            </LinearLayout>
+
+            <!-- Description card -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/bg_card"
+                android:padding="16dp"
+                android:layout_marginBottom="16dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="DESCRIPCIÓN"
+                    android:textSize="11sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/muted"
+                    android:letterSpacing="0.06"
+                    android:layout_marginBottom="8dp" />
+
+                <EditText
+                    android:id="@+id/etDescripcion"
+                    android:layout_width="match_parent"
+                    android:layout_height="80dp"
+                    android:hint="Añadir descripción..."
+                    android:textSize="14sp"
+                    android:textColor="@color/ink"
+                    android:textColorHint="@color/muted_2"
+                    android:background="@android:color/transparent"
+                    android:gravity="top"
+                    android:inputType="textMultiLine"
+                    android:padding="0dp" />
+
+            </LinearLayout>
+
+            <!-- Estado -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/bg_card"
+                android:padding="16dp"
+                android:layout_marginBottom="16dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="ESTADO"
+                    android:textSize="11sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/muted"
+                    android:letterSpacing="0.06"
+                    android:layout_marginBottom="8dp" />
+
+                <Spinner
+                    android:id="@+id/spinnerEstado"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp" />
+
+            </LinearLayout>
+
+            <!-- Calendario -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/bg_card"
+                android:padding="16dp"
+                android:layout_marginBottom="16dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="CALENDARIO"
+                    android:textSize="11sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/muted"
+                    android:letterSpacing="0.06"
+                    android:layout_marginBottom="8dp" />
+
+                <Spinner
+                    android:id="@+id/spinnerCalendario"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp" />
+
+            </LinearLayout>
+
+            <!-- Recordatorio -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/bg_card"
+                android:padding="16dp"
+                android:layout_marginBottom="24dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="🔔 RECORDATORIO"
+                    android:textSize="11sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/muted"
+                    android:letterSpacing="0.06"
+                    android:layout_marginBottom="8dp" />
+
+                <Spinner
+                    android:id="@+id/spinnerRecordatorio"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp" />
+
+            </LinearLayout>
 
         </LinearLayout>
 
-    </LinearLayout>
+    </ScrollView>
 
-</ScrollView>
+</LinearLayout>

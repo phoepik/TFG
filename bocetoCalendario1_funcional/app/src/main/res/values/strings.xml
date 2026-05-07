@@ -12,7 +12,7 @@
     <string name="ya_tienes_cuenta">¿Ya tienes cuenta? Inicia sesión</string>
 
     <!-- Navegación -->
-    <string name="inicio">Inicio</string>
+    <string name="inicio">Calendario</string>
     <string name="grupos">Grupos</string>
     <string name="notificaciones">Notificaciones</string>
     <string name="perfil">Perfil</string>
@@ -40,4 +40,23 @@
     <!-- Perfil -->
     <string name="cerrar_sesion">Cerrar Sesión</string>
     <string name="notificaciones_activadas">Notificaciones activadas</string>
+
+    <!-- Navigation -->
+    <string name="nav_calendario">Calendario</string>
+    <string name="nav_grupos">Grupos</string>
+    <string name="nav_eventos">Eventos</string>
+    <string name="nav_perfil">Perfil</string>
+
+    <!-- Bottom sheets -->
+    <string name="recuperar_contrasena">Recuperar contraseña</string>
+    <string name="enviar_enlace">Enviar enlace</string>
+    <string name="buscar">Buscar</string>
+    <string name="crear_grupo">Crear grupo</string>
+    <string name="invitar">Invitar</string>
+    <string name="editar_perfil">Editar perfil</string>
+    <string name="modo_oscuro">Modo oscuro</string>
+    <string name="idioma">Idioma</string>
+    <string name="privacidad">Privacidad</string>
+    <string name="ajustes">Ajustes</string>
+    <string name="listo">Listo</string>
 </resources>

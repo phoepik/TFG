@@ -13,10 +13,22 @@ class GrupoAdapter(
     private val onClick: (Grupo) -> Unit
 ) : RecyclerView.Adapter<GrupoAdapter.GrupoViewHolder>() {
 
+    // Emojis and gradients matching the design
+    private val EMOJIS = listOf("🎉", "🎨", "🏡", "📚", "⚽", "🏖️", "🍕", "🎬", "🎵", "🚀")
+    private val BACKGROUNDS = listOf(
+        R.drawable.bg_group_magenta,
+        R.drawable.bg_group_blue,
+        R.drawable.bg_group_green,
+        R.drawable.bg_group_purple,
+        R.drawable.bg_group_orange,
+        R.drawable.bg_group_teal,
+    )
+
     class GrupoViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val tvNombreGrupo: TextView = view.findViewById(R.id.tvNombreGrupo)
-        val tvDescripcionGrupo: TextView = view.findViewById(R.id.tvDescripcionGrupo)
-        val tvMiembros: TextView? = view.findViewById(R.id.tvMiembros)
+        val tvEmojiGrupo: TextView = view.findViewById(R.id.tvEmojiGrupo)
+        val tvEventosCount: TextView = view.findViewById(R.id.tvEventosCount)
+        val tvMiembrosCount: TextView = view.findViewById(R.id.tvMiembrosCount)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GrupoViewHolder {
@@ -27,21 +39,18 @@ class GrupoAdapter(
 
     override fun onBindViewHolder(holder: GrupoViewHolder, position: Int) {
         val grupo = grupos[position]
+
         holder.tvNombreGrupo.text = grupo.nombre
-        holder.tvDescripcionGrupo.text = grupo.descripcion
+        holder.itemView.setBackgroundResource(BACKGROUNDS[position % BACKGROUNDS.size])
 
-        val backgrounds = listOf(
-            R.drawable.bg_group_blue,
-            R.drawable.bg_group_magenta,
-            R.drawable.bg_group_green,
-            R.drawable.bg_group_purple,
-            R.drawable.bg_group_orange,
-            R.drawable.bg_group_teal,
-        )
-        holder.itemView.setBackgroundResource(backgrounds[position % backgrounds.size])
+        // Pick emoji: try to extract from name or use cycle
+        val emoji = EMOJIS[position % EMOJIS.size]
+        holder.tvEmojiGrupo.text = emoji
 
-        val tvInicial = holder.itemView.findViewById<TextView>(R.id.tvInicialGrupo)
-        tvInicial?.text = grupo.nombre.firstOrNull()?.uppercaseChar()?.toString() ?: "G"
+        // Show description as subtitle if available, otherwise members count
+        val desc = grupo.descripcion
+        holder.tvEventosCount.text = if (!desc.isNullOrBlank()) desc else "Ver grupo"
+        holder.tvMiembrosCount.text = ""
 
         holder.itemView.setOnClickListener { onClick(grupo) }
     }

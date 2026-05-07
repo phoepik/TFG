@@ -12,9 +12,8 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
 import com.example.bocetocalendario1.miniPantalla.CalendarioFragment
+import com.example.bocetocalendario1.miniPantalla.EventosFragment
 import com.example.bocetocalendario1.miniPantalla.GruposFragment
-import com.example.bocetocalendario1.miniPantalla.InicioFragment
-import com.example.bocetocalendario1.miniPantalla.NotificacionesFragment
 import com.example.bocetocalendario1.miniPantalla.PerfilFragment
 import com.example.bocetocalendario1.notificaciones.canales.NotificacionesManagerCanales
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -51,9 +50,9 @@ class MainActivity : AppCompatActivity() {
 
         if (savedInstanceState == null) {
             when (abrirTab) {
-                "notificaciones" -> {
-                    cargarFragment(NotificacionesFragment())
-                    bottomNavigation.selectedItemId = R.id.nav_notificaciones
+                "eventos" -> {
+                    cargarFragment(EventosFragment())
+                    bottomNavigation.selectedItemId = R.id.nav_eventos
                 }
                 else -> {
                     cargarFragment(CalendarioFragment())
@@ -72,8 +71,8 @@ class MainActivity : AppCompatActivity() {
                     cargarFragment(GruposFragment())
                     true
                 }
-                R.id.nav_notificaciones -> {
-                    cargarFragment(NotificacionesFragment())
+                R.id.nav_eventos -> {
+                    cargarFragment(EventosFragment())
                     true
                 }
                 R.id.nav_perfil -> {
@@ -83,11 +82,6 @@ class MainActivity : AppCompatActivity() {
                 else -> false
             }
         }
-    }
-
-    fun navegarANotificaciones() {
-        cargarFragment(NotificacionesFragment())
-        bottomNavigation.selectedItemId = R.id.nav_notificaciones
     }
 
     private fun cargarFragment(fragment: Fragment) {

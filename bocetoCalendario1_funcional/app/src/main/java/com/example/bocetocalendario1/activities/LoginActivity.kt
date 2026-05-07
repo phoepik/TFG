@@ -2,6 +2,8 @@ package com.example.bocetocalendario1.activities
 
 import android.content.Intent
 import android.os.Bundle
+import android.text.method.HideReturnsTransformationMethod
+import android.text.method.PasswordTransformationMethod
 import android.util.Log
 import android.widget.Button
 import android.widget.EditText
@@ -26,6 +28,8 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var etContrasena: EditText
     private lateinit var btnLogin: Button
     private lateinit var tvIrRegistro: TextView
+    private lateinit var btnTogglePassword: TextView
+    private var passwordVisible = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,8 +40,7 @@ class LoginActivity : AppCompatActivity() {
         val gestorSesion = GestorSesion(this)
 
         if (gestorSesion.estaLogueado()) {
-            val intent = Intent(this, MainActivity::class.java)
-            startActivity(intent)
+            startActivity(Intent(this, MainActivity::class.java))
             finish()
             return
         }
@@ -46,6 +49,30 @@ class LoginActivity : AppCompatActivity() {
         etContrasena = findViewById(R.id.etContrasena)
         btnLogin = findViewById(R.id.btnLogin)
         tvIrRegistro = findViewById(R.id.tvIrRegistro)
+        btnTogglePassword = findViewById(R.id.btnTogglePassword)
+
+        // Back arrow
+        val btnBack = findViewById<TextView>(R.id.btnBack)
+        btnBack.setOnClickListener { finish() }
+
+        // Toggle password visibility
+        btnTogglePassword.setOnClickListener {
+            passwordVisible = !passwordVisible
+            if (passwordVisible) {
+                etContrasena.transformationMethod = HideReturnsTransformationMethod.getInstance()
+                btnTogglePassword.text = "🙈"
+            } else {
+                etContrasena.transformationMethod = PasswordTransformationMethod.getInstance()
+                btnTogglePassword.text = "👁"
+            }
+            etContrasena.setSelection(etContrasena.text.length)
+        }
+
+        // Forgot password
+        val tvOlvide = findViewById<TextView>(R.id.tvOlvideContrasena)
+        tvOlvide.setOnClickListener {
+            ForgotPasswordBottomSheet().show(supportFragmentManager, "ForgotPassword")
+        }
 
         btnLogin.setOnClickListener {
             val email = etEmail.text.toString().trim()
@@ -63,7 +90,6 @@ class LoginActivity : AppCompatActivity() {
                     withContext(Dispatchers.Main) {
                         if (response.isSuccessful && response.body() != null) {
                             val u = response.body()!!
-                            // Convertir a Usuario local para guardar sesion
                             val usuarioLocal = Usuario(
                                 id_usuario = u.idUsuario,
                                 nombre = u.nombre,
