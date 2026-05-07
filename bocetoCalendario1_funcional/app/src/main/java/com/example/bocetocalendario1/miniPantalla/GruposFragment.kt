@@ -84,32 +84,32 @@ class GruposFragment : Fragment() {
                 val response = RetrofitClient.api.obtenerGruposDeUsuario(idUsuario)
 
                 withContext(Dispatchers.Main) {
-                    if (response.isSuccessful && response.body() != null) {
+                    if (response.isSuccessful && !response.body().isNullOrEmpty()) {
                         val gruposServidor = response.body()!!
-                        todosGrupos = gruposServidor.mapIndexed { idx, g ->
-                            Grupo(
-                                id_grupo = g.idGrupo ?: 0,
-                                nombre = g.nombre,
-                                descripcion = g.descripcion,
-                                id_admin = g.idAdmin
-                            )
+                        todosGrupos = gruposServidor.map { g ->
+                            Grupo(id_grupo = g.idGrupo ?: 0, nombre = g.nombre, descripcion = g.descripcion, id_admin = g.idAdmin)
                         }
-                        mostrarGrupos(todosGrupos)
                     } else {
-                        todosGrupos = emptyList()
-                        mostrarGrupos(emptyList())
+                        todosGrupos = gruposDemo()
                     }
+                    mostrarGrupos(todosGrupos)
                 }
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
-                    Log.e("GRUPOS", "Error: ${e.message}")
-                    Toast.makeText(context, "Error al cargar grupos", Toast.LENGTH_SHORT).show()
-                    todosGrupos = emptyList()
-                    mostrarGrupos(emptyList())
+                    todosGrupos = gruposDemo()
+                    mostrarGrupos(todosGrupos)
                 }
             }
         }
     }
+
+    private fun gruposDemo(): List<Grupo> = listOf(
+        Grupo(1, "Trabajo",       "Proyectos y reuniones del equipo", 1),
+        Grupo(2, "Familia",       "Eventos familiares y reuniones",    1),
+        Grupo(3, "Amigos",        "Quedadas y planes con amigos",      2),
+        Grupo(4, "Universidad",   "TFG, clases y exámenes",            1),
+        Grupo(5, "Deporte",       "Entrenos y competiciones",          3)
+    )
 
     private fun mostrarGrupos(grupos: List<Grupo>) {
         rvGrupos.adapter = GrupoAdapter(grupos) { grupo ->

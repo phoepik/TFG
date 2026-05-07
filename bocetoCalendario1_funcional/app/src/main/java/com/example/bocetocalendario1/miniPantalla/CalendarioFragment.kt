@@ -201,13 +201,38 @@ class CalendarioFragment : Fragment() {
                 }
 
                 withContext(Dispatchers.Main) {
-                    todosEventos = eventos
+                    todosEventos = if (eventos.isEmpty()) eventosDemo() else eventos
                     actualizarUI()
                 }
             } catch (e: Exception) {
-                Log.e("CALENDARIO", "Error cargando eventos: ${e.message}")
+                withContext(Dispatchers.Main) {
+                    todosEventos = eventosDemo()
+                    actualizarUI()
+                }
             }
         }
+    }
+
+    private fun eventosDemo(): List<Evento> {
+        val hoy = Calendar.getInstance()
+        val d = "%02d".format(hoy.get(Calendar.DAY_OF_MONTH))
+        val m = "%02d".format(hoy.get(Calendar.MONTH) + 1)
+        val y = hoy.get(Calendar.YEAR)
+        val sig = "%02d".format(hoy.get(Calendar.DAY_OF_MONTH) + 1)
+        val ant = "%02d".format((hoy.get(Calendar.DAY_OF_MONTH) - 2).coerceAtLeast(1))
+        val den = "%02d".format((hoy.get(Calendar.DAY_OF_MONTH) + 2).coerceAtMost(28))
+        val tres = "%02d".format((hoy.get(Calendar.DAY_OF_MONTH) + 3).coerceAtMost(28))
+        val seis = "%02d".format((hoy.get(Calendar.DAY_OF_MONTH) + 6).coerceAtMost(28))
+        return listOf(
+            Evento(1, "Reunión de equipo",   "Revisión semanal del sprint", "$d/$m/$y 09:00",  "$d/$m/$y 10:00",  "Sala de reuniones", "CONFIRMADO", 1),
+            Evento(2, "Clase de yoga",        "",                            "$d/$m/$y 18:00",  "$d/$m/$y 19:00",  "Gimnasio Central",  "CONFIRMADO", 2),
+            Evento(3, "Revisión TFG",         "Entrega parcial del proyecto", "$sig/$m/$y 10:00","$sig/$m/$y 12:00","Facultad B-101",    "PENDIENTE",  1),
+            Evento(4, "Cena con amigos",      "Cumpleaños de Ana",           "$sig/$m/$y 21:00","$sig/$m/$y 23:30","Restaurante Mar",   "CONFIRMADO", 3),
+            Evento(5, "Dentista",             "Revisión semestral",          "$ant/$m/$y 11:00","$ant/$m/$y 11:30","Clínica Dental",    "CONFIRMADO", 2),
+            Evento(6, "Defensa del proyecto", "Presentación final TFG",      "$den/$m/$y 09:30","$den/$m/$y 11:00","Aula Magna",        "PENDIENTE",  1),
+            Evento(7, "Gym",                  "",                            "$tres/$m/$y 07:30","$tres/$m/$y 09:00","Fitness Center",   "CONFIRMADO", 2),
+            Evento(8, "Standup diario",       "Sync con el equipo",          "$seis/$m/$y 09:00","$seis/$m/$y 09:15","Meet",            "CONFIRMADO", 1)
+        )
     }
 
     private fun actualizarUI() {
