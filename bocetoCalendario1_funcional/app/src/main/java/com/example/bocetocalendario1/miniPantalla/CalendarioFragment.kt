@@ -304,10 +304,10 @@ class CalendarioFragment : Fragment() {
             "${dia.get(Calendar.DAY_OF_MONTH)} de ${MESES[dia.get(Calendar.MONTH)].lowercase()}"
         tvTituloDia.text = "$etiqueta · ${eventos.size} ${if (eventos.size == 1) "evento" else "eventos"}"
 
-        rvEventosDia.adapter = EventoAdapter(eventos) { evento ->
+        rvEventosDia.adapter = EventoAdapter(eventos, onClick = { evento ->
             val sheet = EventDetalleBottomSheet.newInstance(evento)
             sheet.show(parentFragmentManager, "EventDetalle")
-        }
+        })
     }
 
     // ── WEEK VIEW ──────────────────────────────────────────────────────────

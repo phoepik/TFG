@@ -147,13 +147,13 @@ class InicioFragment : Fragment() {
                     val lista = if (eventos.isEmpty()) eventosDemo() else eventos
                     rvEventos.visibility = View.VISIBLE
                     layoutEmptyState.visibility = View.GONE
-                    rvEventos.adapter = EventoAdapter(lista) {}
+                    rvEventos.adapter = EventoAdapter(lista, onClick = {})
                 }
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
                     rvEventos.visibility = View.VISIBLE
                     layoutEmptyState.visibility = View.GONE
-                    rvEventos.adapter = EventoAdapter(eventosDemo()) {}
+                    rvEventos.adapter = EventoAdapter(eventosDemo(), onClick = {})
                 }
             }
         }

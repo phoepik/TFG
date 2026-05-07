@@ -77,11 +77,11 @@ class SearchBottomSheet : BottomSheetDialogFragment() {
                     } else {
                         rvResults.visibility = View.VISIBLE
                         layoutEmpty.visibility = View.GONE
-                        rvResults.adapter = EventoAdapter(results) { evento ->
+                        rvResults.adapter = EventoAdapter(results, onClick = { evento ->
                             dismiss()
                             val sheet = EventDetalleBottomSheet.newInstance(evento)
                             sheet.show(parentFragmentManager, "EventDetalle")
-                        }
+                        })
                     }
                 }
             }
