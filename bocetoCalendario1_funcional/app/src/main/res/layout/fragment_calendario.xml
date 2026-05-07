@@ -88,7 +88,7 @@
             android:id="@+id/btnSearch"
             android:layout_width="36dp"
             android:layout_height="36dp"
-            android:src="@android:drawable/ic_menu_search"
+            android:src="@drawable/ic_search"
             android:background="@drawable/bg_back_white"
             android:layout_marginStart="4dp"
             android:scaleType="fitCenter"
@@ -412,8 +412,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="end|bottom"
         android:layout_margin="20dp"
-        android:src="@android:drawable/ic_input_add"
-        android:backgroundTint="@color/brand"
-        app:tint="@color/white" />
+        app:srcCompat="@drawable/ic_add"
+        android:backgroundTint="@color/brand" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -6,28 +6,35 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
+import android.widget.LinearLayout
+import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.bocetocalendario1.MainActivity
 import com.example.bocetocalendario1.R
 import com.example.bocetocalendario1.activities.CrearEventoActivity
 import com.example.bocetocalendario1.adaptadores.EventoAdapter
 import com.example.bocetocalendario1.models.Evento
 import com.example.bocetocalendario1.network.RetrofitClient
 import com.example.bocetocalendario1.utilidades.GestorSesion
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 class InicioFragment : Fragment() {
 
     private lateinit var rvEventos: RecyclerView
-    private lateinit var btnNuevoEvento: Button
-    private lateinit var btnNotificacion: Button
+    private lateinit var btnNuevoEvento: TextView
+    private lateinit var btnNotificacion: TextView
+    private lateinit var tvFechaHoy: TextView
+    private lateinit var layoutEmptyState: LinearLayout
+    private lateinit var fabNuevo: FloatingActionButton
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_inicio, container, false)
@@ -36,19 +43,27 @@ class InicioFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        rvEventos       = view.findViewById(R.id.rvEventos)
-        btnNuevoEvento  = view.findViewById(R.id.btnNuevoEvento)
-        btnNotificacion = view.findViewById(R.id.btnNotificacion)
+        rvEventos        = view.findViewById(R.id.rvEventos)
+        btnNuevoEvento   = view.findViewById(R.id.btnNuevoEvento)
+        btnNotificacion  = view.findViewById(R.id.btnNotificacion)
+        tvFechaHoy       = view.findViewById(R.id.tvFechaHoy)
+        layoutEmptyState = view.findViewById(R.id.layoutEmptyState)
+        fabNuevo         = view.findViewById(R.id.fabNuevo)
 
         rvEventos.layoutManager = LinearLayoutManager(context)
 
+        // Show today's date in header
+        val sdf = SimpleDateFormat("EEEE, d 'de' MMMM", Locale("es", "ES"))
+        tvFechaHoy.text = sdf.format(Date()).replaceFirstChar { it.uppercaseChar() }
+
         cargarEventos()
 
-        btnNuevoEvento.setOnClickListener {
-            startActivity(Intent(context, CrearEventoActivity::class.java))
-        }
+        val abrirCrear = { startActivity(Intent(context, CrearEventoActivity::class.java)) }
+        btnNuevoEvento.setOnClickListener { abrirCrear() }
+        fabNuevo.setOnClickListener { abrirCrear() }
+
         btnNotificacion.setOnClickListener {
-            // Navigate to Eventos tab
+            // Reserved for notifications screen
         }
     }
 
@@ -65,7 +80,7 @@ class InicioFragment : Fragment() {
             try {
                 val eventos = mutableListOf<Evento>()
 
-                // Cargar desde calendarios del usuario
+                // Load from user's calendars
                 if (idUsuario != -1) {
                     try {
                         val calResp = RetrofitClient.api.obtenerCalendariosDeUsuario(idUsuario)
@@ -76,7 +91,8 @@ class InicioFragment : Fragment() {
                                 if (evResp.isSuccessful) {
                                     evResp.body()?.forEach { e ->
                                         eventos.add(Evento(
-                                            id = e.idEvento ?: 0, titulo = e.titulo,
+                                            id = e.idEvento ?: 0,
+                                            titulo = e.titulo,
                                             descripcion = e.descripcion ?: "",
                                             fechaInicio = e.fechaInicio ?: "",
                                             fechaFin = e.fechaFin ?: "",
@@ -93,13 +109,14 @@ class InicioFragment : Fragment() {
                     }
                 }
 
-                // Fallback: cargar por id de usuario directo
+                // Fallback: load directly by user id
                 if (eventos.isEmpty() && idUsuario != -1) {
                     val resp = RetrofitClient.api.obtenerEventosDeCalendario(idUsuario)
                     if (resp.isSuccessful) {
                         resp.body()?.forEach { e ->
                             eventos.add(Evento(
-                                id = e.idEvento ?: 0, titulo = e.titulo,
+                                id = e.idEvento ?: 0,
+                                titulo = e.titulo,
                                 descripcion = e.descripcion ?: "",
                                 fechaInicio = e.fechaInicio ?: "",
                                 fechaFin = e.fechaFin ?: "",
@@ -112,14 +129,21 @@ class InicioFragment : Fragment() {
                 }
 
                 withContext(Dispatchers.Main) {
-                    // EventoAdapter agrupa automáticamente por día
-                    rvEventos.adapter = EventoAdapter(eventos) {}
+                    if (eventos.isEmpty()) {
+                        rvEventos.visibility = View.GONE
+                        layoutEmptyState.visibility = View.VISIBLE
+                    } else {
+                        rvEventos.visibility = View.VISIBLE
+                        layoutEmptyState.visibility = View.GONE
+                        rvEventos.adapter = EventoAdapter(eventos) {}
+                    }
                 }
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
                     Log.e("INICIO", "Error: ${e.message}")
                     Toast.makeText(context, "Error al cargar eventos", Toast.LENGTH_SHORT).show()
-                    rvEventos.adapter = EventoAdapter(emptyList()) {}
+                    rvEventos.visibility = View.GONE
+                    layoutEmptyState.visibility = View.VISIBLE
                 }
             }
         }
