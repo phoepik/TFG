@@ -31,7 +31,9 @@
         <item name="shapeAppearanceOverlay">@style/ShapeAppearanceOverlay.App.BottomSheet</item>
     </style>
 
-    <style name="ShapeAppearanceOverlay.App.BottomSheet">
+    <style name="ShapeAppearanceOverlay.App" parent="ShapeAppearance.MaterialComponents.SmallComponent" />
+
+    <style name="ShapeAppearanceOverlay.App.BottomSheet" parent="ShapeAppearanceOverlay.App">
         <item name="cornerFamilyTopLeft">rounded</item>
         <item name="cornerFamilyTopRight">rounded</item>
         <item name="cornerSizeTopLeft">28dp</item>
