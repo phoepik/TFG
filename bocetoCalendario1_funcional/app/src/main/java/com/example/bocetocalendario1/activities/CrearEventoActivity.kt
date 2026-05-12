@@ -14,6 +14,7 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.example.bocetocalendario1.R
+import com.example.bocetocalendario1.network.CalendarioResponse
 import com.example.bocetocalendario1.network.EventoResponse
 import com.example.bocetocalendario1.network.RetrofitClient
 import com.example.bocetocalendario1.notificaciones.NotificacionService
@@ -37,6 +38,7 @@ class CrearEventoActivity : AppCompatActivity() {
     private lateinit var btnCancelar: TextView
 
     private var fechaInicioMillis: Long = 0L
+    private var calendariosDisponibles: List<CalendarioResponse> = emptyList()
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -61,8 +63,13 @@ class CrearEventoActivity : AppCompatActivity() {
         val estados = arrayOf("PENDIENTE", "CONFIRMADO")
         spinnerEstado.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, estados)
 
-        val calendarios = arrayOf("Mi calendario (Personal)", "Trabajo DAM (Grupal)", "Familia (Grupal)")
-        spinnerCalendario.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, calendarios)
+        // Cargar calendarios reales del usuario
+        val idUsuario = gestorSesion.obtenerIdUsuario() ?: -1
+        if (idUsuario != -1) {
+            cargarCalendarios(idUsuario)
+        } else {
+            spinnerCalendario.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, arrayOf("Sin calendario"))
+        }
 
         etFechaInicio.setOnClickListener { mostrarDateTimePicker(etFechaInicio, esInicio = true) }
         etFechaFin.setOnClickListener { mostrarDateTimePicker(etFechaFin, esInicio = false) }
@@ -74,7 +81,6 @@ class CrearEventoActivity : AppCompatActivity() {
             val fechaFin = etFechaFin.text.toString()
             val ubicacion = etUbicacion.text.toString()
             val tipoEstado = spinnerEstado.selectedItem.toString()
-            val tipoCalendario = spinnerCalendario.selectedItemPosition
             val minutosAntes = obtenerMinutosRecordatorio()
 
             if (titulo.isEmpty()) {
@@ -87,6 +93,11 @@ class CrearEventoActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
+            // Usar el ID real del calendario seleccionado
+            val idCalendarioReal = if (calendariosDisponibles.isNotEmpty()) {
+                calendariosDisponibles.getOrNull(spinnerCalendario.selectedItemPosition)?.idCalendario ?: 0
+            } else 0
+
             val eventoRequest = EventoResponse(
                 titulo = titulo,
                 descripcion = descripcion,
@@ -94,7 +105,7 @@ class CrearEventoActivity : AppCompatActivity() {
                 fechaFin = fechaFin,
                 ubicacion = ubicacion,
                 estado = tipoEstado,
-                idCalendario = tipoCalendario
+                idCalendario = idCalendarioReal
             )
 
             lifecycleScope.launch(Dispatchers.IO) {
@@ -103,12 +114,12 @@ class CrearEventoActivity : AppCompatActivity() {
 
                     if (response.isSuccessful && response.body() != null) {
                         val eventoCreado = response.body()!!
-                        val idUsuario = gestorSesion.obtenerIdUsuario() ?: -1
+                        val uid = gestorSesion.obtenerIdUsuario() ?: -1
 
-                        if (minutosAntes > 0 && fechaInicioMillis > 0 && idUsuario > 0) {
+                        if (minutosAntes > 0 && fechaInicioMillis > 0 && uid > 0) {
                             NotificacionService.programarRecordatorioEvento(
                                 context = this@CrearEventoActivity,
-                                idUsuario = idUsuario,
+                                idUsuario = uid,
                                 idEvento = eventoCreado.idEvento ?: 0,
                                 tituloEvento = titulo,
                                 descripcionEvento = descripcion.ifEmpty { null },
@@ -137,6 +148,35 @@ class CrearEventoActivity : AppCompatActivity() {
 
         btnCancelar.setOnClickListener {
             finish()
+        }
+    }
+
+    private fun cargarCalendarios(idUsuario: Int) {
+        lifecycleScope.launch(Dispatchers.IO) {
+            try {
+                val resp = RetrofitClient.api.obtenerCalendariosDeUsuario(idUsuario)
+                val lista = if (resp.isSuccessful) resp.body() ?: emptyList() else emptyList()
+                withContext(Dispatchers.Main) {
+                    calendariosDisponibles = lista
+                    val nombres = if (lista.isNotEmpty())
+                        lista.map { it.nombre.ifEmpty { "Calendario ${it.idCalendario}" } }.toTypedArray()
+                    else
+                        arrayOf("Sin calendario")
+                    spinnerCalendario.adapter = ArrayAdapter(
+                        this@CrearEventoActivity,
+                        android.R.layout.simple_spinner_dropdown_item,
+                        nombres
+                    )
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    spinnerCalendario.adapter = ArrayAdapter(
+                        this@CrearEventoActivity,
+                        android.R.layout.simple_spinner_dropdown_item,
+                        arrayOf("Sin calendario")
+                    )
+                }
+            }
         }
     }
 

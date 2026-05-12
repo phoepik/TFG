@@ -16,6 +16,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.example.bocetocalendario1.R
+import com.example.bocetocalendario1.network.CalendarioResponse
 import com.example.bocetocalendario1.network.RegistroRequest
 import com.example.bocetocalendario1.network.RetrofitClient
 import kotlinx.coroutines.Dispatchers
@@ -46,48 +47,37 @@ class RegistroActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_registro)
 
-        etNombre = findViewById(R.id.etNombre)
-        etEmail = findViewById(R.id.etEmail)
-        etContrasena = findViewById(R.id.etContrasena)
+        etNombre           = findViewById(R.id.etNombre)
+        etEmail            = findViewById(R.id.etEmail)
+        etContrasena       = findViewById(R.id.etContrasena)
         switchNotificaciones = findViewById(R.id.switchNotificaciones)
-        checkTerminos = findViewById(R.id.checkTerminos)
-        btnRegistrarse = findViewById(R.id.btnRegistrarse)
-        btnSiguienteStep = findViewById(R.id.btnSiguienteStep)
-        tvIrLogin = findViewById(R.id.tvIrLogin)
-        layoutStep1 = findViewById(R.id.layoutStep1)
-        layoutStep2 = findViewById(R.id.layoutStep2)
-        progressStep1 = findViewById(R.id.progressStep1)
-        progressStep2 = findViewById(R.id.progressStep2)
-        btnBack = findViewById(R.id.btnBack)
+        checkTerminos      = findViewById(R.id.checkTerminos)
+        btnRegistrarse     = findViewById(R.id.btnRegistrarse)
+        btnSiguienteStep   = findViewById(R.id.btnSiguienteStep)
+        tvIrLogin          = findViewById(R.id.tvIrLogin)
+        layoutStep1        = findViewById(R.id.layoutStep1)
+        layoutStep2        = findViewById(R.id.layoutStep2)
+        progressStep1      = findViewById(R.id.progressStep1)
+        progressStep2      = findViewById(R.id.progressStep2)
+        btnBack            = findViewById(R.id.btnBack)
         btnTogglePasswordReg = findViewById(R.id.btnTogglePasswordReg)
 
-        // Back navigation
         btnBack.setOnClickListener {
-            if (pasoActual == 2) {
-                irAPaso(1)
-            } else {
-                finish()
-            }
+            if (pasoActual == 2) irAPaso(1) else finish()
         }
 
-        // Toggle password in step 2
         btnTogglePasswordReg.setOnClickListener {
             passwordVisible = !passwordVisible
-            if (passwordVisible) {
-                etContrasena.transformationMethod = HideReturnsTransformationMethod.getInstance()
-                btnTogglePasswordReg.text = "🙈"
-            } else {
-                etContrasena.transformationMethod = PasswordTransformationMethod.getInstance()
-                btnTogglePasswordReg.text = "👁"
-            }
+            etContrasena.transformationMethod =
+                if (passwordVisible) HideReturnsTransformationMethod.getInstance()
+                else PasswordTransformationMethod.getInstance()
+            btnTogglePasswordReg.text = if (passwordVisible) "🙈" else "👁"
             etContrasena.setSelection(etContrasena.text.length)
         }
 
-        // Step 1 "Siguiente"
         btnSiguienteStep.setOnClickListener {
             val nombre = etNombre.text.toString().trim()
-            val email = etEmail.text.toString().trim()
-
+            val email  = etEmail.text.toString().trim()
             if (nombre.isEmpty()) {
                 Toast.makeText(this, "Introduce tu nombre", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
@@ -99,17 +89,15 @@ class RegistroActivity : AppCompatActivity() {
             irAPaso(2)
         }
 
-        // Step 2 "Registrarse"
         btnRegistrarse.setOnClickListener {
-            val nombre = etNombre.text.toString().trim()
-            val email = etEmail.text.toString().trim()
+            val nombre     = etNombre.text.toString().trim()
+            val email      = etEmail.text.toString().trim()
             val contrasena = etContrasena.text.toString().trim()
 
             if (contrasena.length < 6) {
                 Toast.makeText(this, "La contraseña debe tener mínimo 6 caracteres", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
-
             if (!checkTerminos.isChecked) {
                 Toast.makeText(this, "Debes aceptar los términos y condiciones", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
@@ -117,17 +105,34 @@ class RegistroActivity : AppCompatActivity() {
 
             lifecycleScope.launch(Dispatchers.IO) {
                 try {
-                    val response = RetrofitClient.api.registro(
-                        RegistroRequest(nombre, email, contrasena)
-                    )
+                    val response = RetrofitClient.api.registro(RegistroRequest(nombre, email, contrasena))
 
-                    withContext(Dispatchers.Main) {
-                        if (response.isSuccessful && response.body() != null) {
+                    if (response.isSuccessful && response.body() != null) {
+                        val usuario = response.body()!!
+                        val idUsuario = usuario.idUsuario
+
+                        // Crear calendario personal automáticamente
+                        try {
+                            RetrofitClient.api.crearCalendario(
+                                CalendarioResponse(
+                                    nombre       = "Mi calendario",
+                                    tipo         = "PERSONAL",
+                                    idPropietario = idUsuario,
+                                    idGrupo      = null
+                                )
+                            )
+                        } catch (e: Exception) {
+                            Log.e("REGISTRO", "Error creando calendario personal: ${e.message}")
+                        }
+
+                        withContext(Dispatchers.Main) {
                             Toast.makeText(this@RegistroActivity, "¡Registro exitoso!", Toast.LENGTH_SHORT).show()
                             val intent = Intent(this@RegistroActivity, LoginActivity::class.java)
                             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                             startActivity(intent)
-                        } else {
+                        }
+                    } else {
+                        withContext(Dispatchers.Main) {
                             Toast.makeText(this@RegistroActivity, "El email ya está registrado", Toast.LENGTH_SHORT).show()
                         }
                     }
@@ -140,23 +145,21 @@ class RegistroActivity : AppCompatActivity() {
             }
         }
 
-        tvIrLogin.setOnClickListener {
-            finish()
-        }
+        tvIrLogin.setOnClickListener { finish() }
     }
 
     private fun irAPaso(paso: Int) {
         pasoActual = paso
         if (paso == 1) {
-            layoutStep1.visibility = View.VISIBLE
-            layoutStep2.visibility = View.GONE
+            layoutStep1.visibility    = View.VISIBLE
+            layoutStep2.visibility    = View.GONE
             btnSiguienteStep.visibility = View.VISIBLE
             btnRegistrarse.visibility = View.GONE
             progressStep1.setBackgroundResource(R.drawable.bg_btn_primary)
             progressStep2.setBackgroundColor(getColor(R.color.line))
         } else {
-            layoutStep1.visibility = View.GONE
-            layoutStep2.visibility = View.VISIBLE
+            layoutStep1.visibility    = View.GONE
+            layoutStep2.visibility    = View.VISIBLE
             btnSiguienteStep.visibility = View.GONE
             btnRegistrarse.visibility = View.VISIBLE
             progressStep1.setBackgroundResource(R.drawable.bg_btn_primary)

@@ -14,6 +14,7 @@ import androidx.lifecycle.lifecycleScope
 import com.example.bocetocalendario1.MainActivity
 import com.example.bocetocalendario1.R
 import com.example.bocetocalendario1.datos.modelo.Usuario
+import com.example.bocetocalendario1.network.CalendarioResponse
 import com.example.bocetocalendario1.network.LoginRequest
 import com.example.bocetocalendario1.network.RetrofitClient
 import com.example.bocetocalendario1.notificaciones.canales.NotificacionesManagerCanales
@@ -34,7 +35,6 @@ class LoginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         NotificacionesManagerCanales.createAll(this)
-
         setContentView(R.layout.activity_login)
 
         val gestorSesion = GestorSesion(this)
@@ -45,37 +45,29 @@ class LoginActivity : AppCompatActivity() {
             return
         }
 
-        etEmail = findViewById(R.id.etEmail)
-        etContrasena = findViewById(R.id.etContrasena)
-        btnLogin = findViewById(R.id.btnLogin)
-        tvIrRegistro = findViewById(R.id.tvIrRegistro)
+        etEmail          = findViewById(R.id.etEmail)
+        etContrasena     = findViewById(R.id.etContrasena)
+        btnLogin         = findViewById(R.id.btnLogin)
+        tvIrRegistro     = findViewById(R.id.tvIrRegistro)
         btnTogglePassword = findViewById(R.id.btnTogglePassword)
 
-        // Back arrow
-        val btnBack = findViewById<TextView>(R.id.btnBack)
-        btnBack.setOnClickListener { finish() }
+        findViewById<TextView>(R.id.btnBack).setOnClickListener { finish() }
 
-        // Toggle password visibility
         btnTogglePassword.setOnClickListener {
             passwordVisible = !passwordVisible
-            if (passwordVisible) {
-                etContrasena.transformationMethod = HideReturnsTransformationMethod.getInstance()
-                btnTogglePassword.text = "🙈"
-            } else {
-                etContrasena.transformationMethod = PasswordTransformationMethod.getInstance()
-                btnTogglePassword.text = "👁"
-            }
+            etContrasena.transformationMethod =
+                if (passwordVisible) HideReturnsTransformationMethod.getInstance()
+                else PasswordTransformationMethod.getInstance()
+            btnTogglePassword.text = if (passwordVisible) "🙈" else "👁"
             etContrasena.setSelection(etContrasena.text.length)
         }
 
-        // Forgot password
-        val tvOlvide = findViewById<TextView>(R.id.tvOlvideContrasena)
-        tvOlvide.setOnClickListener {
+        findViewById<TextView>(R.id.tvOlvideContrasena).setOnClickListener {
             ForgotPasswordBottomSheet().show(supportFragmentManager, "ForgotPassword")
         }
 
         btnLogin.setOnClickListener {
-            val email = etEmail.text.toString().trim()
+            val email     = etEmail.text.toString().trim()
             val contrasena = etContrasena.text.toString().trim()
 
             if (email.isEmpty() || contrasena.isEmpty()) {
@@ -87,22 +79,45 @@ class LoginActivity : AppCompatActivity() {
                 try {
                     val response = RetrofitClient.api.login(LoginRequest(email, contrasena))
 
-                    withContext(Dispatchers.Main) {
-                        if (response.isSuccessful && response.body() != null) {
-                            val u = response.body()!!
-                            val usuarioLocal = Usuario(
-                                id_usuario = u.idUsuario,
-                                nombre = u.nombre,
-                                email = u.email,
-                                contrasena = u.contrasena,
-                                notificaciones_activas = u.notificacionesActivas
-                            )
+                    if (response.isSuccessful && response.body() != null) {
+                        val u = response.body()!!
+                        val usuarioLocal = Usuario(
+                            id_usuario            = u.idUsuario,
+                            nombre                = u.nombre,
+                            email                 = u.email,
+                            contrasena            = u.contrasena,
+                            notificaciones_activas = u.notificacionesActivas
+                        )
+
+                        // Garantizar que el usuario tiene al menos un calendario personal.
+                        // Si ya lo tiene no se crea otro; si no lo tiene (cuenta antigua o
+                        // fallo silencioso en el registro) se crea ahora.
+                        try {
+                            val calResp = RetrofitClient.api.obtenerCalendariosDeUsuario(u.idUsuario)
+                            val personales = calResp.body()?.filter { it.tipo == "PERSONAL" } ?: emptyList()
+                            if (personales.isEmpty()) {
+                                RetrofitClient.api.crearCalendario(
+                                    CalendarioResponse(
+                                        nombre        = "Mi calendario",
+                                        tipo          = "PERSONAL",
+                                        idPropietario = u.idUsuario,
+                                        idGrupo       = null
+                                    )
+                                )
+                            }
+                        } catch (e: Exception) {
+                            Log.e("LOGIN", "Error verificando/creando calendario: ${e.message}")
+                        }
+
+                        withContext(Dispatchers.Main) {
                             gestorSesion.guardarSesion(usuarioLocal)
                             Toast.makeText(this@LoginActivity, "Bienvenido ${u.nombre}!", Toast.LENGTH_SHORT).show()
                             val intent = Intent(this@LoginActivity, MainActivity::class.java)
                             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                             startActivity(intent)
-                        } else {
+                        }
+                    } else {
+                        withContext(Dispatchers.Main) {
                             Toast.makeText(this@LoginActivity, "Email o contraseña incorrectos", Toast.LENGTH_SHORT).show()
                         }
                     }

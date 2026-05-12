@@ -201,39 +201,18 @@ class CalendarioFragment : Fragment() {
                 }
 
                 withContext(Dispatchers.Main) {
-                    todosEventos = if (eventos.isEmpty()) eventosDemo() else eventos
+                    todosEventos = eventos
                     actualizarUI()
                 }
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
-                    todosEventos = eventosDemo()
+                    todosEventos = emptyList()
                     actualizarUI()
                 }
             }
         }
     }
 
-    private fun eventosDemo(): List<Evento> {
-        val hoy = Calendar.getInstance()
-        val d = "%02d".format(hoy.get(Calendar.DAY_OF_MONTH))
-        val m = "%02d".format(hoy.get(Calendar.MONTH) + 1)
-        val y = hoy.get(Calendar.YEAR)
-        val sig = "%02d".format(hoy.get(Calendar.DAY_OF_MONTH) + 1)
-        val ant = "%02d".format((hoy.get(Calendar.DAY_OF_MONTH) - 2).coerceAtLeast(1))
-        val den = "%02d".format((hoy.get(Calendar.DAY_OF_MONTH) + 2).coerceAtMost(28))
-        val tres = "%02d".format((hoy.get(Calendar.DAY_OF_MONTH) + 3).coerceAtMost(28))
-        val seis = "%02d".format((hoy.get(Calendar.DAY_OF_MONTH) + 6).coerceAtMost(28))
-        return listOf(
-            Evento(1, "Reunión de equipo",   "Revisión semanal del sprint", "$d/$m/$y 09:00",  "$d/$m/$y 10:00",  "Sala de reuniones", "CONFIRMADO", 1),
-            Evento(2, "Clase de yoga",        "",                            "$d/$m/$y 18:00",  "$d/$m/$y 19:00",  "Gimnasio Central",  "CONFIRMADO", 2),
-            Evento(3, "Revisión TFG",         "Entrega parcial del proyecto", "$sig/$m/$y 10:00","$sig/$m/$y 12:00","Facultad B-101",    "PENDIENTE",  1),
-            Evento(4, "Cena con amigos",      "Cumpleaños de Ana",           "$sig/$m/$y 21:00","$sig/$m/$y 23:30","Restaurante Mar",   "CONFIRMADO", 3),
-            Evento(5, "Dentista",             "Revisión semestral",          "$ant/$m/$y 11:00","$ant/$m/$y 11:30","Clínica Dental",    "CONFIRMADO", 2),
-            Evento(6, "Defensa del proyecto", "Presentación final TFG",      "$den/$m/$y 09:30","$den/$m/$y 11:00","Aula Magna",        "PENDIENTE",  1),
-            Evento(7, "Gym",                  "",                            "$tres/$m/$y 07:30","$tres/$m/$y 09:00","Fitness Center",   "CONFIRMADO", 2),
-            Evento(8, "Standup diario",       "Sync con el equipo",          "$seis/$m/$y 09:00","$seis/$m/$y 09:15","Meet",            "CONFIRMADO", 1)
-        )
-    }
 
     private fun actualizarUI() {
         actualizarHeader()
@@ -686,14 +665,35 @@ class CalendarioFragment : Fragment() {
     private fun eventosEnDia(dia: Int, mes: Int, anio: Int): List<Evento> {
         return todosEventos.filter { evento ->
             try {
-                val fecha = evento.fechaInicio.substringBefore(" ").trim()
-                val partes = fecha.split("/")
-                if (partes.size < 3) return@filter false
-                partes[0].toInt() == dia &&
-                        partes[1].toInt() - 1 == mes &&
-                        partes[2].toInt() == anio
+                parsearFechaEvento(evento.fechaInicio, dia, mes, anio)
             } catch (e: Exception) { false }
         }
+    }
+
+    /**
+     * Acepta dos formatos de fecha:
+     *  - dd/MM/yyyy HH:mm   (formato local guardado por el picker)
+     *  - yyyy-MM-ddTHH:mm:ss  (ISO 8601 que puede devolver el servidor)
+     */
+    private fun parsearFechaEvento(fechaInicio: String, dia: Int, mes: Int, anio: Int): Boolean {
+        val raw = fechaInicio.trim()
+        return if (raw.contains("/")) {
+            // Formato dd/MM/yyyy HH:mm
+            val fecha = raw.substringBefore(" ")
+            val partes = fecha.split("/")
+            if (partes.size < 3) return false
+            partes[0].toInt() == dia &&
+                    partes[1].toInt() - 1 == mes &&
+                    partes[2].toInt() == anio
+        } else if (raw.contains("-")) {
+            // Formato ISO: yyyy-MM-dd o yyyy-MM-ddTHH:mm:ss
+            val fecha = raw.substringBefore("T").substringBefore(" ")
+            val partes = fecha.split("-")
+            if (partes.size < 3) return false
+            partes[2].toInt() == dia &&
+                    partes[1].toInt() - 1 == mes &&
+                    partes[0].toInt() == anio
+        } else false
     }
 
     private fun cambiarPeriodo(delta: Int) {

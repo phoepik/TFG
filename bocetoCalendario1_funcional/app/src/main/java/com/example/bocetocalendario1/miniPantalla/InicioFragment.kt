@@ -73,19 +73,6 @@ class InicioFragment : Fragment() {
         cargarEventos()
     }
 
-    private fun eventosDemo(): List<Evento> {
-        val hoy = Calendar.getInstance()
-        val d = "%02d".format(hoy.get(Calendar.DAY_OF_MONTH))
-        val m = "%02d".format(hoy.get(Calendar.MONTH) + 1)
-        val y = hoy.get(Calendar.YEAR)
-        val sig = "%02d".format((hoy.get(Calendar.DAY_OF_MONTH) + 1).coerceAtMost(28))
-        return listOf(
-            Evento(1, "Reunión de equipo",   "Revisión semanal del sprint", "$d/$m/$y 09:00",  "$d/$m/$y 10:00",  "Sala de reuniones", "CONFIRMADO", 1),
-            Evento(2, "Clase de yoga",        "",                            "$d/$m/$y 18:00",  "$d/$m/$y 19:00",  "Gimnasio Central",  "CONFIRMADO", 2),
-            Evento(3, "Revisión TFG",         "Entrega parcial",             "$sig/$m/$y 10:00","$sig/$m/$y 12:00","Facultad B-101",    "PENDIENTE",  1),
-            Evento(4, "Cena con amigos",      "Cumpleaños de Ana",           "$sig/$m/$y 21:00","$sig/$m/$y 23:30","Restaurante Mar",   "CONFIRMADO", 3)
-        )
-    }
 
     private fun cargarEventos() {
         val gestor = GestorSesion(requireContext())
@@ -144,7 +131,7 @@ class InicioFragment : Fragment() {
                 }
 
                 withContext(Dispatchers.Main) {
-                    val lista = if (eventos.isEmpty()) eventosDemo() else eventos
+                    val lista = eventos
                     rvEventos.visibility = View.VISIBLE
                     layoutEmptyState.visibility = View.GONE
                     rvEventos.adapter = EventoAdapter(lista, onClick = {})
@@ -153,7 +140,7 @@ class InicioFragment : Fragment() {
                 withContext(Dispatchers.Main) {
                     rvEventos.visibility = View.VISIBLE
                     layoutEmptyState.visibility = View.GONE
-                    rvEventos.adapter = EventoAdapter(eventosDemo(), onClick = {})
+                    rvEventos.adapter = EventoAdapter(emptyList(), onClick = {})
                 }
             }
         }

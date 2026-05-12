@@ -26,13 +26,7 @@ class InviteBottomSheet : BottomSheetDialogFragment() {
 
     data class PersonSuggestion(val name: String, val email: String, var selected: Boolean = false)
 
-    private val suggestions = listOf(
-        PersonSuggestion("Ana García", "ana@email.com"),
-        PersonSuggestion("Carlos López", "carlos@email.com"),
-        PersonSuggestion("María Ruiz", "maria@email.com"),
-        PersonSuggestion("Diego Martín", "diego@email.com"),
-        PersonSuggestion("Lucía Torres", "lucia@email.com")
-    )
+    private val suggestions = emptyList<PersonSuggestion>()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.bottom_sheet_invite, container, false)

@@ -4,13 +4,11 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.TextView
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -39,20 +37,24 @@ class GruposFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_grupos, container, false)
-    }
+    ): View? = inflater.inflate(R.layout.fragment_grupos, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        gestorSesion = GestorSesion(requireContext())
-        rvGrupos = view.findViewById(R.id.rvGrupos)
+        gestorSesion  = GestorSesion(requireContext())
+        rvGrupos      = view.findViewById(R.id.rvGrupos)
         btnNuevoGrupo = view.findViewById(R.id.btnNuevoGrupo)
         etBuscarGrupos = view.findViewById(R.id.etBuscarGrupos)
         rvGrupos.layoutManager = LinearLayoutManager(context)
 
-        // Search filter
+        // Escuchar resultado del bottom sheet para recargar la lista
+        parentFragmentManager.setFragmentResultListener(
+            "grupo_creado", viewLifecycleOwner
+        ) { _, _ ->
+            cargarGrupos()
+        }
+
         etBuscarGrupos.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
                 val query = s?.toString()?.trim()?.lowercase() ?: ""
@@ -85,40 +87,35 @@ class GruposFragment : Fragment() {
 
                 withContext(Dispatchers.Main) {
                     if (response.isSuccessful && !response.body().isNullOrEmpty()) {
-                        val gruposServidor = response.body()!!
-                        todosGrupos = gruposServidor.map { g ->
-                            Grupo(id_grupo = g.idGrupo ?: 0, nombre = g.nombre, descripcion = g.descripcion, id_admin = g.idAdmin)
+                        todosGrupos = response.body()!!.map { g ->
+                            Grupo(
+                                id_grupo    = g.idGrupo ?: 0,
+                                nombre      = g.nombre,
+                                descripcion = g.descripcion,
+                                id_admin    = g.idAdmin
+                            )
                         }
                     } else {
-                        todosGrupos = gruposDemo()
+                        todosGrupos = emptyList()
                     }
                     mostrarGrupos(todosGrupos)
                 }
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
-                    todosGrupos = gruposDemo()
+                    todosGrupos = emptyList()
                     mostrarGrupos(todosGrupos)
                 }
             }
         }
     }
 
-    private fun gruposDemo(): List<Grupo> = listOf(
-        Grupo(1, "Trabajo",       "Proyectos y reuniones del equipo", 1),
-        Grupo(2, "Familia",       "Eventos familiares y reuniones",    1),
-        Grupo(3, "Amigos",        "Quedadas y planes con amigos",      2),
-        Grupo(4, "Universidad",   "TFG, clases y exámenes",            1),
-        Grupo(5, "Deporte",       "Entrenos y competiciones",          3)
-    )
-
     private fun mostrarGrupos(grupos: List<Grupo>) {
         rvGrupos.adapter = GrupoAdapter(grupos) { grupo ->
-            val idx = todosGrupos.indexOf(grupo)
             val intent = Intent(context, DetalleGrupoActivity::class.java)
             intent.putExtra("GRUPO_ID", grupo.id_grupo)
             intent.putExtra("GRUPO_NOMBRE", grupo.nombre)
             intent.putExtra("GRUPO_DESCRIPCION", grupo.descripcion)
-            intent.putExtra("GRUPO_IDX", idx.coerceAtLeast(0))
+            intent.putExtra("GRUPO_IDX", todosGrupos.indexOf(grupo).coerceAtLeast(0))
             startActivity(intent)
         }
     }

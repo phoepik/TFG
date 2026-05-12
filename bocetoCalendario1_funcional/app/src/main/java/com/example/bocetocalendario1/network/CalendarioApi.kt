@@ -152,6 +152,9 @@ interface CalendarioApi {
 
     // ── Calendarios ──
 
+    @POST("api/calendarios")
+    suspend fun crearCalendario(@Body calendario: CalendarioResponse): Response<CalendarioResponse>
+
     @GET("api/calendarios/propietario/{id}")
     suspend fun obtenerCalendariosDeUsuario(@Path("id") id: Int): Response<List<CalendarioResponse>>
 
