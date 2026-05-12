@@ -39,4 +39,10 @@
         <item name="cornerSizeTopLeft">28dp</item>
         <item name="cornerSizeTopRight">28dp</item>
     </style>
+
+    <!-- FAB with rounded-square shape (20dp radius) -->
+    <style name="ShapeAppearance.Rounded20" parent="ShapeAppearance.MaterialComponents.SmallComponent">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">20dp</item>
+    </style>
 </resources>

@@ -11,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.FrameLayout
+import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
@@ -38,11 +39,13 @@ class CalendarioFragment : Fragment() {
     private lateinit var tvMesAnio: TextView
     private lateinit var tvEtiquetaHoy: TextView
     private lateinit var tvTituloDia: TextView
+    private lateinit var tvConteoEventos: TextView
     private lateinit var rvCalendario: RecyclerView
     private lateinit var rvEventosDia: RecyclerView
-    private lateinit var btnAnterior: Button
+    private lateinit var layoutDayEmpty: LinearLayout    // empty state in month view
+    private lateinit var btnAnterior: ImageButton
     private lateinit var btnHoy: Button
-    private lateinit var btnSiguiente: Button
+    private lateinit var btnSiguiente: ImageButton
     private lateinit var btnTabMes: Button
     private lateinit var btnTabSemana: Button
     private lateinit var btnTabDia: Button
@@ -61,7 +64,7 @@ class CalendarioFragment : Fragment() {
     private lateinit var tvDayViewTitle: TextView
     private lateinit var layoutDayHourRows: LinearLayout
     private lateinit var layoutDayEvents: FrameLayout
-    private lateinit var layoutDayEmpty: LinearLayout
+    private lateinit var layoutDayViewEmpty: LinearLayout   // empty state in day view
 
     private var cursor = Calendar.getInstance()
     private var diaSeleccionado = Calendar.getInstance()
@@ -72,8 +75,9 @@ class CalendarioFragment : Fragment() {
         "Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre")
     private val MESES_GEN = arrayOf("enero","febrero","marzo","abril","mayo","junio",
         "julio","agosto","septiembre","octubre","noviembre","diciembre")
-    private val DIAS_ABREV = arrayOf("L","M","X","J","V","S","D")
-    private val DIAS_NOMBRE = arrayOf("Lunes","Martes","Miércoles","Jueves","Viernes","Sábado","Domingo")
+    private val DIAS_ABREV = arrayOf("Lun","Mar","Mié","Jue","Vie","Sáb","Dom")
+    private val DIAS_NOMBRE_LARGO = arrayOf("lunes","martes","miércoles","jueves","viernes","sábado","domingo")
+
     private val COLORES_EVENTOS = listOf(
         Color.parseColor("#0B5FFF"), Color.parseColor("#E94B7B"),
         Color.parseColor("#22C55E"), Color.parseColor("#8B5CF6"),
@@ -91,33 +95,35 @@ class CalendarioFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        tvMesAnio      = view.findViewById(R.id.tvMesAnio)
-        tvEtiquetaHoy  = view.findViewById(R.id.tvEtiquetaHoy)
-        tvTituloDia    = view.findViewById(R.id.tvTituloDia)
-        rvCalendario   = view.findViewById(R.id.rvCalendario)
-        rvEventosDia   = view.findViewById(R.id.rvEventosDia)
-        btnAnterior    = view.findViewById(R.id.btnAnteriorMes)
-        btnHoy         = view.findViewById(R.id.btnHoy)
-        btnSiguiente   = view.findViewById(R.id.btnSiguienteMes)
-        btnTabMes      = view.findViewById(R.id.btnTabMes)
-        btnTabSemana   = view.findViewById(R.id.btnTabSemana)
-        btnTabDia      = view.findViewById(R.id.btnTabDia)
-
-        viewMes        = view.findViewById(R.id.viewMes)
-        viewSemana     = view.findViewById(R.id.viewSemana)
-        viewDia        = view.findViewById(R.id.viewDia)
-
-        layoutDayColumns   = view.findViewById(R.id.layoutDayColumns)
-        layoutHourRows     = view.findViewById(R.id.layoutHourRows)
-        layoutEventColumns = view.findViewById(R.id.layoutEventColumns)
-
-        tvDayViewTitle    = view.findViewById(R.id.tvDayViewTitle)
-        layoutDayHourRows = view.findViewById(R.id.layoutDayHourRows)
-        layoutDayEvents   = view.findViewById(R.id.layoutDayEvents)
+        tvMesAnio         = view.findViewById(R.id.tvMesAnio)
+        tvEtiquetaHoy     = view.findViewById(R.id.tvEtiquetaHoy)
+        tvTituloDia       = view.findViewById(R.id.tvTituloDia)
+        tvConteoEventos   = view.findViewById(R.id.tvConteoEventos)
+        rvCalendario      = view.findViewById(R.id.rvCalendario)
+        rvEventosDia      = view.findViewById(R.id.rvEventosDia)
         layoutDayEmpty    = view.findViewById(R.id.layoutDayEmpty)
+        btnAnterior       = view.findViewById(R.id.btnAnteriorMes)
+        btnHoy            = view.findViewById(R.id.btnHoy)
+        btnSiguiente      = view.findViewById(R.id.btnSiguienteMes)
+        btnTabMes         = view.findViewById(R.id.btnTabMes)
+        btnTabSemana      = view.findViewById(R.id.btnTabSemana)
+        btnTabDia         = view.findViewById(R.id.btnTabDia)
+
+        viewMes           = view.findViewById(R.id.viewMes)
+        viewSemana        = view.findViewById(R.id.viewSemana)
+        viewDia           = view.findViewById(R.id.viewDia)
+
+        layoutDayColumns      = view.findViewById(R.id.layoutDayColumns)
+        layoutHourRows        = view.findViewById(R.id.layoutHourRows)
+        layoutEventColumns    = view.findViewById(R.id.layoutEventColumns)
+
+        tvDayViewTitle        = view.findViewById(R.id.tvDayViewTitle)
+        layoutDayHourRows     = view.findViewById(R.id.layoutDayHourRows)
+        layoutDayEvents       = view.findViewById(R.id.layoutDayEvents)
+        layoutDayViewEmpty    = view.findViewById(R.id.layoutDayViewEmpty)
 
         val fab = view.findViewById<com.google.android.material.floatingactionbutton.FloatingActionButton>(R.id.fabNuevoEvento)
-        val btnSearch = view.findViewById<android.widget.ImageButton?>(R.id.btnSearch)
+        val btnSearch = view.findViewById<ImageButton>(R.id.btnSearch)
 
         rvCalendario.layoutManager = GridLayoutManager(context, 7)
         rvEventosDia.layoutManager = LinearLayoutManager(context)
@@ -143,6 +149,8 @@ class CalendarioFragment : Fragment() {
             sheet.show(parentFragmentManager, "Search")
         }
 
+        // Apply initial tab state
+        aplicarEstadoTabs("mes")
         actualizarHeader()
         cargarEventos()
     }
@@ -205,6 +213,7 @@ class CalendarioFragment : Fragment() {
                     actualizarUI()
                 }
             } catch (e: Exception) {
+                Log.w("CALENDARIO", "Error cargando eventos", e)
                 withContext(Dispatchers.Main) {
                     todosEventos = emptyList()
                     actualizarUI()
@@ -212,7 +221,6 @@ class CalendarioFragment : Fragment() {
             }
         }
     }
-
 
     private fun actualizarUI() {
         actualizarHeader()
@@ -230,9 +238,18 @@ class CalendarioFragment : Fragment() {
         tvMesAnio.text = "${MESES[cursor.get(Calendar.MONTH)]} ${cursor.get(Calendar.YEAR)}"
 
         val hoy = Calendar.getInstance()
-        val esHoyVisible = cursor.get(Calendar.YEAR) == hoy.get(Calendar.YEAR) &&
-                cursor.get(Calendar.MONTH) == hoy.get(Calendar.MONTH)
-        tvEtiquetaHoy.visibility = if (esHoyVisible) View.VISIBLE else View.GONE
+        val esHoy = diaSeleccionado.get(Calendar.DAY_OF_MONTH) == hoy.get(Calendar.DAY_OF_MONTH) &&
+                diaSeleccionado.get(Calendar.MONTH) == hoy.get(Calendar.MONTH) &&
+                diaSeleccionado.get(Calendar.YEAR) == hoy.get(Calendar.YEAR)
+
+        if (esHoy) {
+            tvEtiquetaHoy.text = "Hoy"
+        } else {
+            // Show day of week for selected day
+            val dow = (diaSeleccionado.get(Calendar.DAY_OF_WEEK) + 5) % 7  // Mon=0
+            tvEtiquetaHoy.text = DIAS_NOMBRE_LARGO[dow]
+        }
+        tvEtiquetaHoy.visibility = View.VISIBLE
     }
 
     private fun construirGrid() {
@@ -241,9 +258,9 @@ class CalendarioFragment : Fragment() {
 
         val primerDia = cursor.clone() as Calendar
         primerDia.set(Calendar.DAY_OF_MONTH, 1)
-        var dow = primerDia.get(Calendar.DAY_OF_WEEK) - 2
-        if (dow < 0) dow = 6
-
+        // Monday = 0 offset
+        val dow = (primerDia.get(Calendar.DAY_OF_WEEK) + 5) % 7
+        // Fill leading empty cells
         repeat(dow) { celdas.add(DiaCelda(0, false, false, false, emptyList())) }
 
         val diasEnMes = primerDia.getActualMaximum(Calendar.DAY_OF_MONTH)
@@ -259,11 +276,15 @@ class CalendarioFragment : Fragment() {
             celdas.add(DiaCelda(d, true, esHoy, esSel, colores))
         }
 
-        while (celdas.size % 7 != 0) celdas.add(DiaCelda(0, false, false, false, emptyList()))
+        // Fill trailing empty cells
+        while (celdas.size % 7 != 0) {
+            celdas.add(DiaCelda(0, false, false, false, emptyList()))
+        }
 
         val adapter = CalendarDayAdapter(celdas) { dia ->
             diaSeleccionado = cursor.clone() as Calendar
             diaSeleccionado.set(Calendar.DAY_OF_MONTH, dia)
+            actualizarHeader()
             construirGrid()
             mostrarEventosDia(diaSeleccionado)
         }
@@ -279,23 +300,29 @@ class CalendarioFragment : Fragment() {
                 dia.get(Calendar.MONTH) == hoy.get(Calendar.MONTH) &&
                 dia.get(Calendar.YEAR) == hoy.get(Calendar.YEAR)
 
-        val etiqueta = if (esHoy) "Hoy" else
-            "${dia.get(Calendar.DAY_OF_MONTH)} de ${MESES[dia.get(Calendar.MONTH)].lowercase()}"
-        tvTituloDia.text = "$etiqueta · ${eventos.size} ${if (eventos.size == 1) "evento" else "eventos"}"
+        tvTituloDia.text = if (esHoy) "Hoy" else
+            "${dia.get(Calendar.DAY_OF_MONTH)} de ${MESES_GEN[dia.get(Calendar.MONTH)]}"
+        tvConteoEventos.text = "${eventos.size} ${if (eventos.size == 1) "evento" else "eventos"}"
 
-        rvEventosDia.adapter = EventoAdapter(eventos, onClick = { evento ->
-            val sheet = EventDetalleBottomSheet.newInstance(evento)
-            sheet.show(parentFragmentManager, "EventDetalle")
-        })
+        if (eventos.isEmpty()) {
+            rvEventosDia.visibility = View.GONE
+            layoutDayEmpty.visibility = View.VISIBLE
+        } else {
+            layoutDayEmpty.visibility = View.GONE
+            rvEventosDia.visibility = View.VISIBLE
+            rvEventosDia.adapter = EventoAdapter(eventos, onClick = { evento ->
+                val sheet = EventDetalleBottomSheet.newInstance(evento)
+                sheet.show(parentFragmentManager, "EventDetalle")
+            })
+        }
     }
 
-    // ── WEEK VIEW ──────────────────────────────────────────────────────────
+    // ── WEEK VIEW ─────────────────────────────────────────────────────────
 
     private fun construirVistaSemana() {
         val ctx = requireContext()
         val hourHeightPx = dpToPx(HOUR_HEIGHT_DP)
 
-        // Find Monday of the week containing diaSeleccionado
         val lunes = diaSeleccionado.clone() as Calendar
         val dow = lunes.get(Calendar.DAY_OF_WEEK)
         val delta = if (dow == Calendar.SUNDAY) -6 else -(dow - Calendar.MONDAY)
@@ -303,7 +330,6 @@ class CalendarioFragment : Fragment() {
 
         val hoy = Calendar.getInstance()
 
-        // Build day columns header
         layoutDayColumns.removeAllViews()
         for (i in 0..6) {
             val dayCal = lunes.clone() as Calendar
@@ -318,39 +344,39 @@ class CalendarioFragment : Fragment() {
             val dayCol = LinearLayout(ctx).apply {
                 orientation = LinearLayout.VERTICAL
                 gravity = Gravity.CENTER
-                val lp = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT, 1f)
-                layoutParams = lp
+                layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT, 1f)
             }
 
             val tvAbrev = TextView(ctx).apply {
                 text = DIAS_ABREV[i]
-                textSize = 11f
+                textSize = 10f
                 setTextColor(ContextCompat.getColor(ctx, R.color.muted))
                 gravity = Gravity.CENTER
+                setTypeface(null, android.graphics.Typeface.BOLD)
+                letterSpacing = 0.04f
             }
 
+            val circlePx = dpToPx(30)
             val tvNum = TextView(ctx).apply {
                 text = dayCal.get(Calendar.DAY_OF_MONTH).toString()
-                textSize = 15f
+                textSize = 14f
                 gravity = Gravity.CENTER
-                val circleDp = 32
-                val circlePx = dpToPx(circleDp)
-                val lp = LinearLayout.LayoutParams(circlePx, circlePx)
-                lp.topMargin = dpToPx(2)
-                layoutParams = lp
+                layoutParams = LinearLayout.LayoutParams(circlePx, circlePx).apply {
+                    topMargin = dpToPx(4)
+                }
+                setTypeface(null, android.graphics.Typeface.BOLD)
                 when {
                     esHoy -> {
                         setTextColor(Color.WHITE)
-                        textSize = 15f
-                        setTypeface(typeface, android.graphics.Typeface.BOLD)
-                        background = circleDrawable(ContextCompat.getColor(ctx, R.color.brand))
+                        background = ContextCompat.getDrawable(ctx, R.drawable.bg_cal_cell_today)
                     }
                     esSel -> {
                         setTextColor(ContextCompat.getColor(ctx, R.color.brand))
-                        background = circleDrawable(ContextCompat.getColor(ctx, R.color.brand_50))
+                        background = ContextCompat.getDrawable(ctx, R.drawable.bg_cal_cell_selected)
                     }
                     else -> {
                         setTextColor(ContextCompat.getColor(ctx, R.color.ink))
+                        background = null
                     }
                 }
             }
@@ -358,7 +384,6 @@ class CalendarioFragment : Fragment() {
             dayCol.addView(tvAbrev)
             dayCol.addView(tvNum)
 
-            val finalI = i
             val finalDayCal = dayCal.clone() as Calendar
             dayCol.setOnClickListener {
                 diaSeleccionado = finalDayCal
@@ -368,45 +393,35 @@ class CalendarioFragment : Fragment() {
             layoutDayColumns.addView(dayCol)
         }
 
-        // Build hour rows
         layoutHourRows.removeAllViews()
         for (h in HORA_INICIO..HORA_FIN) {
             val row = LinearLayout(ctx).apply {
                 orientation = LinearLayout.HORIZONTAL
-                val lp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, hourHeightPx)
-                layoutParams = lp
+                layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, hourHeightPx)
             }
-
             val tvHour = TextView(ctx).apply {
                 text = String.format("%02d:00", h)
                 textSize = 10f
-                setTextColor(ContextCompat.getColor(ctx, R.color.muted))
+                setTextColor(ContextCompat.getColor(ctx, R.color.muted_2))
                 gravity = Gravity.TOP or Gravity.CENTER_HORIZONTAL
-                val lp = LinearLayout.LayoutParams(dpToPx(48), LinearLayout.LayoutParams.MATCH_PARENT)
-                layoutParams = lp
-                setPadding(dpToPx(4), dpToPx(4), dpToPx(4), 0)
+                layoutParams = LinearLayout.LayoutParams(dpToPx(48), LinearLayout.LayoutParams.MATCH_PARENT)
+                setPadding(dpToPx(2), dpToPx(3), dpToPx(4), 0)
+                setTypeface(null, android.graphics.Typeface.BOLD)
             }
-
-            val divider = View(ctx).apply {
-                val lp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, dpToPx(1))
-                lp.topMargin = 0
-                layoutParams = lp
-                setBackgroundColor(ContextCompat.getColor(ctx, R.color.line))
-            }
-
             val rowContent = LinearLayout(ctx).apply {
                 orientation = LinearLayout.VERTICAL
-                val lp = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT, 1f)
-                layoutParams = lp
+                layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT, 1f)
+            }
+            val divider = View(ctx).apply {
+                layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, dpToPx(1))
+                setBackgroundColor(ContextCompat.getColor(ctx, R.color.line_2))
             }
             rowContent.addView(divider)
-
             row.addView(tvHour)
             row.addView(rowContent)
             layoutHourRows.addView(row)
         }
 
-        // Build event columns
         layoutEventColumns.removeAllViews()
         val totalHours = HORA_FIN - HORA_INICIO + 1
         val totalHeightPx = totalHours * hourHeightPx
@@ -414,16 +429,11 @@ class CalendarioFragment : Fragment() {
         for (i in 0..6) {
             val dayCal = lunes.clone() as Calendar
             dayCal.add(Calendar.DAY_OF_MONTH, i)
-
-            val dayEventos = eventosEnDia(
-                dayCal.get(Calendar.DAY_OF_MONTH),
-                dayCal.get(Calendar.MONTH),
-                dayCal.get(Calendar.YEAR)
-            )
+            val dayEventos = eventosEnDia(dayCal.get(Calendar.DAY_OF_MONTH),
+                dayCal.get(Calendar.MONTH), dayCal.get(Calendar.YEAR))
 
             val colFrame = FrameLayout(ctx).apply {
-                val lp = LinearLayout.LayoutParams(0, totalHeightPx, 1f)
-                layoutParams = lp
+                layoutParams = LinearLayout.LayoutParams(0, totalHeightPx, 1f)
             }
 
             dayEventos.forEachIndexed { idx, evento ->
@@ -432,44 +442,40 @@ class CalendarioFragment : Fragment() {
 
                 val eventView = LinearLayout(ctx).apply {
                     orientation = LinearLayout.HORIZONTAL
-                    val lp = FrameLayout.LayoutParams(
+                    layoutParams = FrameLayout.LayoutParams(
                         FrameLayout.LayoutParams.MATCH_PARENT,
                         maxOf(heightPx, dpToPx(24))
-                    )
-                    lp.topMargin = topPx
-                    lp.marginStart = dpToPx(2)
-                    lp.marginEnd = dpToPx(2)
-                    layoutParams = lp
-                    setBackgroundColor(Color.argb(30, Color.red(color), Color.green(color), Color.blue(color)))
+                    ).apply {
+                        topMargin = topPx
+                        marginStart = dpToPx(2)
+                        marginEnd = dpToPx(2)
+                    }
+                    setBackgroundColor(Color.argb(34, Color.red(color), Color.green(color), Color.blue(color)))
                 }
 
                 val colorBar = View(ctx).apply {
-                    val lp = LinearLayout.LayoutParams(dpToPx(3), LinearLayout.LayoutParams.MATCH_PARENT)
-                    layoutParams = lp
+                    layoutParams = LinearLayout.LayoutParams(dpToPx(3), LinearLayout.LayoutParams.MATCH_PARENT)
                     setBackgroundColor(color)
                 }
 
                 val tvTitle = TextView(ctx).apply {
                     text = evento.titulo
                     textSize = 10f
-                    setTextColor(color)
+                    setTextColor(ContextCompat.getColor(ctx, R.color.ink))
+                    setTypeface(null, android.graphics.Typeface.BOLD)
                     setPadding(dpToPx(3), dpToPx(2), dpToPx(2), dpToPx(2))
                     maxLines = 2
-                    val lp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-                    layoutParams = lp
+                    layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
                 }
 
                 eventView.addView(colorBar)
                 eventView.addView(tvTitle)
-
                 eventView.setOnClickListener {
                     val sheet = EventDetalleBottomSheet.newInstance(evento)
                     sheet.show(parentFragmentManager, "EventDetalle")
                 }
-
                 colFrame.addView(eventView)
             }
-
             layoutEventColumns.addView(colFrame)
         }
     }
@@ -480,17 +486,15 @@ class CalendarioFragment : Fragment() {
         val ctx = requireContext()
         val hourHeightPx = dpToPx(64)
 
-        // Header
         val hoy = Calendar.getInstance()
         val esHoy = diaSeleccionado.get(Calendar.DAY_OF_MONTH) == hoy.get(Calendar.DAY_OF_MONTH) &&
                 diaSeleccionado.get(Calendar.MONTH) == hoy.get(Calendar.MONTH) &&
                 diaSeleccionado.get(Calendar.YEAR) == hoy.get(Calendar.YEAR)
 
-        val dow = diaSeleccionado.get(Calendar.DAY_OF_WEEK)
-        val nombreDia = arrayOf("Domingo","Lunes","Martes","Miércoles","Jueves","Viernes","Sábado")[dow - 1]
-        val nombreMes = MESES_GEN[diaSeleccionado.get(Calendar.MONTH)]
+        val dow = (diaSeleccionado.get(Calendar.DAY_OF_WEEK) + 5) % 7
         val prefix = if (esHoy) "Hoy · " else ""
-        tvDayViewTitle.text = "${prefix}${diaSeleccionado.get(Calendar.DAY_OF_MONTH)} $nombreMes $nombreDia"
+        tvDayViewTitle.text = "${prefix}${diaSeleccionado.get(Calendar.DAY_OF_MONTH)} " +
+                "${MESES_GEN[diaSeleccionado.get(Calendar.MONTH)]} · ${DIAS_NOMBRE_LARGO[dow]}"
 
         val eventosDelDia = eventosEnDia(
             diaSeleccionado.get(Calendar.DAY_OF_MONTH),
@@ -498,57 +502,43 @@ class CalendarioFragment : Fragment() {
             diaSeleccionado.get(Calendar.YEAR)
         )
 
-        // Build hour rows
         layoutDayHourRows.removeAllViews()
         for (h in HORA_INICIO..HORA_FIN) {
             val row = LinearLayout(ctx).apply {
                 orientation = LinearLayout.HORIZONTAL
-                val lp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, hourHeightPx)
-                layoutParams = lp
+                layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, hourHeightPx)
             }
-
             val tvHour = TextView(ctx).apply {
                 text = String.format("%02d:00", h)
                 textSize = 11f
                 setTextColor(ContextCompat.getColor(ctx, R.color.muted))
+                setTypeface(null, android.graphics.Typeface.BOLD)
                 gravity = Gravity.TOP or Gravity.CENTER_HORIZONTAL
-                val lp = LinearLayout.LayoutParams(dpToPx(52), LinearLayout.LayoutParams.MATCH_PARENT)
-                layoutParams = lp
+                layoutParams = LinearLayout.LayoutParams(dpToPx(52), LinearLayout.LayoutParams.MATCH_PARENT)
                 setPadding(dpToPx(8), dpToPx(6), dpToPx(4), 0)
             }
-
             val lineContainer = LinearLayout(ctx).apply {
                 orientation = LinearLayout.VERTICAL
-                val lp = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT, 1f)
-                layoutParams = lp
+                layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT, 1f)
             }
             val line = View(ctx).apply {
-                val lp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, dpToPx(1))
-                layoutParams = lp
-                setBackgroundColor(ContextCompat.getColor(ctx, R.color.line))
+                layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, dpToPx(1))
+                setBackgroundColor(ContextCompat.getColor(ctx, R.color.line_2))
             }
             lineContainer.addView(line)
-
             row.addView(tvHour)
             row.addView(lineContainer)
             layoutDayHourRows.addView(row)
         }
 
-        // Build event overlays
         layoutDayEvents.removeAllViews()
         val totalHeightPx = (HORA_FIN - HORA_INICIO + 1) * hourHeightPx
-
-        // Set height of event overlay frame
-        val frameParams = layoutDayEvents.layoutParams
-        if (frameParams != null) {
-            frameParams.height = totalHeightPx
-            layoutDayEvents.layoutParams = frameParams
-        }
+        layoutDayEvents.layoutParams?.let { it.height = totalHeightPx }
 
         if (eventosDelDia.isEmpty()) {
-            layoutDayEmpty.visibility = View.VISIBLE
+            layoutDayViewEmpty.visibility = View.VISIBLE
         } else {
-            layoutDayEmpty.visibility = View.GONE
+            layoutDayViewEmpty.visibility = View.GONE
 
             eventosDelDia.forEachIndexed { idx, evento ->
                 val (topPx, heightPx) = calcEventPositionPx(evento, hourHeightPx)
@@ -556,45 +546,41 @@ class CalendarioFragment : Fragment() {
 
                 val eventView = LinearLayout(ctx).apply {
                     orientation = LinearLayout.HORIZONTAL
-                    val lp = FrameLayout.LayoutParams(
+                    layoutParams = FrameLayout.LayoutParams(
                         FrameLayout.LayoutParams.MATCH_PARENT,
                         maxOf(heightPx, dpToPx(40))
-                    )
-                    lp.topMargin = topPx
-                    lp.marginStart = dpToPx(56)
-                    lp.marginEnd = dpToPx(12)
-                    layoutParams = lp
-
-                    val bgDrawable = android.graphics.drawable.GradientDrawable().apply {
-                        setColor(Color.argb(25, Color.red(color), Color.green(color), Color.blue(color)))
+                    ).apply {
+                        topMargin = topPx
+                        marginStart = dpToPx(56)
+                        marginEnd = dpToPx(12)
+                    }
+                    background = android.graphics.drawable.GradientDrawable().apply {
+                        setColor(Color.argb(26, Color.red(color), Color.green(color), Color.blue(color)))
                         cornerRadius = dpToPx(12).toFloat()
                     }
-                    background = bgDrawable
                     setPadding(dpToPx(2), dpToPx(6), dpToPx(8), dpToPx(6))
                 }
 
                 val colorBar = View(ctx).apply {
-                    val lp = LinearLayout.LayoutParams(dpToPx(4), LinearLayout.LayoutParams.MATCH_PARENT)
-                    lp.marginEnd = dpToPx(8)
-                    layoutParams = lp
-                    val bg = android.graphics.drawable.GradientDrawable().apply {
+                    layoutParams = LinearLayout.LayoutParams(dpToPx(4), LinearLayout.LayoutParams.MATCH_PARENT).apply {
+                        marginEnd = dpToPx(8)
+                    }
+                    background = android.graphics.drawable.GradientDrawable().apply {
                         setColor(color)
                         cornerRadius = dpToPx(4).toFloat()
                     }
-                    background = bg
                 }
 
                 val infoLayout = LinearLayout(ctx).apply {
                     orientation = LinearLayout.VERTICAL
-                    val lp = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f)
-                    layoutParams = lp
+                    layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f)
                 }
 
                 val tvTitle = TextView(ctx).apply {
                     text = evento.titulo
-                    textSize = 13f
-                    setTypeface(typeface, android.graphics.Typeface.BOLD)
-                    setTextColor(color)
+                    textSize = 14f
+                    setTypeface(null, android.graphics.Typeface.BOLD)
+                    setTextColor(ContextCompat.getColor(ctx, R.color.ink))
                     maxLines = 2
                 }
 
@@ -602,8 +588,9 @@ class CalendarioFragment : Fragment() {
                 val horaFin = evento.fechaFin.substringAfter(" ", "").trim()
                 val tvHora = TextView(ctx).apply {
                     text = if (hora.isNotEmpty() && horaFin.isNotEmpty()) "$hora – $horaFin" else hora
-                    textSize = 11f
+                    textSize = 12f
                     setTextColor(ContextCompat.getColor(ctx, R.color.muted))
+                    setTypeface(null, android.graphics.Typeface.BOLD)
                 }
 
                 infoLayout.addView(tvTitle)
@@ -611,12 +598,10 @@ class CalendarioFragment : Fragment() {
 
                 eventView.addView(colorBar)
                 eventView.addView(infoLayout)
-
                 eventView.setOnClickListener {
                     val sheet = EventDetalleBottomSheet.newInstance(evento)
                     sheet.show(parentFragmentManager, "EventDetalle")
                 }
-
                 layoutDayEvents.addView(eventView)
             }
         }
@@ -646,13 +631,6 @@ class CalendarioFragment : Fragment() {
         }
     }
 
-    private fun circleDrawable(color: Int): android.graphics.drawable.Drawable {
-        return android.graphics.drawable.GradientDrawable().apply {
-            shape = android.graphics.drawable.GradientDrawable.OVAL
-            setColor(color)
-        }
-    }
-
     private fun dpToPx(dp: Int): Int {
         return TypedValue.applyDimension(
             TypedValue.COMPLEX_UNIT_DIP, dp.toFloat(), resources.displayMetrics
@@ -664,35 +642,23 @@ class CalendarioFragment : Fragment() {
 
     private fun eventosEnDia(dia: Int, mes: Int, anio: Int): List<Evento> {
         return todosEventos.filter { evento ->
-            try {
-                parsearFechaEvento(evento.fechaInicio, dia, mes, anio)
-            } catch (e: Exception) { false }
+            try { parsearFechaEvento(evento.fechaInicio, dia, mes, anio) }
+            catch (e: Exception) { false }
         }
     }
 
-    /**
-     * Acepta dos formatos de fecha:
-     *  - dd/MM/yyyy HH:mm   (formato local guardado por el picker)
-     *  - yyyy-MM-ddTHH:mm:ss  (ISO 8601 que puede devolver el servidor)
-     */
     private fun parsearFechaEvento(fechaInicio: String, dia: Int, mes: Int, anio: Int): Boolean {
         val raw = fechaInicio.trim()
         return if (raw.contains("/")) {
-            // Formato dd/MM/yyyy HH:mm
             val fecha = raw.substringBefore(" ")
             val partes = fecha.split("/")
             if (partes.size < 3) return false
-            partes[0].toInt() == dia &&
-                    partes[1].toInt() - 1 == mes &&
-                    partes[2].toInt() == anio
+            partes[0].toInt() == dia && partes[1].toInt() - 1 == mes && partes[2].toInt() == anio
         } else if (raw.contains("-")) {
-            // Formato ISO: yyyy-MM-dd o yyyy-MM-ddTHH:mm:ss
             val fecha = raw.substringBefore("T").substringBefore(" ")
             val partes = fecha.split("-")
             if (partes.size < 3) return false
-            partes[2].toInt() == dia &&
-                    partes[1].toInt() - 1 == mes &&
-                    partes[0].toInt() == anio
+            partes[2].toInt() == dia && partes[1].toInt() - 1 == mes && partes[0].toInt() == anio
         } else false
     }
 
@@ -710,26 +676,23 @@ class CalendarioFragment : Fragment() {
 
     private fun cambiarVista(vista: String) {
         vistaActual = vista
-        val activo = Color.parseColor("#FFFFFF")
-        val inactivo = Color.TRANSPARENT
-        val textoActivo = Color.parseColor("#0A1330")
-        val textoInactivo = Color.parseColor("#6B7494")
-
-        btnTabMes.backgroundTintList = android.content.res.ColorStateList.valueOf(
-            if (vista == "mes") activo else inactivo)
-        btnTabSemana.backgroundTintList = android.content.res.ColorStateList.valueOf(
-            if (vista == "semana") activo else inactivo)
-        btnTabDia.backgroundTintList = android.content.res.ColorStateList.valueOf(
-            if (vista == "día") activo else inactivo)
-
-        btnTabMes.setTextColor(if (vista == "mes") textoActivo else textoInactivo)
-        btnTabSemana.setTextColor(if (vista == "semana") textoActivo else textoInactivo)
-        btnTabDia.setTextColor(if (vista == "día") textoActivo else textoInactivo)
-
-        viewMes.visibility = if (vista == "mes") View.VISIBLE else View.GONE
+        aplicarEstadoTabs(vista)
+        viewMes.visibility    = if (vista == "mes")    View.VISIBLE else View.GONE
         viewSemana.visibility = if (vista == "semana") View.VISIBLE else View.GONE
-        viewDia.visibility = if (vista == "día") View.VISIBLE else View.GONE
-
+        viewDia.visibility    = if (vista == "día")    View.VISIBLE else View.GONE
         actualizarUI()
+    }
+
+    private fun aplicarEstadoTabs(vista: String) {
+        val ctx = requireContext()
+        val tabButtons = listOf(btnTabMes to "mes", btnTabSemana to "semana", btnTabDia to "día")
+        tabButtons.forEach { (btn, v) ->
+            val isActive = v == vista
+            btn.backgroundTintList = android.content.res.ColorStateList.valueOf(
+                if (isActive) Color.WHITE else Color.TRANSPARENT
+            )
+            btn.setTextColor(ContextCompat.getColor(ctx, if (isActive) R.color.ink else R.color.muted))
+            btn.elevation = if (isActive) dpToPx(2).toFloat() else 0f
+        }
     }
 }

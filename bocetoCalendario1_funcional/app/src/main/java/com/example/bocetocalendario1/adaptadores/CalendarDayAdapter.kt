@@ -7,9 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.bocetocalendario1.R
-import java.util.Calendar
 
 data class DiaCelda(
     val dia: Int,           // 0 = celda vacía
@@ -24,18 +24,10 @@ class CalendarDayAdapter(
     private val onDiaClick: (Int) -> Unit  // día (1-31)
 ) : RecyclerView.Adapter<CalendarDayAdapter.DiaViewHolder>() {
 
-    private val COLORS = listOf(
-        Color.parseColor("#0B5FFF"),
-        Color.parseColor("#E94B7B"),
-        Color.parseColor("#22C55E"),
-        Color.parseColor("#8B5CF6"),
-        Color.parseColor("#F97316"),
-        Color.parseColor("#14B8A6"),
-    )
-
     class DiaViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val tvDia: TextView = view.findViewById(R.id.tvDia)
         val llDots: LinearLayout = view.findViewById(R.id.llDots)
+        val cellContainer: LinearLayout = view.findViewById(R.id.cellContainer)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DiaViewHolder {
@@ -46,10 +38,11 @@ class CalendarDayAdapter(
 
     override fun onBindViewHolder(holder: DiaViewHolder, position: Int) {
         val celda = celdas[position]
+        val ctx = holder.itemView.context
 
         if (celda.dia == 0) {
             holder.tvDia.text = ""
-            holder.tvDia.background = null
+            holder.cellContainer.background = null
             holder.llDots.removeAllViews()
             holder.itemView.setOnClickListener(null)
             return
@@ -57,49 +50,44 @@ class CalendarDayAdapter(
 
         holder.tvDia.text = celda.dia.toString()
 
-        // Fondo del número del día
-        val bgDrawable = GradientDrawable().apply {
-            shape = GradientDrawable.OVAL
-        }
-
+        // Apply background and text color based on state
         when {
             celda.esHoy -> {
-                bgDrawable.setColor(Color.parseColor("#0B5FFF"))
+                holder.cellContainer.background =
+                    ContextCompat.getDrawable(ctx, R.drawable.bg_cal_cell_today)
                 holder.tvDia.setTextColor(Color.WHITE)
-                holder.tvDia.background = bgDrawable
             }
             celda.esSeleccionado -> {
-                bgDrawable.setColor(Color.parseColor("#EAF1FF"))
-                bgDrawable.setStroke(2, Color.parseColor("#0B5FFF"))
-                holder.tvDia.setTextColor(Color.parseColor("#0B5FFF"))
-                holder.tvDia.background = bgDrawable
+                holder.cellContainer.background =
+                    ContextCompat.getDrawable(ctx, R.drawable.bg_cal_cell_selected)
+                holder.tvDia.setTextColor(ContextCompat.getColor(ctx, R.color.brand))
             }
             !celda.esMesActual -> {
-                holder.tvDia.setTextColor(Color.parseColor("#98A0BC"))
-                holder.tvDia.background = null
+                holder.cellContainer.background = null
+                holder.tvDia.setTextColor(ContextCompat.getColor(ctx, R.color.muted_2))
             }
             else -> {
-                holder.tvDia.setTextColor(Color.parseColor("#0A1330"))
-                holder.tvDia.background = null
+                holder.cellContainer.background = null
+                holder.tvDia.setTextColor(ContextCompat.getColor(ctx, R.color.ink))
             }
         }
 
-        // Dots de eventos
+        // Pip dots for events
         holder.llDots.removeAllViews()
-        val colores = celda.coloresEventos.take(3)
-        colores.forEach { color ->
-            val dot = View(holder.itemView.context).apply {
-                val size = (6 * holder.itemView.context.resources.displayMetrics.density).toInt()
-                val params = LinearLayout.LayoutParams(size, size).apply {
-                    marginEnd = (2 * holder.itemView.context.resources.displayMetrics.density).toInt()
+        val density = ctx.resources.displayMetrics.density
+        val dotSize = (6 * density).toInt()
+        val dotMargin = (2 * density).toInt()
+
+        celda.coloresEventos.take(4).forEach { color ->
+            val dotColor = if (celda.esHoy) Color.WHITE else color
+            val dot = View(ctx).apply {
+                layoutParams = LinearLayout.LayoutParams(dotSize, dotSize).apply {
+                    marginEnd = dotMargin
                 }
-                layoutParams = params
-                val dotDrawable = GradientDrawable().apply {
+                background = GradientDrawable().apply {
                     shape = GradientDrawable.OVAL
-                    val dotColor = if (celda.esHoy) Color.WHITE else color
                     setColor(dotColor)
                 }
-                background = dotDrawable
             }
             holder.llDots.addView(dot)
         }

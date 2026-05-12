@@ -4,25 +4,45 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:gravity="center"
-    android:padding="4dp">
+    android:minHeight="44dp"
+    android:paddingStart="2dp"
+    android:paddingEnd="2dp"
+    android:paddingTop="2dp"
+    android:paddingBottom="2dp">
 
-    <!-- Número del día -->
-    <TextView
-        android:id="@+id/tvDia"
-        android:layout_width="34dp"
-        android:layout_height="34dp"
-        android:gravity="center"
-        android:textSize="14sp"
-        android:textStyle="bold"
-        android:textColor="@color/ink" />
-
-    <!-- Dots de eventos -->
+    <!-- Cell container with background (today=blue, selected=blue-50) -->
     <LinearLayout
-        android:id="@+id/llDots"
-        android:layout_width="wrap_content"
-        android:layout_height="6dp"
-        android:orientation="horizontal"
+        android:id="@+id/cellContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
         android:gravity="center"
-        android:layout_marginTop="2dp" />
+        android:paddingTop="6dp"
+        android:paddingBottom="5dp"
+        android:paddingStart="4dp"
+        android:paddingEnd="4dp">
+
+        <!-- Day number -->
+        <TextView
+            android:id="@+id/tvDia"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:textColor="@color/ink"
+            android:lineSpacingExtra="0dp" />
+
+        <!-- Event pip dots -->
+        <LinearLayout
+            android:id="@+id/llDots"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:minHeight="6dp"
+            android:layout_marginTop="3dp" />
+
+    </LinearLayout>
 
 </LinearLayout>
