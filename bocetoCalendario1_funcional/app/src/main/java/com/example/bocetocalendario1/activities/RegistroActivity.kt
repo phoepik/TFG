@@ -18,6 +18,7 @@ import androidx.lifecycle.lifecycleScope
 import com.example.bocetocalendario1.R
 import com.example.bocetocalendario1.network.CalendarioResponse
 import com.example.bocetocalendario1.network.RegistroRequest
+import com.example.bocetocalendario1.utilidades.PasswordUtils
 import com.example.bocetocalendario1.network.RetrofitClient
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -105,7 +106,7 @@ class RegistroActivity : AppCompatActivity() {
 
             lifecycleScope.launch(Dispatchers.IO) {
                 try {
-                    val response = RetrofitClient.api.registro(RegistroRequest(nombre, email, contrasena))
+                    val response = RetrofitClient.api.registro(RegistroRequest(nombre, email, PasswordUtils.hash(contrasena)))
 
                     if (response.isSuccessful && response.body() != null) {
                         val usuario = response.body()!!

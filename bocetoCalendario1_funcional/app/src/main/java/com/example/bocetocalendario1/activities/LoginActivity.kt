@@ -16,6 +16,7 @@ import com.example.bocetocalendario1.R
 import com.example.bocetocalendario1.datos.modelo.Usuario
 import com.example.bocetocalendario1.network.CalendarioResponse
 import com.example.bocetocalendario1.network.LoginRequest
+import com.example.bocetocalendario1.utilidades.PasswordUtils
 import com.example.bocetocalendario1.network.RetrofitClient
 import com.example.bocetocalendario1.notificaciones.canales.NotificacionesManagerCanales
 import com.example.bocetocalendario1.utilidades.GestorSesion
@@ -77,7 +78,7 @@ class LoginActivity : AppCompatActivity() {
 
             lifecycleScope.launch(Dispatchers.IO) {
                 try {
-                    val response = RetrofitClient.api.login(LoginRequest(email, contrasena))
+                    val response = RetrofitClient.api.login(LoginRequest(email, PasswordUtils.hash(contrasena)))
 
                     if (response.isSuccessful && response.body() != null) {
                         val u = response.body()!!
