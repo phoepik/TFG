@@ -1,6 +1,5 @@
 package com.example.bocetocalendario1.activities
 
-import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
@@ -19,112 +18,119 @@ import com.example.bocetocalendario1.R
 import com.example.bocetocalendario1.adaptadores.MiembroAdapter
 import com.example.bocetocalendario1.models.Usuario
 import com.example.bocetocalendario1.network.RetrofitClient
+import com.example.bocetocalendario1.utilidades.GestorSesion
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-
 class DetalleGrupoActivity : AppCompatActivity() {
 
     private val GROUP_BACKGROUNDS = listOf(
-        R.drawable.bg_group_blue,
-        R.drawable.bg_group_magenta,
-        R.drawable.bg_group_green,
-        R.drawable.bg_group_purple,
-        R.drawable.bg_group_orange,
-        R.drawable.bg_group_teal
+        R.drawable.bg_group_blue, R.drawable.bg_group_magenta, R.drawable.bg_group_green,
+        R.drawable.bg_group_purple, R.drawable.bg_group_orange, R.drawable.bg_group_teal
     )
-
     private val GROUP_COLORS = listOf(
         "#0B5FFF", "#E94B7B", "#22C55E", "#8B5CF6", "#F97316", "#14B8A6"
     )
+
+    private var miembrosCount = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detalle_grupo)
 
-        val tvNombreGrupo = findViewById<TextView>(R.id.tvNombreGrupo)
-        val tvDescripcion = findViewById<TextView>(R.id.tvDescripcion)
-        val tvMiembrosCount = findViewById<TextView>(R.id.tvMiembrosCount)
-        val tvEventosCount = findViewById<TextView>(R.id.tvEventosCount)
-        val rvMiembros = findViewById<RecyclerView>(R.id.rvMiembros)
+        val tvNombreGrupo      = findViewById<TextView>(R.id.tvNombreGrupo)
+        val tvDescripcion      = findViewById<TextView>(R.id.tvDescripcion)
+        val tvMiembrosCount    = findViewById<TextView>(R.id.tvMiembrosCount)
+        val tvEventosCount     = findViewById<TextView>(R.id.tvEventosCount)
+        val rvMiembros         = findViewById<RecyclerView>(R.id.rvMiembros)
         val layoutMiembrosScroll = findViewById<LinearLayout>(R.id.layoutMiembrosScroll)
-        val heroFrame = findViewById<FrameLayout>(R.id.heroFrame)
+        val heroFrame          = findViewById<FrameLayout>(R.id.heroFrame)
 
-        val grupoId = intent.getIntExtra("GRUPO_ID", 0)
-        val grupoNombre = intent.getStringExtra("GRUPO_NOMBRE") ?: "Grupo"
+        val grupoId          = intent.getIntExtra("GRUPO_ID", 0)
+        val grupoNombre      = intent.getStringExtra("GRUPO_NOMBRE") ?: "Grupo"
         val grupoDescripcion = intent.getStringExtra("GRUPO_DESCRIPCION") ?: ""
-        val grupoIdx = intent.getIntExtra("GRUPO_IDX", 0)
+        val grupoIdx         = intent.getIntExtra("GRUPO_IDX", 0)
 
         tvNombreGrupo.text = grupoNombre
-        if (grupoDescripcion.isNotBlank()) {
-            tvDescripcion.text = grupoDescripcion
-        } else {
-            tvDescripcion.visibility = android.view.View.GONE
-        }
+        if (grupoDescripcion.isNotBlank()) tvDescripcion.text = grupoDescripcion
+        else tvDescripcion.visibility = android.view.View.GONE
 
-        // Set hero background
         heroFrame?.setBackgroundResource(GROUP_BACKGROUNDS[grupoIdx % GROUP_BACKGROUNDS.size])
 
-        // Back button
-        val btnBack = findViewById<TextView>(R.id.btnBackDetalle)
-        btnBack.setOnClickListener { finish() }
-
-        // Menu button
-        val btnMenu = findViewById<TextView>(R.id.btnMenuDetalle)
-        btnMenu.setOnClickListener {
-            GroupMenuBottomSheet.newInstance(grupoNombre, 0, grupoIdx)
+        findViewById<TextView>(R.id.btnBackDetalle).setOnClickListener { finish() }
+        findViewById<TextView>(R.id.btnMenuDetalle).setOnClickListener {
+            GroupMenuBottomSheet.newInstance(grupoNombre, miembrosCount, grupoIdx, grupoId)
                 .show(supportFragmentManager, "GroupMenu")
         }
 
-        // RecyclerView for events list
         rvMiembros.layoutManager = LinearLayoutManager(this)
 
-        // Load members
+        // ── Cargar miembros con nombres reales ──
         lifecycleScope.launch(Dispatchers.IO) {
             try {
                 val membersResp = RetrofitClient.api.miembrosDeGrupo(grupoId)
-                withContext(Dispatchers.Main) {
-                    if (membersResp.isSuccessful) {
-                        val memberMaps = membersResp.body() ?: emptyList()
-                        val count = memberMaps.size
-                        tvMiembrosCount.text = "$count ${if (count == 1) "miembro" else "miembros"}"
+                if (membersResp.isSuccessful) {
+                    val memberMaps = membersResp.body() ?: emptyList()
+                    miembrosCount = memberMaps.size
 
-                        buildMemberAvatars(layoutMiembrosScroll, memberMaps, grupoIdx)
-
-                        val miembros = memberMaps.mapIndexed { i, m ->
-                            val uid = m["idUsuario"] ?: i
+                    // Obtener nombre real de cada miembro
+                    val miembros = memberMaps.mapNotNull { m ->
+                        val uid = m["idUsuario"] ?: return@mapNotNull null
+                        try {
+                            val userResp = RetrofitClient.api.obtenerUsuario(uid)
+                            if (userResp.isSuccessful && userResp.body() != null) {
+                                val u = userResp.body()!!
+                                Usuario(u.idUsuario, u.nombre, u.email, "", u.notificacionesActivas)
+                            } else {
+                                Usuario(uid, "Usuario $uid", "", "", true)
+                            }
+                        } catch (e: Exception) {
                             Usuario(uid, "Usuario $uid", "", "", true)
                         }
+                    }
+
+                    withContext(Dispatchers.Main) {
+                        tvMiembrosCount.text = "$miembrosCount ${if (miembrosCount == 1) "miembro" else "miembros"}"
+                        buildMemberAvatars(layoutMiembrosScroll, miembros, grupoIdx)
                         rvMiembros.adapter = MiembroAdapter(miembros, 1)
-                    } else {
-                        tvMiembrosCount.text = "0 miembros"
-                        buildExampleAvatars(layoutMiembrosScroll, grupoIdx)
+                    }
+                } else {
+                    withContext(Dispatchers.Main) { tvMiembrosCount.text = "0 miembros" }
+                }
+            } catch (e: Exception) {
+                Log.e("DETALLE", "Error cargando miembros: ${e.message}")
+                withContext(Dispatchers.Main) { tvMiembrosCount.text = "? miembros" }
+            }
+        }
+
+        // ── Cargar conteo de eventos del grupo ──
+        lifecycleScope.launch(Dispatchers.IO) {
+            try {
+                val calResp = RetrofitClient.api.obtenerCalendariosDeGrupo(grupoId)
+                if (calResp.isSuccessful) {
+                    var totalEventos = 0
+                    calResp.body()?.forEach { cal ->
+                        val idCal = cal.idCalendario ?: return@forEach
+                        val evResp = RetrofitClient.api.obtenerEventosDeCalendario(idCal)
+                        if (evResp.isSuccessful) totalEventos += evResp.body()?.size ?: 0
+                    }
+                    withContext(Dispatchers.Main) {
+                        tvEventosCount.text = "$totalEventos ${if (totalEventos == 1) "evento" else "eventos"}"
                     }
                 }
             } catch (e: Exception) {
-                withContext(Dispatchers.Main) {
-                    Log.e("DETALLE", "Error: ${e.message}")
-                    tvMiembrosCount.text = "? miembros"
-                    buildExampleAvatars(layoutMiembrosScroll, grupoIdx)
-                    val ejemplos = listOf(
-                        Usuario(1, "Admin", "admin@email.com", "", true),
-                        Usuario(2, "Miembro", "m@email.com", "", true)
-                    )
-                    rvMiembros.adapter = MiembroAdapter(ejemplos, 1)
-                }
+                Log.e("DETALLE", "Error cargando eventos: ${e.message}")
             }
         }
 
         // Add member button
-        val btnAnadirMiembro = findViewById<Button>(R.id.btnAnadirMiembro)
-        btnAnadirMiembro.setOnClickListener {
-            InviteBottomSheet.newInstance(grupoNombre).show(supportFragmentManager, "Invite")
+        findViewById<Button>(R.id.btnAnadirMiembro).setOnClickListener {
+            InviteBottomSheet.newInstance(grupoNombre, grupoId).show(supportFragmentManager, "Invite")
         }
 
         // Delete group button
-        val btnBorrarGrupo = findViewById<Button>(R.id.btnBorrarGrupo)
-        btnBorrarGrupo.setOnClickListener {
+        findViewById<Button>(R.id.btnBorrarGrupo).setOnClickListener {
             lifecycleScope.launch(Dispatchers.IO) {
                 try {
                     val response = RetrofitClient.api.borrarGrupo(grupoId)
@@ -145,63 +151,43 @@ class DetalleGrupoActivity : AppCompatActivity() {
         }
     }
 
-    private fun buildMemberAvatars(layout: LinearLayout, memberMaps: List<Map<String, Int>>, grupoIdx: Int) {
+    private fun buildMemberAvatars(layout: LinearLayout, miembros: List<Usuario>, grupoIdx: Int) {
         layout.removeAllViews()
         val colorHex = GROUP_COLORS[grupoIdx % GROUP_COLORS.size]
         val color = try { Color.parseColor(colorHex) } catch (e: Exception) { Color.parseColor("#0B5FFF") }
 
-        memberMaps.take(8).forEachIndexed { i, m ->
-            val uid = m["idUsuario"] ?: i
-            addAvatarView(layout, "U${uid}", color)
+        miembros.take(8).forEach { usuario ->
+            val iniciales = usuario.nombre.trim().split(" ").take(2)
+                .mapNotNull { it.firstOrNull()?.uppercaseChar() }.joinToString("")
+            addAvatarView(layout, if (iniciales.isNotEmpty()) iniciales else "?", color)
         }
 
-        // Invite plus button
+        // Plus button
         val size = dpToPx(52)
         val plus = TextView(this).apply {
-            text = "+"
-            textSize = 20f
-            setTextColor(color)
-            gravity = Gravity.CENTER
-            val lp = LinearLayout.LayoutParams(size, size)
-            lp.marginEnd = dpToPx(8)
-            layoutParams = lp
+            text = "+"; textSize = 20f; setTextColor(color); gravity = Gravity.CENTER
+            layoutParams = LinearLayout.LayoutParams(size, size).apply { marginEnd = dpToPx(8) }
             background = android.graphics.drawable.GradientDrawable().apply {
                 shape = android.graphics.drawable.GradientDrawable.OVAL
-                setStroke(dpToPx(2), color)
-                setColor(Color.TRANSPARENT)
+                setStroke(dpToPx(2), color); setColor(Color.TRANSPARENT)
             }
         }
         layout.addView(plus)
     }
 
-    private fun buildExampleAvatars(layout: LinearLayout, grupoIdx: Int) {
-        layout.removeAllViews()
-        val colorHex = GROUP_COLORS[grupoIdx % GROUP_COLORS.size]
-        val color = try { Color.parseColor(colorHex) } catch (e: Exception) { Color.parseColor("#0B5FFF") }
-        listOf("A", "B", "C").forEach { addAvatarView(layout, it, color) }
-    }
-
     private fun addAvatarView(parent: LinearLayout, label: String, color: Int) {
         val size = dpToPx(52)
         val av = TextView(this).apply {
-            text = label
-            textSize = 16f
-            setTextColor(Color.WHITE)
-            gravity = Gravity.CENTER
-            val lp = LinearLayout.LayoutParams(size, size)
-            lp.marginEnd = dpToPx(8)
-            layoutParams = lp
+            text = label; textSize = 16f; setTextColor(Color.WHITE); gravity = Gravity.CENTER
+            layoutParams = LinearLayout.LayoutParams(size, size).apply { marginEnd = dpToPx(8) }
             background = android.graphics.drawable.GradientDrawable().apply {
-                shape = android.graphics.drawable.GradientDrawable.OVAL
-                setColor(color)
+                shape = android.graphics.drawable.GradientDrawable.OVAL; setColor(color)
             }
         }
         parent.addView(av)
     }
 
-    private fun dpToPx(dp: Int): Int {
-        return TypedValue.applyDimension(
-            TypedValue.COMPLEX_UNIT_DIP, dp.toFloat(), resources.displayMetrics
-        ).toInt()
-    }
+    private fun dpToPx(dp: Int): Int = TypedValue.applyDimension(
+        TypedValue.COMPLEX_UNIT_DIP, dp.toFloat(), resources.displayMetrics
+    ).toInt()
 }

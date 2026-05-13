@@ -107,31 +107,30 @@ class EventosFragment : Fragment() {
 
         viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
             try {
-                val calResp = RetrofitClient.api.obtenerCalendariosDeUsuario(idUsuario)
-                val calendarios = if (calResp.isSuccessful) calResp.body() ?: emptyList() else emptyList()
+                val calendariosUsuario = mutableListOf<com.example.bocetocalendario1.network.CalendarioResponse>()
 
-                val eventos = mutableListOf<Evento>()
-                if (calendarios.isNotEmpty()) {
-                    calendarios.forEach { cal ->
-                        val idCal = cal.idCalendario ?: return@forEach
-                        val evResp = RetrofitClient.api.obtenerEventosDeCalendario(idCal)
-                        if (evResp.isSuccessful) {
-                            evResp.body()?.forEach { e ->
-                                eventos.add(Evento(
-                                    id = e.idEvento ?: 0,
-                                    titulo = e.titulo,
-                                    descripcion = e.descripcion ?: "",
-                                    fechaInicio = e.fechaInicio ?: "",
-                                    fechaFin = e.fechaFin ?: "",
-                                    ubicacion = e.ubicacion ?: "",
-                                    estado = e.estado ?: "PENDIENTE",
-                                    idCalendario = e.idCalendario ?: 0
-                                ))
-                            }
+                // 1. Calendarios personales del usuario
+                val calResp = RetrofitClient.api.obtenerCalendariosDeUsuario(idUsuario)
+                if (calResp.isSuccessful) {
+                    calResp.body()?.filter { it.tipo == "PERSONAL" }?.let { calendariosUsuario.addAll(it) }
+                }
+
+                // 2. Calendarios de grupos donde el usuario es miembro (admin o invitado)
+                val gruposResp = RetrofitClient.api.obtenerGruposDeUsuario(idUsuario)
+                if (gruposResp.isSuccessful) {
+                    gruposResp.body()?.forEach { grupo ->
+                        val idGrupo = grupo.idGrupo ?: return@forEach
+                        val calGrupoResp = RetrofitClient.api.obtenerCalendariosDeGrupo(idGrupo)
+                        if (calGrupoResp.isSuccessful) {
+                            calGrupoResp.body()?.let { calendariosUsuario.addAll(it) }
                         }
                     }
-                } else {
-                    val evResp = RetrofitClient.api.obtenerEventosDeCalendario(idUsuario)
+                }
+
+                val eventos = mutableListOf<Evento>()
+                calendariosUsuario.forEach { cal ->
+                    val idCal = cal.idCalendario ?: return@forEach
+                    val evResp = RetrofitClient.api.obtenerEventosDeCalendario(idCal)
                     if (evResp.isSuccessful) {
                         evResp.body()?.forEach { e ->
                             eventos.add(Evento(
@@ -150,8 +149,8 @@ class EventosFragment : Fragment() {
 
                 withContext(Dispatchers.Main) {
                     todosEventos = eventos
-                    nombresCalendarios = calendarios.map { it.nombre }
-                    mapaCalendarios = calendarios
+                    nombresCalendarios = calendariosUsuario.map { it.nombre }
+                    mapaCalendarios = calendariosUsuario
                         .filter { it.idCalendario != null }
                         .associate { it.idCalendario!! to it.nombre }
                     construirGroupChips(nombresCalendarios)

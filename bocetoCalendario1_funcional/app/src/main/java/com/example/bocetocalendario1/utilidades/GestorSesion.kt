@@ -1,3 +1,5 @@
+package com.example.bocetocalendario1.utilidades
+
 import android.content.Context
 import android.content.SharedPreferences
 import com.example.bocetocalendario1.datos.modelo.Usuario
