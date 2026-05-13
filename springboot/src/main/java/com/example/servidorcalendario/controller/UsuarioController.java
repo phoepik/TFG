@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -51,5 +52,18 @@ public class UsuarioController {
             repo.save(u);
             return ResponseEntity.ok().<Void>build();
         }).orElse(ResponseEntity.notFound().build());
+    }
+
+    // GET /api/usuarios/buscar?q=texto
+    @GetMapping("/buscar")
+    public List<Usuario> buscar(@RequestParam String q) {
+        if (q == null || q.trim().length() < 2) return List.of();
+        List<Usuario> porEmail = repo.findByEmailContainingIgnoreCase(q.trim());
+        List<Usuario> porNombre = repo.findByNombreContainingIgnoreCase(q.trim());
+        // Merge sin duplicados
+        java.util.LinkedHashMap<Integer, Usuario> mapa = new java.util.LinkedHashMap<>();
+        porEmail.forEach(u -> mapa.put(u.getIdUsuario(), u));
+        porNombre.forEach(u -> mapa.put(u.getIdUsuario(), u));
+        return new java.util.ArrayList<>(mapa.values());
     }
 }

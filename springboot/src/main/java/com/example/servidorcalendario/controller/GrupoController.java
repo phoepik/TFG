@@ -1,11 +1,15 @@
 package com.example.servidorcalendario.controller;
 
 import com.example.servidorcalendario.model.Grupo;
+import com.example.servidorcalendario.model.UsuarioGrupo;
 import com.example.servidorcalendario.repository.GrupoRepository;
+import com.example.servidorcalendario.repository.UsuarioGrupoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 @RestController
@@ -14,6 +18,9 @@ public class GrupoController {
 
     @Autowired
     private GrupoRepository repo;
+
+    @Autowired
+    private UsuarioGrupoRepository ugRepo;
 
     // POST /api/grupos
     @PostMapping
@@ -30,9 +37,20 @@ public class GrupoController {
     }
 
     // GET /api/grupos/usuario/{id}
+    // Devuelve los grupos donde el usuario es admin O miembro
     @GetMapping("/usuario/{id}")
     public List<Grupo> porUsuario(@PathVariable Integer id) {
-        return repo.findByIdAdmin(id);
+        LinkedHashMap<Integer, Grupo> mapa = new LinkedHashMap<>();
+        // Grupos donde es admin
+        repo.findByIdAdmin(id).forEach(g -> mapa.put(g.getIdGrupo(), g));
+        // Grupos donde es miembro (via usuarios_grupos)
+        List<UsuarioGrupo> membresías = ugRepo.findByIdUsuario(id);
+        for (UsuarioGrupo ug : membresías) {
+            if (!mapa.containsKey(ug.getIdGrupo())) {
+                repo.findById(ug.getIdGrupo()).ifPresent(g -> mapa.put(g.getIdGrupo(), g));
+            }
+        }
+        return new ArrayList<>(mapa.values());
     }
 
     // PUT /api/grupos/{id}
