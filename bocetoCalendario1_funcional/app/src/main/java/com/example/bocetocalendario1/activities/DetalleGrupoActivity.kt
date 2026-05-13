@@ -15,7 +15,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.bocetocalendario1.R
-import com.example.bocetocalendario1.adaptadores.MiembroAdapter
+import com.example.bocetocalendario1.adaptadores.EventoAdapter
+import com.example.bocetocalendario1.models.Evento
 import com.example.bocetocalendario1.models.Usuario
 import com.example.bocetocalendario1.network.RetrofitClient
 import com.example.bocetocalendario1.utilidades.GestorSesion
@@ -43,7 +44,7 @@ class DetalleGrupoActivity : AppCompatActivity() {
         val tvDescripcion      = findViewById<TextView>(R.id.tvDescripcion)
         val tvMiembrosCount    = findViewById<TextView>(R.id.tvMiembrosCount)
         val tvEventosCount     = findViewById<TextView>(R.id.tvEventosCount)
-        val rvMiembros         = findViewById<RecyclerView>(R.id.rvMiembros)
+        val rvEventos          = findViewById<RecyclerView>(R.id.rvMiembros) // RecyclerView bajo "PRÓXIMOS EVENTOS"
         val layoutMiembrosScroll = findViewById<LinearLayout>(R.id.layoutMiembrosScroll)
         val heroFrame          = findViewById<FrameLayout>(R.id.heroFrame)
 
@@ -64,9 +65,9 @@ class DetalleGrupoActivity : AppCompatActivity() {
                 .show(supportFragmentManager, "GroupMenu")
         }
 
-        rvMiembros.layoutManager = LinearLayoutManager(this)
+        rvEventos.layoutManager = LinearLayoutManager(this)
 
-        // ── Cargar miembros con nombres reales ──
+        // ── Cargar miembros con nombres reales (avatares) ──
         lifecycleScope.launch(Dispatchers.IO) {
             try {
                 val membersResp = RetrofitClient.api.miembrosDeGrupo(grupoId)
@@ -74,7 +75,6 @@ class DetalleGrupoActivity : AppCompatActivity() {
                     val memberMaps = membersResp.body() ?: emptyList()
                     miembrosCount = memberMaps.size
 
-                    // Obtener nombre real de cada miembro
                     val miembros = memberMaps.mapNotNull { m ->
                         val uid = m["idUsuario"] ?: return@mapNotNull null
                         try {
@@ -82,18 +82,13 @@ class DetalleGrupoActivity : AppCompatActivity() {
                             if (userResp.isSuccessful && userResp.body() != null) {
                                 val u = userResp.body()!!
                                 Usuario(u.idUsuario, u.nombre, u.email, "", u.notificacionesActivas)
-                            } else {
-                                Usuario(uid, "Usuario $uid", "", "", true)
-                            }
-                        } catch (e: Exception) {
-                            Usuario(uid, "Usuario $uid", "", "", true)
-                        }
+                            } else Usuario(uid, "Usuario $uid", "", "", true)
+                        } catch (e: Exception) { Usuario(uid, "Usuario $uid", "", "", true) }
                     }
 
                     withContext(Dispatchers.Main) {
                         tvMiembrosCount.text = "$miembrosCount ${if (miembrosCount == 1) "miembro" else "miembros"}"
                         buildMemberAvatars(layoutMiembrosScroll, miembros, grupoIdx)
-                        rvMiembros.adapter = MiembroAdapter(miembros, 1)
                     }
                 } else {
                     withContext(Dispatchers.Main) { tvMiembrosCount.text = "0 miembros" }
@@ -104,19 +99,42 @@ class DetalleGrupoActivity : AppCompatActivity() {
             }
         }
 
-        // ── Cargar conteo de eventos del grupo ──
+        // ── Cargar eventos del grupo ──
         lifecycleScope.launch(Dispatchers.IO) {
             try {
+                val allEventos = mutableListOf<Evento>()
                 val calResp = RetrofitClient.api.obtenerCalendariosDeGrupo(grupoId)
                 if (calResp.isSuccessful) {
-                    var totalEventos = 0
                     calResp.body()?.forEach { cal ->
                         val idCal = cal.idCalendario ?: return@forEach
                         val evResp = RetrofitClient.api.obtenerEventosDeCalendario(idCal)
-                        if (evResp.isSuccessful) totalEventos += evResp.body()?.size ?: 0
+                        if (evResp.isSuccessful) {
+                            evResp.body()?.forEach { e ->
+                                allEventos.add(Evento(
+                                    id = e.idEvento ?: 0,
+                                    titulo = e.titulo,
+                                    descripcion = e.descripcion ?: "",
+                                    fechaInicio = e.fechaInicio ?: "",
+                                    fechaFin = e.fechaFin ?: "",
+                                    ubicacion = e.ubicacion ?: "",
+                                    estado = e.estado ?: "PENDIENTE",
+                                    idCalendario = e.idCalendario ?: 0
+                                ))
+                            }
+                        }
                     }
-                    withContext(Dispatchers.Main) {
-                        tvEventosCount.text = "$totalEventos ${if (totalEventos == 1) "evento" else "eventos"}"
+                }
+
+                withContext(Dispatchers.Main) {
+                    tvEventosCount.text = "${allEventos.size} ${if (allEventos.size == 1) "evento" else "eventos"}"
+                    if (allEventos.isNotEmpty()) {
+                        // Mapa: todos los calendarios de este grupo usan el nombre del grupo
+                        val mapaNombres = allEventos.map { it.idCalendario }.distinct()
+                            .associateWith { grupoNombre }
+                        rvEventos.adapter = EventoAdapter(allEventos, onClick = { evento ->
+                            EventDetalleBottomSheet.newInstance(evento)
+                                .show(supportFragmentManager, "EventDetalle")
+                        }, mapaNombres)
                     }
                 }
             } catch (e: Exception) {
@@ -162,7 +180,6 @@ class DetalleGrupoActivity : AppCompatActivity() {
             addAvatarView(layout, if (iniciales.isNotEmpty()) iniciales else "?", color)
         }
 
-        // Plus button
         val size = dpToPx(52)
         val plus = TextView(this).apply {
             text = "+"; textSize = 20f; setTextColor(color); gravity = Gravity.CENTER

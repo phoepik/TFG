@@ -149,10 +149,15 @@ class EventosFragment : Fragment() {
 
                 withContext(Dispatchers.Main) {
                     todosEventos = eventos
-                    nombresCalendarios = calendariosUsuario.map { it.nombre }
+                    nombresCalendarios = calendariosUsuario.map { cal ->
+                        if (cal.tipo == "PERSONAL") "Personal" else cal.nombre.ifEmpty { "Grupo" }
+                    }
                     mapaCalendarios = calendariosUsuario
                         .filter { it.idCalendario != null }
-                        .associate { it.idCalendario!! to it.nombre }
+                        .associate { cal ->
+                            val nombre = if (cal.tipo == "PERSONAL") "Personal" else cal.nombre.ifEmpty { "Grupo" }
+                            cal.idCalendario!! to nombre
+                        }
                     construirGroupChips(nombresCalendarios)
                     mostrarEventosFiltrados()
                 }

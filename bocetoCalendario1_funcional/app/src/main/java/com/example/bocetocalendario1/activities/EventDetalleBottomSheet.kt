@@ -109,6 +109,9 @@ class EventDetalleBottomSheet : BottomSheetDialogFragment() {
             layoutDesc.visibility = View.GONE
         }
 
+        // Hide hardcoded attendees section (not implemented)
+        view.findViewById<LinearLayout>(R.id.layoutAsistentes)?.visibility = View.GONE
+
         // Close button
         view.findViewById<TextView>(R.id.btnCerrarSheet).setOnClickListener {
             dismiss()

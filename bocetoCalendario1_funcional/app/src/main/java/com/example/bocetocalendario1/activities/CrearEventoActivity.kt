@@ -64,8 +64,8 @@ class CrearEventoActivity : AppCompatActivity() {
         spinnerEstado.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, estados)
 
         // Cargar calendarios reales del usuario
-        val idUsuario = gestorSesion.obtenerIdUsuario() ?: -1
-        if (idUsuario != -1) {
+        val idUsuario = gestorSesion.obtenerIdUsuario()
+        if (idUsuario != null) {
             cargarCalendarios(idUsuario)
         } else {
             spinnerCalendario.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, arrayOf("Sin calendario"))
@@ -98,6 +98,11 @@ class CrearEventoActivity : AppCompatActivity() {
                 calendariosDisponibles.getOrNull(spinnerCalendario.selectedItemPosition)?.idCalendario ?: 0
             } else 0
 
+            if (idCalendarioReal == 0) {
+                Toast.makeText(this, "Selecciona un calendario válido", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
             val eventoRequest = EventoResponse(
                 titulo = titulo,
                 descripcion = descripcion,
@@ -111,10 +116,11 @@ class CrearEventoActivity : AppCompatActivity() {
             lifecycleScope.launch(Dispatchers.IO) {
                 try {
                     val response = RetrofitClient.api.crearEvento(eventoRequest)
+                    Log.d("EVENTO", "Response code: ${response.code()}, body: ${response.body()}, error: ${response.errorBody()?.string()}")
 
                     if (response.isSuccessful && response.body() != null) {
                         val eventoCreado = response.body()!!
-                        val uid = gestorSesion.obtenerIdUsuario() ?: -1
+                        val uid = gestorSesion.obtenerIdUsuario() ?: 0
 
                         if (minutosAntes > 0 && fechaInicioMillis > 0 && uid > 0) {
                             NotificacionService.programarRecordatorioEvento(
@@ -154,12 +160,30 @@ class CrearEventoActivity : AppCompatActivity() {
     private fun cargarCalendarios(idUsuario: Int) {
         lifecycleScope.launch(Dispatchers.IO) {
             try {
-                val resp = RetrofitClient.api.obtenerCalendariosDeUsuario(idUsuario)
-                val lista = if (resp.isSuccessful) resp.body() ?: emptyList() else emptyList()
+                val calendarios = mutableListOf<CalendarioResponse>()
+
+                // 1. Calendarios personales
+                val calResp = RetrofitClient.api.obtenerCalendariosDeUsuario(idUsuario)
+                if (calResp.isSuccessful) {
+                    calResp.body()?.filter { it.tipo == "PERSONAL" }?.let { calendarios.addAll(it) }
+                }
+
+                // 2. Calendarios de grupos donde el usuario es miembro
+                val gruposResp = RetrofitClient.api.obtenerGruposDeUsuario(idUsuario)
+                if (gruposResp.isSuccessful) {
+                    gruposResp.body()?.forEach { grupo ->
+                        val idGrupo = grupo.idGrupo ?: return@forEach
+                        val calGrupoResp = RetrofitClient.api.obtenerCalendariosDeGrupo(idGrupo)
+                        if (calGrupoResp.isSuccessful) {
+                            calGrupoResp.body()?.let { calendarios.addAll(it) }
+                        }
+                    }
+                }
+
                 withContext(Dispatchers.Main) {
-                    calendariosDisponibles = lista
-                    val nombres = if (lista.isNotEmpty())
-                        lista.map { it.nombre.ifEmpty { "Calendario ${it.idCalendario}" } }.toTypedArray()
+                    calendariosDisponibles = calendarios
+                    val nombres = if (calendarios.isNotEmpty())
+                        calendarios.map { it.nombre.ifEmpty { "Calendario ${it.idCalendario}" } }.toTypedArray()
                     else
                         arrayOf("Sin calendario")
                     spinnerCalendario.adapter = ArrayAdapter(

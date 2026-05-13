@@ -69,6 +69,7 @@ class CalendarioFragment : Fragment() {
     private var cursor = Calendar.getInstance()
     private var diaSeleccionado = Calendar.getInstance()
     private var todosEventos: List<Evento> = emptyList()
+    private var mapaCalendarios: Map<Int, String> = emptyMap()
     private var vistaActual = "mes"
 
     private val MESES = arrayOf("Enero","Febrero","Marzo","Abril","Mayo","Junio",
@@ -208,6 +209,12 @@ class CalendarioFragment : Fragment() {
 
                 withContext(Dispatchers.Main) {
                     todosEventos = eventos
+                    mapaCalendarios = calendariosUsuario
+                        .filter { it.idCalendario != null }
+                        .associate { cal ->
+                            val nombre = if (cal.tipo == "PERSONAL") "Personal" else cal.nombre.ifEmpty { "Grupo" }
+                            cal.idCalendario!! to nombre
+                        }
                     actualizarUI()
                 }
             } catch (e: Exception) {
@@ -311,7 +318,7 @@ class CalendarioFragment : Fragment() {
             rvEventosDia.adapter = EventoAdapter(eventos, onClick = { evento ->
                 val sheet = EventDetalleBottomSheet.newInstance(evento)
                 sheet.show(parentFragmentManager, "EventDetalle")
-            })
+            }, mapaCalendarios)
         }
     }
 
