@@ -44,10 +44,8 @@ class ForgotPasswordBottomSheet : BottomSheetDialogFragment() {
         btnEnviar.alpha = 0.5f
 
         btnEnviar.setOnClickListener {
-            val email = etEmail.text.toString().trim()
-            tvEmailConfirm.text = email
-            layoutForm.visibility = View.GONE
-            layoutSuccess.visibility = View.VISIBLE
+            Toast.makeText(context, "Se añadirá próximamente", Toast.LENGTH_SHORT).show()
+            dismiss()
         }
 
         btnEntendido.setOnClickListener {
@@ -55,3 +53,4 @@ class ForgotPasswordBottomSheet : BottomSheetDialogFragment() {
         }
     }
 }
+

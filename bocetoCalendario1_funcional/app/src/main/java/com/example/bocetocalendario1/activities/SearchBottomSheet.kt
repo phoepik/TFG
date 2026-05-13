@@ -19,14 +19,18 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 class SearchBottomSheet : BottomSheetDialogFragment() {
 
     companion object {
+        private const val ARG_EVENTOS = "eventos"
+
         fun newInstance(eventos: List<Evento>): SearchBottomSheet {
             val sheet = SearchBottomSheet()
-            sheet.eventos = eventos
+            val args = Bundle()
+            args.putSerializable(ARG_EVENTOS, ArrayList(eventos))
+            sheet.arguments = args
             return sheet
         }
     }
 
-    var eventos: List<Evento> = emptyList()
+    private var eventos: List<Evento> = emptyList()
 
     private val recentSearches = listOf("Cumple de Diego", "Sprint planning", "Yoga")
 
@@ -36,6 +40,9 @@ class SearchBottomSheet : BottomSheetDialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        @Suppress("UNCHECKED_CAST")
+        eventos = (arguments?.getSerializable(ARG_EVENTOS) as? ArrayList<Evento>) ?: emptyList()
 
         val etSearch = view.findViewById<EditText>(R.id.etSearchQuery)
         val layoutRecent = view.findViewById<LinearLayout>(R.id.layoutRecentSearches)
@@ -68,7 +75,7 @@ class SearchBottomSheet : BottomSheetDialogFragment() {
                     layoutRecent.visibility = View.GONE
                     val results = eventos.filter {
                         it.titulo.contains(query, ignoreCase = true) ||
-                        it.ubicacion.contains(query, ignoreCase = true)
+                                it.ubicacion.contains(query, ignoreCase = true)
                     }
                     if (results.isEmpty()) {
                         rvResults.visibility = View.GONE

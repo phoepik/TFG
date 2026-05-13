@@ -1,5 +1,7 @@
 package com.example.bocetocalendario1.models
 
+import java.io.Serializable
+
 // Usuario - tabla usuarios
 data class Usuario(
     val id: Int = 0,
@@ -17,9 +19,9 @@ data class Evento(
     val fechaInicio: String = "",
     val fechaFin: String = "",
     val ubicacion: String = "",
-    val estado: String = "PENDIENTE", // PENDIENTE o CONFIRMADO
+    val estado: String = "PENDIENTE",
     val idCalendario: Int = 0
-)
+) : Serializable
 
 // Notificacion - tabla notificaciones
 data class Notificacion(

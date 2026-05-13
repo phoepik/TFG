@@ -67,6 +67,15 @@ class CrearGrupoActivity : AppCompatActivity() {
                             Log.e("GRUPO", "Error creando calendario grupal: ${e.message}")
                         }
 
+                        // Añadir al creador como miembro del grupo
+                        try {
+                            RetrofitClient.api.anadirMiembro(
+                                mapOf("idUsuario" to (idAdmin ?: 0), "idGrupo" to (idGrupo ?: 0))
+                            )
+                        } catch (e: Exception) {
+                            Log.e("GRUPO", "Error añadiendo admin como miembro: ${e.message}")
+                        }
+
                         withContext(Dispatchers.Main) {
                             Toast.makeText(this@CrearGrupoActivity, "Grupo creado!", Toast.LENGTH_SHORT).show()
                             finish()
@@ -84,7 +93,6 @@ class CrearGrupoActivity : AppCompatActivity() {
                 }
             }
         }
-
         btnCancelar.setOnClickListener { finish() }
     }
 }

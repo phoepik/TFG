@@ -87,7 +87,10 @@ class PerfilFragment : Fragment() {
 
         // Preference rows
         view.findViewById<LinearLayout>(R.id.rowNotificaciones)?.setOnClickListener {
-            NotificationsBottomSheet().show(parentFragmentManager, "Notifications")
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.fragmentContainer, com.example.bocetocalendario1.miniPantalla.NotificacionesFragment())
+                .addToBackStack(null)
+                .commit()
         }
         view.findViewById<LinearLayout>(R.id.rowIdioma)?.setOnClickListener {
             LanguageBottomSheet().show(parentFragmentManager, "Language")

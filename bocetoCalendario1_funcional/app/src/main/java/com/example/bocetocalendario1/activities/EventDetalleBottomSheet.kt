@@ -8,9 +8,13 @@ import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.lifecycle.lifecycleScope
 import com.example.bocetocalendario1.R
 import com.example.bocetocalendario1.models.Evento
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.Calendar
 
 class EventDetalleBottomSheet : BottomSheetDialogFragment() {
@@ -110,14 +114,61 @@ class EventDetalleBottomSheet : BottomSheetDialogFragment() {
             dismiss()
         }
 
-        // Action buttons
-        view.findViewById<Button>(R.id.btnEditar).setOnClickListener {
-            Toast.makeText(context, "Editar evento (próximamente)", Toast.LENGTH_SHORT).show()
+        val eventoId = arguments?.getInt(ARG_EVENTO_ID) ?: 0
+
+        // ── Eliminar evento ──
+        view.findViewById<Button>(R.id.btnEliminar).setOnClickListener {
+            if (eventoId == 0) {
+                Toast.makeText(context, "No se puede eliminar este evento", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+            android.app.AlertDialog.Builder(requireContext())
+                .setTitle("Eliminar evento")
+                .setMessage("¿Estás seguro de que quieres eliminar \"$titulo\"?")
+                .setPositiveButton("Eliminar") { _, _ ->
+                    viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
+                        try {
+                            val resp = com.example.bocetocalendario1.network.RetrofitClient.api.borrarEvento(eventoId)
+                            withContext(Dispatchers.Main) {
+                                if (resp.isSuccessful) {
+                                    Toast.makeText(context, "Evento eliminado", Toast.LENGTH_SHORT).show()
+                                    dismiss()
+                                } else {
+                                    Toast.makeText(context, "Error al eliminar", Toast.LENGTH_SHORT).show()
+                                }
+                            }
+                        } catch (e: Exception) {
+                            withContext(Dispatchers.Main) {
+                                Toast.makeText(context, "Error de conexión", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                    }
+                }
+                .setNegativeButton("Cancelar", null)
+                .show()
         }
 
+        // ── Confirmar asistencia ──
         view.findViewById<Button>(R.id.btnVoy).setOnClickListener {
-            Toast.makeText(context, "¡Confirmado! Asistiré a $titulo", Toast.LENGTH_SHORT).show()
-            dismiss()
+            if (eventoId == 0) {
+                Toast.makeText(context, "¡Confirmado! Asistiré a $titulo", Toast.LENGTH_SHORT).show()
+                dismiss()
+                return@setOnClickListener
+            }
+            viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
+                try {
+                    val eventoActualizado = com.example.bocetocalendario1.network.EventoResponse(
+                        idEvento = eventoId, titulo = titulo, descripcion = descripcion,
+                        fechaInicio = fechaInicio, fechaFin = fechaFin, ubicacion = ubicacion,
+                        estado = "CONFIRMADO", idCalendario = idCalendario
+                    )
+                    com.example.bocetocalendario1.network.RetrofitClient.api.actualizarEvento(eventoId, eventoActualizado)
+                } catch (_: Exception) { }
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(context, "¡Confirmado! Asistiré a $titulo", Toast.LENGTH_SHORT).show()
+                    dismiss()
+                }
+            }
         }
     }
 

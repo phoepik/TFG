@@ -158,6 +158,9 @@ interface CalendarioApi {
     @GET("api/calendarios/propietario/{id}")
     suspend fun obtenerCalendariosDeUsuario(@Path("id") id: Int): Response<List<CalendarioResponse>>
 
+    @GET("api/calendarios/grupo/{id}")
+    suspend fun obtenerCalendariosDeGrupo(@Path("id") id: Int): Response<List<CalendarioResponse>>
+
     // ── Miembros de grupo ──
 
     @POST("api/usuarios-grupos")
@@ -171,4 +174,15 @@ interface CalendarioApi {
         @Query("idUsuario") idUsuario: Int,
         @Query("idGrupo") idGrupo: Int
     ): Response<Map<String, Boolean>>
+
+    @DELETE("api/usuarios-grupos")
+    suspend fun eliminarMiembro(
+        @Query("idUsuario") idUsuario: Int,
+        @Query("idGrupo") idGrupo: Int
+    ): Response<Void>
+
+    // ── Búsqueda de usuarios ──
+
+    @GET("api/usuarios/buscar")
+    suspend fun buscarUsuarios(@Query("q") query: String): Response<List<UsuarioResponse>>
 }

@@ -131,6 +131,15 @@ class CreateGroupBottomSheet : BottomSheetDialogFragment() {
                             Log.e("CREATE_GROUP", "Error creando calendario grupal: ${e.message}")
                         }
 
+                        // Añadir al creador como miembro del grupo
+                        try {
+                            RetrofitClient.api.anadirMiembro(
+                                mapOf("idUsuario" to idUsuario, "idGrupo" to (idGrupo ?: 0))
+                            )
+                        } catch (e: Exception) {
+                            Log.e("CREATE_GROUP", "Error añadiendo admin como miembro: ${e.message}")
+                        }
+
                         withContext(Dispatchers.Main) {
                             Toast.makeText(context, "Grupo \"$groupName\" creado", Toast.LENGTH_SHORT).show()
                             // Notificar a GruposFragment para que recargue la lista

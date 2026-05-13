@@ -1,5 +1,3 @@
-package com.example.bocetocalendario1.utilidades
-
 import android.content.Context
 import android.content.SharedPreferences
 import com.example.bocetocalendario1.datos.modelo.Usuario
@@ -35,7 +33,8 @@ class GestorSesion(context: Context) {
     }
 
     fun obtenerIdUsuario(): Int? {
-        return prefs.getInt(CLAVE_ID_USUARIO, -1)
+        val id = prefs.getInt(CLAVE_ID_USUARIO, -1)
+        return if (id == -1) null else id
     }
 
     fun obtenerNombreUsuario(): String? {
