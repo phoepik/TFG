@@ -19,6 +19,7 @@ public class NotificacionController {
     // POST /api/notificaciones
     @PostMapping
     public Notificacion crear(@RequestBody Notificacion n) {
+        n.setIdNotificacion(null); // Forzar INSERT, no UPDATE
         if (n.getFechaCreacion() == null) {
             n.setFechaCreacion(System.currentTimeMillis());
         }
@@ -66,15 +67,28 @@ public class NotificacionController {
         return ResponseEntity.ok().build();
     }
 
+    @Autowired
+    private com.example.servidorcalendario.repository.UsuarioGrupoRepository ugRepo;
+
     // PUT /api/notificaciones/{id}/invitacion
     @PutMapping("/{id}/invitacion")
     public ResponseEntity<Void> actualizarInvitacion(
             @PathVariable Integer id,
             @RequestBody Map<String, String> body) {
         return repo.findById(id).map(n -> {
-            n.setEstadoInvitacion(body.get("estado"));
+            String estado = body.get("estado");
+            n.setEstadoInvitacion(estado);
             n.setLeida(true);
             repo.save(n);
+
+            // Si acepta, añadir al usuario al grupo
+            if ("ACEPTADA".equals(estado) && n.getIdGrupoInvitacion() != null && n.getIdUsuario() != null) {
+                com.example.servidorcalendario.model.UsuarioGrupo ug = new com.example.servidorcalendario.model.UsuarioGrupo();
+                ug.setIdUsuario(n.getIdUsuario());
+                ug.setIdGrupo(n.getIdGrupoInvitacion());
+                ugRepo.save(ug);
+            }
+
             return ResponseEntity.ok().<Void>build();
         }).orElse(ResponseEntity.notFound().build());
     }

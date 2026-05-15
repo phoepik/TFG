@@ -15,8 +15,8 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
 import com.example.bocetocalendario1.R
+import com.example.bocetocalendario1.network.NotificacionResponse
 import com.example.bocetocalendario1.network.RetrofitClient
-import com.example.bocetocalendario1.notificaciones.NotificacionService
 import com.example.bocetocalendario1.utilidades.GestorSesion
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import kotlinx.coroutines.Dispatchers
@@ -53,6 +53,7 @@ class InviteBottomSheet : BottomSheetDialogFragment() {
         val grupoId = arguments?.getInt("grupo_id") ?: 0
         val gestorSesion    = GestorSesion(requireContext())
         val idUsuarioActual = gestorSesion.obtenerIdUsuario() ?: return
+        val nombreUsuario   = gestorSesion.obtenerNombreUsuario() ?: "Alguien"
 
         view.findViewById<TextView>(R.id.tvInviteTitle).text = "Invitar a $nombre"
 
@@ -66,7 +67,7 @@ class InviteBottomSheet : BottomSheetDialogFragment() {
             val count = suggestions.count { it.selected }
             btnInvitar.isEnabled = count > 0
             btnInvitar.alpha     = if (count > 0) 1f else 0.5f
-            btnInvitar.text      = if (count > 0) "Invitar $count" else "Invitar"
+            btnInvitar.text      = if (count > 0) "Invitar ($count)" else "Invitar"
         }
 
         fun mostrarResultados() {
@@ -121,18 +122,34 @@ class InviteBottomSheet : BottomSheetDialogFragment() {
 
         btnInvitar.setOnClickListener {
             val seleccionados = suggestions.filter { it.selected }
-            val nombreQuienInvita = gestorSesion.obtenerNombreUsuario() ?: "Alguien"
+
             viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
+                var enviadas = 0
                 seleccionados.forEach { person ->
                     try {
-                        NotificacionService.enviarInvitacionGrupo(
-                            context = requireContext(), idUsuarioDestino = person.id,
-                            nombreGrupo = nombre, idGrupo = grupoId, nombreQuienInvita = nombreQuienInvita
+                        val notif = NotificacionResponse(
+                            titulo = "Invitación a grupo",
+                            mensaje = "$nombreUsuario te ha invitado al grupo \"$nombre\"",
+                            tipo = "INVITACION",
+                            idUsuario = person.id,
+                            idGrupoInvitacion = grupoId,
+                            estadoInvitacion = "PENDIENTE",
+                            fechaCreacion = System.currentTimeMillis()
                         )
-                    } catch (e: Exception) { Log.e("INVITE", "Error invitando: ${e.message}") }
+                        Log.d("INVITE", "Enviando notificacion a userId=${person.id}, grupoId=$grupoId")
+                        val resp = RetrofitClient.api.crearNotificacion(notif)
+                        if (resp.isSuccessful) {
+                            enviadas++
+                            Log.d("INVITE", "OK - notificacion creada para ${person.email}")
+                        } else {
+                            Log.e("INVITE", "Error ${resp.code()}: ${resp.errorBody()?.string()}")
+                        }
+                    } catch (e: Exception) {
+                        Log.e("INVITE", "Excepcion invitando a ${person.email}: ${e.message}", e)
+                    }
                 }
                 withContext(Dispatchers.Main) {
-                    Toast.makeText(context, "Invitaciones enviadas", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "$enviadas invitación(es) enviada(s)", Toast.LENGTH_SHORT).show()
                     dismiss()
                 }
             }
